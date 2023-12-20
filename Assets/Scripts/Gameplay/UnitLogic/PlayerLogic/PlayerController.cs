@@ -1,3 +1,4 @@
+using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
 using Infrastructure;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
@@ -6,6 +7,8 @@ namespace Gameplay.UnitLogic.PlayerLogic
 {
     public class PlayerController: MonoBehaviour, IInitializable
     {
+        [SerializeField] private HeroAnimator _heroAnimator;
+        
         [SerializeField] private CharacterController _characterController;
 
         [SerializeField] private Transform _transform;
@@ -28,6 +31,7 @@ namespace Gameplay.UnitLogic.PlayerLogic
         public void Initialize()
         {
             _inputService = ServiceLocator.Get<IInputService>();
+            _heroAnimator.PlayIdle();
         }
 
         private void HandleMovement()
@@ -37,6 +41,8 @@ namespace Gameplay.UnitLogic.PlayerLogic
 
             if (movementDirection.magnitude > 0)
                 _characterController.Move(adjustedDirection * (_moveSpeed * Time.deltaTime));
+            
+            _heroAnimator.PlayMovement(_inputService.MovementDirection);
         }
 
         private void HandleRotation()
