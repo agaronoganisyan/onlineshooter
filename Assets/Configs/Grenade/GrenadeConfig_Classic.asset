@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d8a9ffee88f415eb39c1979bcc0e038, type: 3}
+  m_Name: GrenadeConfig_Classic
+  m_EditorClassIdentifier: 
+  _grenadeType: 1
+  _damage: 100
+  _impactRadius: 10
+  _reloadingDuration: 5
+  initialPoolSize: 1
+  _prefab: {fileID: -2680112332209802328, guid: e161b7f0e94df4d998410220f1d0ab39, type: 3}
