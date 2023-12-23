@@ -9,10 +9,11 @@ namespace Gameplay.ShootingSystemLogic.ReloadingSystemLogic
         public event Action OnStarted;
         public event Action OnFinished;
 
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _cancellationTokenSource;
         
         public void Start(float duration)
         {
+            _cancellationTokenSource = new CancellationTokenSource();
             Reloading(TimeSpan.FromSeconds(duration));
         }
 

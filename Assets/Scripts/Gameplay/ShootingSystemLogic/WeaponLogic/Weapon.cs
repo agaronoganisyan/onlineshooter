@@ -22,8 +22,9 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
     
     public abstract class Weapon : MonoBehaviour
     {
-         public event Action OnReloadingStarted; 
+        public event Action OnReloadingStarted; 
          public event Action OnReloadingFinished; 
+         public event Action<int, int> OnAmmoChanged; 
 
          public WeaponConfig WeaponConfig => _weaponConfig;
          [SerializeField] WeaponConfig _weaponConfig;
@@ -36,6 +37,8 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          public Transform ShootPoint => _shootPoint;
          [SerializeField] private Transform _shootPoint;
          [SerializeField] private Transform _transform;
+         private Transform _activeContainer;
+         private Transform _reserveContainer;
 
          private int _ammo;
          private int _maxAmmoCount;
@@ -45,11 +48,15 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          private float _bulletDamage;
          private float _bulletSpeed;
          private float _reloadingDuration;
-         
+
+         public bool IsReloading => _isReloading;
          private bool _isReloading;
 
          public void Initialize(Transform activeContainer,Transform reserveContainer)
          {
+             _activeContainer = activeContainer;
+             _reserveContainer = reserveContainer;
+             
              _timerService = new TimerService();
              _bulletsFactory = new BulletFactory(_weaponConfig.BulletPrefab,_weaponConfig.MaxAmmoCount/3);
 
@@ -63,6 +70,8 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
              _bulletDamage = _weaponConfig.Damage;
              _bulletSpeed = _weaponConfig.BulletSpeed;
              _reloadingDuration = _weaponConfig.ReloadingDuration;
+
+             _isReloading = false;
          }
 
          public bool IsReadyToFire(Transform target, float minAngleToStartingShooting)
@@ -75,14 +84,13 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          {
              if (_isReloading) return; 
              if (Time.time < _nextShootTime) return; //ДОБАВИТЬ БЫ РАЗБРОССССССС
-
-             Debug.Log("FIRE");
              
              _currentBullet = _bulletsFactory.Get();
              _currentBullet.Activate(_shootPoint.position, _shootPoint.forward,_bulletDamage,_bulletSpeed);
 
              _nextShootTime = Time.time + 1 * _frequency;
              _ammo--;
+             SetAmmo(_ammo);
              
              if (_ammo <= 0) StartReloading();
          }
@@ -96,7 +104,21 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          {
              _timerService.Start(_reloadingDuration);
          }
-         
+
+         public void StopReloading()
+         {
+             if (!_isReloading) return; 
+             
+             _isReloading = false;
+             _timerService.Stop();
+         }
+        
+         void SetAmmo(int ammoCount)
+         {
+             _ammo = ammoCount;
+             OnAmmoChanged?.Invoke(_ammo, _maxAmmoCount);
+         }
+
          void ReloadingStarted()
          {
              _isReloading = true;
@@ -106,7 +128,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          void ReloadingFinished()
          {
              _isReloading = false;
-             _ammo = _maxAmmoCount;
+             SetAmmo(_maxAmmoCount);
              OnReloadingFinished?.Invoke();
          }
     }

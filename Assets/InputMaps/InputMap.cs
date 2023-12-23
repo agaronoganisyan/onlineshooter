@@ -44,6 +44,33 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Switching"",
+                    ""type"": ""Button"",
+                    ""id"": ""df38be81-28bb-4c77-b7b5-430e6f25ee59"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Throw"",
+                    ""type"": ""Button"",
+                    ""id"": ""c74b44af-4518-4479-8f00-b9dcd526a240"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reloading"",
+                    ""type"": ""Button"",
+                    ""id"": ""5b08fed9-772f-406b-b3f5-c4fb6e5110f3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -134,6 +161,72 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""action"": ""RotationDelta"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52d30865-bf1e-4638-837c-d9638a622bb8"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Switching"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e252a8c4-41a5-4a4d-b732-38394d0c1e61"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Switching"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""79f1cf01-6ba3-4191-9a08-2b3fee634e26"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4092d0e0-516d-47b4-a28c-51ec67a5a5a7"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aaec9e6c-797a-4377-a1e7-399987716183"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reloading"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6603ab82-0a8b-4f3b-a3c3-6e8e67dbb985"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reloading"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -144,6 +237,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_MovementDelta = m_Gameplay.FindAction("MovementDelta", throwIfNotFound: true);
         m_Gameplay_RotationDelta = m_Gameplay.FindAction("RotationDelta", throwIfNotFound: true);
+        m_Gameplay_Switching = m_Gameplay.FindAction("Switching", throwIfNotFound: true);
+        m_Gameplay_Throw = m_Gameplay.FindAction("Throw", throwIfNotFound: true);
+        m_Gameplay_Reloading = m_Gameplay.FindAction("Reloading", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -205,12 +301,18 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     private IGameplayActions m_GameplayActionsCallbackInterface;
     private readonly InputAction m_Gameplay_MovementDelta;
     private readonly InputAction m_Gameplay_RotationDelta;
+    private readonly InputAction m_Gameplay_Switching;
+    private readonly InputAction m_Gameplay_Throw;
+    private readonly InputAction m_Gameplay_Reloading;
     public struct GameplayActions
     {
         private @InputMap m_Wrapper;
         public GameplayActions(@InputMap wrapper) { m_Wrapper = wrapper; }
         public InputAction @MovementDelta => m_Wrapper.m_Gameplay_MovementDelta;
         public InputAction @RotationDelta => m_Wrapper.m_Gameplay_RotationDelta;
+        public InputAction @Switching => m_Wrapper.m_Gameplay_Switching;
+        public InputAction @Throw => m_Wrapper.m_Gameplay_Throw;
+        public InputAction @Reloading => m_Wrapper.m_Gameplay_Reloading;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -226,6 +328,15 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @RotationDelta.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotationDelta;
                 @RotationDelta.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotationDelta;
                 @RotationDelta.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotationDelta;
+                @Switching.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitching;
+                @Switching.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitching;
+                @Switching.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitching;
+                @Throw.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnThrow;
+                @Throw.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnThrow;
+                @Throw.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnThrow;
+                @Reloading.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnReloading;
+                @Reloading.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnReloading;
+                @Reloading.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnReloading;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -236,6 +347,15 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @RotationDelta.started += instance.OnRotationDelta;
                 @RotationDelta.performed += instance.OnRotationDelta;
                 @RotationDelta.canceled += instance.OnRotationDelta;
+                @Switching.started += instance.OnSwitching;
+                @Switching.performed += instance.OnSwitching;
+                @Switching.canceled += instance.OnSwitching;
+                @Throw.started += instance.OnThrow;
+                @Throw.performed += instance.OnThrow;
+                @Throw.canceled += instance.OnThrow;
+                @Reloading.started += instance.OnReloading;
+                @Reloading.performed += instance.OnReloading;
+                @Reloading.canceled += instance.OnReloading;
             }
         }
     }
@@ -244,5 +364,8 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     {
         void OnMovementDelta(InputAction.CallbackContext context);
         void OnRotationDelta(InputAction.CallbackContext context);
+        void OnSwitching(InputAction.CallbackContext context);
+        void OnThrow(InputAction.CallbackContext context);
+        void OnReloading(InputAction.CallbackContext context);
     }
 }

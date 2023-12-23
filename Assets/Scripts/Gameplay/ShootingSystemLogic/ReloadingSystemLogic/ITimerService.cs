@@ -7,5 +7,6 @@ namespace Gameplay.ShootingSystemLogic.ReloadingSystemLogic
         event Action OnStarted;
         event Action OnFinished;
         void Start(float duration);
+        void Stop();
     }
 }
