@@ -663,8 +663,8 @@ GameObject:
   - component: {fileID: 892706479}
   - component: {fileID: 892706478}
   - component: {fileID: 892706477}
-  - component: {fileID: 892706481}
   - component: {fileID: 892706480}
+  - component: {fileID: 892706481}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2328,7 +2328,12 @@ Animator:
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'Bip001 L UpperArm'\n\tTransform 'Bip001 L Clavicle'\n\tTransform
+    'Bip001 R Hand'\n\tTransform 'Bip001 L Forearm'\n\tTransform 'Bip001 R Forearm'\n\tTransform
+    'Bip001 L UpperArm'\n\tTransform 'Bip001 L Clavicle'\n\tTransform 'Bip001 R Hand'\n\tTransform
+    'Bip001 L Forearm'\n\tTransform 'Bip001 R Forearm'\n\tand more ..."
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -2616,6 +2621,7 @@ GameObject:
   - component: {fileID: 1853431571114986370}
   - component: {fileID: 1853431571107505238}
   - component: {fileID: 1853431571114986371}
+  - component: {fileID: 1853431571114986377}
   - component: {fileID: 1853431571114986375}
   - component: {fileID: 1853431571114986373}
   m_Layer: 0
@@ -2956,6 +2962,18 @@ Transform:
   m_Father: {fileID: 1853431571114986370}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1853431571114986377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1853431571114760162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2c35441e3cd458a84862f20931d3c50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1853431571114986378
 Transform:
   m_ObjectHideFlags: 0
@@ -2974,7 +2992,7 @@ Transform:
   - {fileID: 1623480726}
   m_Father: {fileID: 1853431571114986398}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -78.119514, y: -84.85824, z: 80.57733}
 --- !u!4 &1853431571114986384
 Transform:
   m_ObjectHideFlags: 0
