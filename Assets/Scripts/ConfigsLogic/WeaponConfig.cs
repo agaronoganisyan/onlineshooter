@@ -25,7 +25,20 @@ namespace ConfigsLogic
         [SerializeField, Tooltip("How many seconds should pass for the next shot")] private float _frequency;
         public float ReloadingDuration => _reloadingDuration;
         [SerializeField] private float _reloadingDuration;
+        public Vector3 PositionInHand => _positionInHand;
+        [Header("Hand Block")]
+        [SerializeField] private Vector3 _positionInHand;
+        public Vector3 RotationInHand => _rotationInHand;
+        [SerializeField] private Vector3 _rotationInHand;
+        public Vector3 PositionInContainer => _positionInContainer;
+        [Header("Container Block")]
+        [SerializeField] private Vector3 _positionInContainer;
+        public Vector3 RotationInContainer => _rotationInContainer;
+        [SerializeField] private Vector3 _rotationInContainer;
         public Bullet BulletPrefab => _bulletPrefab;
+        [Space(25)]
         [SerializeField] private Bullet _bulletPrefab;
+        public AnimatorOverrideController AnimatorOverride => _animatorOverride;
+        [SerializeField] private AnimatorOverrideController _animatorOverride;
     }
 }

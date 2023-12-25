@@ -4,8 +4,13 @@ namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
 {
     public interface IHeroAnimator
     {
+        HeroAnimationEventHandler AnimationEventHandler { get; }
+        void PlayMovement(Vector2 movementDirection);
         void PlayIdle();
         void PlayAim();
-        void PlayMovement(Vector2 movementDirection);
+        void PlayReload();
+        void PlayDraw();
+        void PlayThrow();
+        void SetRuntimeAnimatorController(RuntimeAnimatorController newController);
     }
 }
