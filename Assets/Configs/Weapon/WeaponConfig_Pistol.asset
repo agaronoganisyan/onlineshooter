@@ -21,4 +21,9 @@ MonoBehaviour:
   _maxAmmoCount: 3
   _frequency: 0.75
   _reloadingDuration: 2.5
+  _positionInHand: {x: 0, y: 0, z: 0}
+  _rotationInHand: {x: 0, y: 11, z: 3.17}
+  _positionInContainer: {x: 0.33, y: 0.055, z: 0.026}
+  _rotationInContainer: {x: 153.41, y: 0, z: 0}
   _bulletPrefab: {fileID: 7289835956803318236, guid: 6d5d3f7ff279d4a1d889bedfbc287f0e, type: 3}
+  _animatorOverride: {fileID: 22100000, guid: 6e254bfa0d4154ddca8fc8dbec6e9826, type: 2}

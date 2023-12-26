@@ -1,6 +1,7 @@
 using System;
 using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
+using InputLogic.InputServiceLogic;
 
 namespace Gameplay.ShootingSystemLogic.EquipmentLogic
 {

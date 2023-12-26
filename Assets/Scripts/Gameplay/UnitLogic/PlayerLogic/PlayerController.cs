@@ -1,6 +1,7 @@
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
 using Infrastructure;
 using Infrastructure.ServiceLogic;
+using InputLogic.InputServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.UnitLogic.PlayerLogic

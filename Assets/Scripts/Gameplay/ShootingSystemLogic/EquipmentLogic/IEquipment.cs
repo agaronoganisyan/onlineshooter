@@ -1,10 +1,11 @@
 using System;
 using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
+using Infrastructure.ServiceLogic;
 
 namespace Gameplay.ShootingSystemLogic.EquipmentLogic
 {
-    public interface IEquipment
+    public interface IEquipment : IService
     {
         event Action<WeaponType> OnCurrentWeaponChanged;
         Weapon CurrentWeapon { get; }

@@ -1,5 +1,6 @@
 using Infrastructure;
 using Infrastructure.ServiceLogic;
+using InputLogic.InputServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.CameraLogic

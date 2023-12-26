@@ -8,6 +8,5 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         void Enter();
         void Exit();
         void Update();
-        State GetCurrentState();
     }
 }
