@@ -8,6 +8,8 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
     [Serializable]
     public class Equipment : IEquipment
     {
+        public event Action OnCurrentWeaponReloadingStarted;
+        public event Action OnCurrentWeaponReloadingFinished;
         public event Action<WeaponType> OnCurrentWeaponChanged;
 
         public Weapon CurrentWeapon => _currentWeapon;
@@ -37,12 +39,16 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
             _weaponsCount = _weapons.Length;
             
             SetWeapon(_currentWeaponID);
+            SubscribeToThisWeapon(_currentWeapon);
         }
 
         public void SwitchWeapon()
         {
+            UnsubscribeFromThisWeapon(_currentWeapon);
+            
             _currentWeaponID = GetNextWeaponID(_currentWeaponID);
             SetWeapon(_currentWeaponID);
+            SubscribeToThisWeapon(_currentWeapon);
             
             OnCurrentWeaponChanged?.Invoke(_currentWeapon.WeaponConfig.WeaponType);
         }
@@ -70,7 +76,26 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         {
             _currentWeapon.StartReloading();
         }
-        
+        private void SubscribeToThisWeapon(Weapon weapon)
+        {
+            weapon.OnReloadingStarted += CurrentWeaponReloadingStarted;
+            weapon.OnReloadingFinished += CurrentWeaponReloadingFinished;
+        }
+
+        private void UnsubscribeFromThisWeapon(Weapon weapon)
+        {
+            weapon.OnReloadingStarted -= CurrentWeaponReloadingStarted;
+            weapon.OnReloadingFinished -= CurrentWeaponReloadingFinished;
+        }
+        void CurrentWeaponReloadingStarted()
+        {
+            OnCurrentWeaponReloadingStarted?.Invoke();
+        }
+
+        void CurrentWeaponReloadingFinished()
+        {
+            OnCurrentWeaponReloadingFinished?.Invoke();
+        }
         private int GetNextWeaponID(int currentID)
         {
             currentID++;

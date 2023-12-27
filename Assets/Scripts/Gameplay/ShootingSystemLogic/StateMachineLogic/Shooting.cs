@@ -11,6 +11,21 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
     {
         public Shooting(ShootingState key, IStateMachine<ShootingState> stateMachine, IHeroAnimator heroAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, heroAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
         {
+            enemiesDetector.OnEnemyDetected += (T) => _stateMachine.TransitToState(ShootingState.Shooting);
+        }
+        
+        public override void Enter()
+        {
+            base.Enter();
+            _heroAnimator.PlayAim();
+        }
+
+        public override void Update() 
+        {
+            base.Update();
+            
+            if (!_equipment.CurrentWeapon.IsReadyToFire(_target,_minAngleToStartingShooting)) return;
+            _equipment.CurrentWeapon.Fire();
         }
     }
 }

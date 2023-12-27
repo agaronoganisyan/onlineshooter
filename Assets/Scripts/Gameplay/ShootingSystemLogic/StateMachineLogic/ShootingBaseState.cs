@@ -79,6 +79,12 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
                 _crosshairMovementSpeed * Time.deltaTime);
         }
         
+        protected void ToShooting()
+        {
+            if (_enemiesDetector.IsThereTarget()) _stateMachine.TransitToState(ShootingState.Shooting);
+            else _stateMachine.TransitToState(ShootingState.Searching);
+        }
+        
         private void AimToTarget(Transform target)
         {
             _target = target;

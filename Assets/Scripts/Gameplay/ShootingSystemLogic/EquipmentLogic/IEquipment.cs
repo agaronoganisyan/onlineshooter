@@ -7,6 +7,8 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
 {
     public interface IEquipment : IService
     {
+        event Action OnCurrentWeaponReloadingStarted;
+        event Action OnCurrentWeaponReloadingFinished;
         event Action<WeaponType> OnCurrentWeaponChanged;
         Weapon CurrentWeapon { get; }
         Weapon NextWeapon { get; }

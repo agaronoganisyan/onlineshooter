@@ -2,6 +2,7 @@ using ConfigsLogic;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
+using Gameplay.ShootingSystemLogic.WeaponLogic;
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
 using UnityEngine;
 
@@ -21,6 +22,14 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
 
         void Init()
         {
+            _equipment.CurrentWeapon.Initialize(_equipmentContainer.RightHandContainer,
+                _equipment.CurrentWeapon.WeaponConfig.WeaponType == WeaponType.First ?
+                    _equipmentContainer.FirstWeaponContainer : _equipmentContainer.SecondWeaponContainer);
+            
+            _equipment.NextWeapon.Initialize(_equipmentContainer.RightHandContainer,
+                _equipment.NextWeapon.WeaponConfig.WeaponType == WeaponType.First ?
+                    _equipmentContainer.FirstWeaponContainer : _equipmentContainer.SecondWeaponContainer);
+            
             _stateMachine.TransitToState(ShootingState.Searching);
         }
     }
