@@ -30,6 +30,9 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
                 _equipment.NextWeapon.WeaponConfig.WeaponType == WeaponType.First ?
                     _equipmentContainer.FirstWeaponContainer : _equipmentContainer.SecondWeaponContainer);
             
+            _equipment.CurrentWeapon.Draw();
+            _equipment.NextWeapon.LayDown();
+            
             _stateMachine.TransitToState(ShootingState.Searching);
         }
     }

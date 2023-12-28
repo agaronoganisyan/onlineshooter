@@ -112,7 +112,21 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
              _isReloading = false;
              _timerService.Stop();
          }
-        
+
+         public void Draw()
+         {
+             _transform.SetParent(_activeContainer);
+             _transform.localPosition = _weaponConfig.PositionInHand;
+             _transform.localEulerAngles = _weaponConfig.RotationInHand;
+         }
+
+         public void LayDown()
+         {
+             _transform.SetParent(_reserveContainer);
+             _transform.localPosition = _weaponConfig.PositionInContainer;
+             _transform.localEulerAngles = _weaponConfig.RotationInContainer;
+         }
+         
          void SetAmmo(int ammoCount)
          {
              _ammo = ammoCount;

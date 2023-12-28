@@ -10,6 +10,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
     {
         public event Action OnCurrentWeaponReloadingStarted;
         public event Action OnCurrentWeaponReloadingFinished;
+        public event Action OnWeaponSwitchingStarted;
         public event Action<WeaponType> OnCurrentWeaponChanged;
 
         public Weapon CurrentWeapon => _currentWeapon;
@@ -27,6 +28,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
 
         public Equipment(IInputService inputService)
         {
+            inputService.OnSwitchingInputReceived += StartWeaponSwitch;
             inputService.OnReloadingInputReceived += ReloadCurrentWeapon;
         }
         
@@ -64,6 +66,12 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
             }
 
             return null;
+        }
+        
+        private void StartWeaponSwitch()
+        {
+            _currentWeapon.StopReloading();
+            OnWeaponSwitchingStarted?.Invoke();
         }
         
         private void SetWeapon(int weaponID)
