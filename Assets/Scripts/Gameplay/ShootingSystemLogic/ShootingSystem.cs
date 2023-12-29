@@ -20,7 +20,8 @@ namespace Gameplay.ShootingSystemLogic
         [SerializeField] private HeroAnimator _heroAnimator;
         
         [SerializeField] private ShootingSystemConfig _shootingSystemConfig;
-        
+        [SerializeField] private GrenadeLaunchingConfig _grenadeLaunchingConfig;
+
         [SerializeField] private Transform _rightHandContainer;
         [SerializeField] private Transform _leftHandContainer;
         [SerializeField] private Transform _firstWeaponContainer;
@@ -51,7 +52,7 @@ namespace Gameplay.ShootingSystemLogic
             _stateMachine.Add(ShootingState.Switching, new Switching(ShootingState.Switching, _stateMachine, _heroAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _shootingSystemConfig, _crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
             _stateMachine.Add(ShootingState.GrenadeLaunching, new GrenadeLaunching(ShootingState.GrenadeLaunching, _stateMachine, _heroAnimator, _equipment, _equipmentContainer,
-                _enemiesDetector, _shootingSystemConfig,_crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
+                _enemiesDetector, _shootingSystemConfig, _grenadeLaunchingConfig,_crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
         } 
         
         private void Start()

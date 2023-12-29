@@ -12,6 +12,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         public event Action OnCurrentWeaponReloadingFinished;
         public event Action OnWeaponSwitchingStarted;
         public event Action<WeaponType> OnCurrentWeaponChanged;
+        public event Action OnGrenadeLaunchingStarted;
 
         public Weapon CurrentWeapon => _currentWeapon;
         private Weapon _currentWeapon;
@@ -30,6 +31,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         {
             inputService.OnSwitchingInputReceived += StartWeaponSwitch;
             inputService.OnReloadingInputReceived += ReloadCurrentWeapon;
+            inputService.OnThrowingInputReceived += StartThrowing;
         }
         
         public void SetUp(Weapon[] weapons, GrenadeLauncher grenade)
@@ -84,6 +86,12 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         {
             _currentWeapon.StartReloading();
         }
+        
+        private void StartThrowing()
+        {
+            OnGrenadeLaunchingStarted?.Invoke();
+        }
+        
         private void SubscribeToThisWeapon(Weapon weapon)
         {
             weapon.OnReloadingStarted += CurrentWeaponReloadingStarted;

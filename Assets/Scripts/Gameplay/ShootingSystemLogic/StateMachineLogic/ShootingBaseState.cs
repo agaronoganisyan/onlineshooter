@@ -79,6 +79,11 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
                 _crosshairMovementSpeed * Time.deltaTime);
         }
         
+        protected virtual void TryToEnterThisShootingState()
+        {
+            if (IsCurrentStateIsNonShootingType()) return;
+        }
+        
         protected void ToShooting()
         {
             if (_enemiesDetector.IsThereTarget()) _stateMachine.TransitToState(ShootingState.Shooting);
@@ -93,6 +98,20 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         private void SetCrosshairBasePosition()
         {
             _target = _crosshairBasePosition;
+        }
+        
+        protected bool IsCurrentStateIsNonShootingType()
+        {
+            return IsNonShootingState(_stateMachine.GetCurrentState());
+        }
+        
+        protected bool IsNonShootingState(ShootingState state)
+        {
+            return state.Equals(ShootingState.Reloading) ||
+                   state.Equals(ShootingState.Switching) ||
+                   state.Equals(ShootingState.GrenadeLaunching)
+                ? true
+                : false;
         }
     }
 }

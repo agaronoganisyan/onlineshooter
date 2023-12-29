@@ -11,6 +11,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         event Action OnCurrentWeaponReloadingFinished;
         event Action OnWeaponSwitchingStarted;
         event Action<WeaponType> OnCurrentWeaponChanged;
+        event Action OnGrenadeLaunchingStarted;
         Weapon CurrentWeapon { get; }
         Weapon NextWeapon { get; }
         Weapon GetWeaponByType(WeaponType type);

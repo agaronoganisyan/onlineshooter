@@ -11,13 +11,15 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
     {
         public Shooting(ShootingState key, IStateMachine<ShootingState> stateMachine, IHeroAnimator heroAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, heroAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
         {
-            enemiesDetector.OnEnemyDetected += (T) => _stateMachine.TransitToState(ShootingState.Shooting);
+            enemiesDetector.OnEnemyDetected += (T) => TryToEnterThisShootingState();
         }
         
         public override void Enter()
         {
             base.Enter();
             _heroAnimator.PlayAim();
+            
+            if (_equipment.CurrentWeapon.IsRequiredReloading()) _equipment.CurrentWeapon.StartReloading();
         }
 
         public override void Update() 
@@ -26,6 +28,12 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
             
             if (!_equipment.CurrentWeapon.IsReadyToFire(_target,_minAngleToStartingShooting)) return;
             _equipment.CurrentWeapon.Fire();
+        }
+        
+        protected override void TryToEnterThisShootingState()
+        {
+            base.TryToEnterThisShootingState();
+            _stateMachine.TransitToState(ShootingState.Shooting);
         }
     }
 }
