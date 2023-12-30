@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Infrastructure;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
@@ -9,11 +10,12 @@ namespace Gameplay.CameraLogic
     {
         private IInputService _inputService;
 
+        [SerializeField] private Transform _cameraObjectTransform;
         [SerializeField] private Transform _transform;
         [SerializeField] private Transform _targetTransform;
         
-        [SerializeField] private float _rotationSpeed;
-        private float _horizontalRotation;
+        [SerializeField] private float _shakeDuration;
+        [SerializeField] private float _shakeStrenght;
         private void Start()
         {
             Initialize();
@@ -38,10 +40,17 @@ namespace Gameplay.CameraLogic
         void HandleRotation(Vector2 rotation)
         {
             //_horizontalRotation = delta.x * Time.deltaTime * _rotationSpeed;
-            _horizontalRotation = rotation.x * _rotationSpeed;
+            //_horizontalRotation = rotation.x * _rotationSpeed;
             
-            _transform.localEulerAngles = new Vector3(0, _horizontalRotation, 0);
+            _transform.localEulerAngles = new Vector3(0, rotation.x, 0);
             //transform.Rotate(Vector3.up, _horizontalRotation);
+        }
+        
+        public void Shake()
+        {
+            _cameraObjectTransform.DOComplete();
+            _cameraObjectTransform.DOShakePosition(_shakeDuration, _shakeStrenght);
+            _cameraObjectTransform.DOShakeRotation(_shakeDuration, _shakeStrenght);
         }
     }
 }
