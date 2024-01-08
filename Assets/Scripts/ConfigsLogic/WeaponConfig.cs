@@ -40,5 +40,7 @@ namespace ConfigsLogic
         [SerializeField] private Bullet _bulletPrefab;
         public AnimatorOverrideController AnimatorOverride => _animatorOverride;
         [SerializeField] private AnimatorOverrideController _animatorOverride;
+        public Sprite IconSprite => iconSprite;
+        [SerializeField] private Sprite iconSprite;
     }
 }
