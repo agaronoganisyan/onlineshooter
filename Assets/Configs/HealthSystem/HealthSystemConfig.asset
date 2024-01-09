@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54134b819515487ea2ee22ebd446fc12, type: 3}
+  m_Name: HealthSystemConfig
+  m_EditorClassIdentifier: 
+  _criticalHealthThreshold: 0.45
+  _delayBeforeRegeneration: 5
+  _regenerationDegree: 0.25
+  _regenerationFrequency: 0.25

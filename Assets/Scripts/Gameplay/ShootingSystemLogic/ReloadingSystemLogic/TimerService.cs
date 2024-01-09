@@ -9,6 +9,8 @@ namespace Gameplay.ShootingSystemLogic.ReloadingSystemLogic
         public event Action OnStarted;
         public event Action OnFinished;
 
+        public event Action OnStopped;
+        
         private CancellationTokenSource _cancellationTokenSource;
         
         public void Start(float duration)
@@ -20,6 +22,7 @@ namespace Gameplay.ShootingSystemLogic.ReloadingSystemLogic
         public void Stop()
         {
             _cancellationTokenSource.Cancel();
+            OnStopped?.Invoke();
         }
         
         private async UniTaskVoid Reloading(TimeSpan duration)
