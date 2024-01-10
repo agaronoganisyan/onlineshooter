@@ -21,7 +21,7 @@ namespace Gameplay.ShootingSystemLogic.ReloadingSystemLogic
 
         public void Stop()
         {
-            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource?.Cancel();
             OnStopped?.Invoke();
         }
         

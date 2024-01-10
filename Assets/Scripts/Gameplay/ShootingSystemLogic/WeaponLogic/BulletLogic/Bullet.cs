@@ -12,9 +12,10 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic
 
         [SerializeField] private Transform _transform;
 
-        private float _speed;
+        public float Damage => _damage;
         private float _damage;
-        
+        private float _speed;
+
         public void PoolInitialize(Action<Bullet> returnAction)
         {
             _returnToPool = returnAction;

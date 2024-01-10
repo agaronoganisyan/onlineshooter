@@ -6,7 +6,7 @@ namespace Gameplay.HealthLogic
 {
     public class HealthSystemWithCriticalThreshold : HealthSystem
     {
-         public event Action OnBelowCriticalThreshold;
+        public event Action OnBelowCriticalThreshold;
         public event Action OnAboveCriticalThreshold;
         
         private readonly ITimerService _timerForDelayBeforeRegeneration = new TimerService();

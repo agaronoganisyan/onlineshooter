@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Gameplay.UnitLogic.PlayerLogic
 {
-    public class PlayerController: MonoBehaviour, IInitializable
+    public class PlayerController: MonoBehaviour, IPlayerController
     {
         [SerializeField] private HeroAnimator _heroAnimator;
         

@@ -1,6 +1,8 @@
+using ConfigsLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
+using Gameplay.UnitLogic.PlayerLogic;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
 using UnityEngine;
@@ -11,6 +13,10 @@ namespace Infrastructure
     {
         [SerializeField] private Weapon[] _weapons;
         [SerializeField] GrenadeLauncher _grenadeLauncher;
+        
+        [SerializeField] private HealthSystemConfig _healthSystemConfig;
+        
+        [SerializeField] private Player _player;
         
         private void Awake()
         {
@@ -24,7 +30,10 @@ namespace Infrastructure
             ServiceLocator.Register<IInputService>(inputService);
             
             ServiceLocator.Register<IEquipment>(new Equipment(inputService));
-
+            
+            ServiceLocator.Register<Player>(_player);
+            
+            ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
         }
 
         private void InitServices()
