@@ -1,25 +1,24 @@
 using DG.Tweening;
-using Infrastructure;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.CameraLogic
 {
-    public class CameraController : MonoBehaviour , IInitializable
+    public class CameraController : MonoBehaviour , ICameraController
     {
         private IInputService _inputService;
 
+        public Camera Camera => _camera;
+        [SerializeField] private Camera _camera;
+        
+        public Transform CameraObjectTransform => _cameraObjectTransform;
         [SerializeField] private Transform _cameraObjectTransform;
         [SerializeField] private Transform _transform;
         [SerializeField] private Transform _targetTransform;
         
         [SerializeField] private float _shakeDuration;
         [SerializeField] private float _shakeStrenght;
-        private void Start()
-        {
-            Initialize();
-        }
 
         public void Initialize()
         {
@@ -27,9 +26,26 @@ namespace Gameplay.CameraLogic
             _inputService.OnRotationInputReceived += HandleRotation;
         }
 
+        public void SetTarget(Transform target)
+        {
+            _transform = target;
+        }
+
+        private void Start()
+        {
+            Initialize();
+        }
+        
         private void LateUpdate()
         {
             HandleMovement();
+        }
+
+        public void Shake()
+        {
+            _cameraObjectTransform.DOComplete();
+            _cameraObjectTransform.DOShakePosition(_shakeDuration, _shakeStrenght);
+            _cameraObjectTransform.DOShakeRotation(_shakeDuration, _shakeStrenght);
         }
 
         void HandleMovement()
@@ -39,18 +55,7 @@ namespace Gameplay.CameraLogic
 
         void HandleRotation(Vector2 rotation)
         {
-            //_horizontalRotation = delta.x * Time.deltaTime * _rotationSpeed;
-            //_horizontalRotation = rotation.x * _rotationSpeed;
-            
             _transform.localEulerAngles = new Vector3(0, rotation.x, 0);
-            //transform.Rotate(Vector3.up, _horizontalRotation);
-        }
-        
-        public void Shake()
-        {
-            _cameraObjectTransform.DOComplete();
-            _cameraObjectTransform.DOShakePosition(_shakeDuration, _shakeStrenght);
-            _cameraObjectTransform.DOShakeRotation(_shakeDuration, _shakeStrenght);
         }
     }
 }
