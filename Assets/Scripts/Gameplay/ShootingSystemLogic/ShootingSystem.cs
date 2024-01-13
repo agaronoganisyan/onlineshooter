@@ -1,4 +1,3 @@
-using System;
 using ConfigsLogic;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
@@ -6,6 +5,8 @@ using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using Gameplay.ShootingSystemLogic.StateMachineLogic;
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
 using Infrastructure.ServiceLogic;
+using Infrastructure.StateMachineLogic;
+using Infrastructure.StateMachineLogic.Simple;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic
@@ -40,7 +41,7 @@ namespace Gameplay.ShootingSystemLogic
             
             _enemiesDetector = new EnemiesDetector(_shootingSystemConfig, _equipment.CurrentWeapon.WeaponConfig, transform);
             
-            _stateMachine = new StateMachine<ShootingState>();
+            _stateMachine = new SimpleStateMachine<ShootingState>();
             _stateMachine.Add(ShootingState.Initializing, new Initializing(ShootingState.Initializing, _stateMachine, _heroAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _shootingSystemConfig, _crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
             _stateMachine.Add(ShootingState.Searching, new Searching(ShootingState.Searching, _stateMachine, _heroAnimator, _equipment, _equipmentContainer,
@@ -64,7 +65,7 @@ namespace Gameplay.ShootingSystemLogic
         
         private void Update()
         {
-            _stateMachine.Update();
+            _stateMachine.Tick();
         }
     }
 }

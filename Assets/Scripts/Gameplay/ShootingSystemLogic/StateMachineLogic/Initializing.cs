@@ -4,6 +4,7 @@ using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
+using Infrastructure.StateMachineLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.StateMachineLogic

@@ -4,6 +4,8 @@ using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
+using Infrastructure.StateMachineLogic;
+using Infrastructure.StateMachineLogic.Simple;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.StateMachineLogic
@@ -19,7 +21,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         GrenadeLaunching
     }
     
-    public abstract class ShootingBaseState<State> : IState<State> where State : Enum
+    public abstract class ShootingBaseState<State> : ISimpleState<State> where State : Enum
     {
         public State StateKey => _stateKey;
         private readonly State _stateKey;
