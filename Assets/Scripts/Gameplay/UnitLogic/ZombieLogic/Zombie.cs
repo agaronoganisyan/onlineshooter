@@ -9,9 +9,9 @@ namespace Gameplay.UnitLogic.ZombieLogic
     {
         protected SimpleHealthSystem _healthSystem;
 
-        protected override void Awake()
+        public override void Initialize()
         {
-            base.Awake();
+            base.Initialize();
             _healthSystem = new SimpleHealthSystem();
             _hitBox.Initialize(_healthSystem);
             _healthSystem.Setup(1000);

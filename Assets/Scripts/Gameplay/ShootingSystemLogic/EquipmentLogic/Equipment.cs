@@ -2,6 +2,7 @@ using System;
 using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
 using InputLogic.InputServiceLogic;
+using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.EquipmentLogic
 {

@@ -1,11 +1,13 @@
 using ConfigsLogic;
+using Cysharp.Threading.Tasks;
 using Gameplay.CameraLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
-using Gameplay.UILogic.SharedGameplayCanvasLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
 using Gameplay.UnitLogic.PlayerLogic;
+using Infrastructure.AssetManagementLogic;
+using Infrastructure.GameFactoryLogic;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
 using UnityEngine;
@@ -23,13 +25,11 @@ namespace Infrastructure
         
         [SerializeField] private Player _player;
         [SerializeField] private CameraController _cameraController;
-
-        [SerializeField] private SharedGameplayCanvas _sharedGameplayCanvas;
         
-        private void Awake()
+        private async void Awake()
         {
             RegisterServices();
-            InitServices();
+            await InitServices();
         }
 
         private void RegisterServices()
@@ -42,25 +42,31 @@ namespace Infrastructure
             ServiceLocator.Register<ICameraController>(_cameraController);
             
             ServiceLocator.Register<ISharedGameplayCanvasObjectFactory>(
-                new SharedGameplayCanvasObjectFactory(_sharedGameplayCanvas, _playerConfig,
-                    _playerInfoBlockConfig, _cameraController.Camera));
+                new SharedGameplayCanvasObjectFactory());
             
             ServiceLocator.Register<Player>(_player);
             
             ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
+            
+            ServiceLocator.Register<IAssetsProvider>(new AssetsProvider());
+            ServiceLocator.Register<IGameInfrastructureFactory>(new GameInfrastructureFactory());
         }
 
-        private void InitServices()
+        private async UniTask InitServices()
         {
-            IInputService inputService = ServiceLocator.Get<IInputService>();
-            inputService.Initialize();
-
             IEquipment equipment = ServiceLocator.Get<IEquipment>();
             equipment.SetUp(_weapons,_grenadeLauncher);
             
-            _sharedGameplayCanvas.Initialize();
-            _sharedGameplayCanvas.StartUpdating();
-
+            _player.Initialize();
+            _player.Prepare();
+            
+            ServiceLocator.Get<IGameInfrastructureFactory>().Initialize();
+            await ServiceLocator.Get<IGameInfrastructureFactory>().CreateAndRegisterInfrastructure();
+            
+            IInputService inputService = ServiceLocator.Get<IInputService>();
+            inputService.Initialize();
+            
+            ServiceLocator.Get<IAssetsProvider>().Initialize();
         }
     }
 }

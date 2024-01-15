@@ -1,25 +1,43 @@
 using ConfigsLogic;
 using Gameplay.HealthLogic;
-using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
-using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
+using Gameplay.ShootingSystemLogic;
 using Infrastructure.ServiceLogic;
-using UnityEngine;
 
 namespace Gameplay.UnitLogic.PlayerLogic
 {
     public class Player : Unit
     {
         public HealthSystemWithCriticalThreshold HealthSystem => _playerHealthSystem;
-        protected HealthSystemWithCriticalThreshold _playerHealthSystem;
+        private HealthSystemWithCriticalThreshold _playerHealthSystem;
+        private IPlayerController _playerController;
+        private IShootingSystem _shootingSystem;
         
-        protected override void Awake()
+        public override void Initialize()
         {
-            base.Awake();
+            base.Initialize();
+            _playerController = GetComponent<IPlayerController>();
+            _shootingSystem = GetComponent<IShootingSystem>();
             _playerHealthSystem = new HealthSystemWithCriticalThreshold(ServiceLocator.Get<HealthSystemConfig>());
-            _hitBox.Initialize(_playerHealthSystem);
+
             _playerHealthSystem.Setup(1000);
-            IPlayerInfoBlock playerInfoBlock = ServiceLocator.Get<ISharedGameplayCanvasObjectFactory>().GetPlayerBlockInfo(
-                _playerHealthSystem,_transform, _headTransform);
+            _hitBox.Initialize(_playerHealthSystem);
+            
+            _playerController.Initialize();
+            _shootingSystem.Initialize();
+        }
+        
+        public override void Update()
+        {
+            base.Update();
+            
+            _playerController.Tick();
+            _shootingSystem.Tick();
+        }
+        
+        public override void Prepare()
+        {
+            base.Prepare();
+            _shootingSystem.Prepare();
         }
     }
 }

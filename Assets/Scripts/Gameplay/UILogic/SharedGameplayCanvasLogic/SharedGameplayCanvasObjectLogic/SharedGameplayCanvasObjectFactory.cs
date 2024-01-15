@@ -1,6 +1,8 @@
 using ConfigsLogic;
+using Gameplay.CameraLogic;
 using Gameplay.HealthLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
+using Infrastructure.ServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic
@@ -15,25 +17,21 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
         private PlayerInfoBlockFactory _playerBlockInfoFactory;
 
         private Camera _worldCamera;
-        
-        public SharedGameplayCanvasObjectFactory(ISharedGameplayCanvas sharedGameplayCanvas, PlayerConfig playerConfig,
-            PlayerInfoBlockConfig playerInfoBlockConfig, Camera worldCamera)
+
+        public void Initialize()
         {
-            _sharedGameplayCanvas = sharedGameplayCanvas;
-            
-            _playerConfig = playerConfig;
-            _playerInfoBlockConfig = playerInfoBlockConfig;
+            _playerConfig = ServiceLocator.Get<PlayerConfig>();
+            _playerInfoBlockConfig = ServiceLocator.Get<PlayerInfoBlockConfig>();
 
-            _worldCamera = worldCamera;
+            _worldCamera = ServiceLocator.Get<ICameraController>().Camera;
 
-            _playerBlockInfoFactory = new PlayerInfoBlockFactory(_playerInfoBlockConfig.Prefab, _playerInfoBlockConfig.InitialPoolSize);
+            _playerBlockInfoFactory = new PlayerInfoBlockFactory(_playerInfoBlockConfig.Prefab, _playerInfoBlockConfig.InitialPoolSize);            
         }
-
+        
         public IPlayerInfoBlock GetPlayerBlockInfo(HealthSystem healthSystem, Transform target, Transform targetHead)
         {
             IPlayerInfoBlock playerInfoBlock = _playerBlockInfoFactory.Get().GetComponent<IPlayerInfoBlock>();
             playerInfoBlock.Initialize(_playerConfig, _playerInfoBlockConfig, healthSystem, target,targetHead, _worldCamera);
-            _sharedGameplayCanvas.AddObject(playerInfoBlock);
             return playerInfoBlock;
         }
     }

@@ -1,10 +1,11 @@
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
+using Infrastructure.ServiceLogic;
 using UnityEngine;
 
 namespace ConfigsLogic
 {
     [CreateAssetMenu (fileName = "PlayerInfoBlockConfig", menuName = "Configs/New PlayerInfoBlockConfig")]
-    public class PlayerInfoBlockConfig : ScriptableObject
+    public class PlayerInfoBlockConfig : ScriptableObject, IService
     {
         public int InitialPoolSize => initialPoolSize;
         [SerializeField] private int initialPoolSize;

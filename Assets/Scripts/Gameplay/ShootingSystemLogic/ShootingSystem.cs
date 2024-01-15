@@ -32,7 +32,7 @@ namespace Gameplay.ShootingSystemLogic
         
         [SerializeField] private float _crosshairMovementSpeed;
         
-        private void Awake()
+        public void Initialize()
         {
             _equipment = ServiceLocator.Get<IEquipment>();
             
@@ -54,16 +54,16 @@ namespace Gameplay.ShootingSystemLogic
                 _enemiesDetector, _shootingSystemConfig, _crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
             _stateMachine.Add(ShootingState.GrenadeLaunching, new GrenadeLaunching(ShootingState.GrenadeLaunching, _stateMachine, _heroAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _shootingSystemConfig, _grenadeLaunchingConfig,_crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
-        } 
-        
-        private void Start()
+        }
+
+        public void Prepare()
         {
             _stateMachine.Start(ShootingState.Initializing);
             _enemiesDetector.Start();
             
         }
         
-        private void Update()
+        public void Tick()
         {
             _stateMachine.Tick();
         }

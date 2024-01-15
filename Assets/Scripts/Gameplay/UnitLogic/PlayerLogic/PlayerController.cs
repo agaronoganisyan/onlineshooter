@@ -1,5 +1,4 @@
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
-using Infrastructure;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
 using UnityEngine;
@@ -18,21 +17,16 @@ namespace Gameplay.UnitLogic.PlayerLogic
         [SerializeField] private float _rotationSpeed;
         private IInputService _inputService;
 
-        private void Start()
-        {
-            Initialize();
-        }
-
-        private void Update()
-        {
-            HandleMovement();
-            HandleRotation();
-        }
-
         public void Initialize()
         {
             _inputService = ServiceLocator.Get<IInputService>();
             _heroAnimator.PlayIdle();
+        }
+
+        public void Tick()
+        {
+            HandleMovement();
+            HandleRotation();
         }
 
         private void HandleMovement()
