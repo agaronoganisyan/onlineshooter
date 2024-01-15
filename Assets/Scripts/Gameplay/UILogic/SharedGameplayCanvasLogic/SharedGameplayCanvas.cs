@@ -5,12 +5,13 @@ using Cysharp.Threading.Tasks;
 using Gameplay.CameraLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
 using HelpersLogic;
+using Infrastructure.CanvasBaseLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.UILogic.SharedGameplayCanvasLogic
 {
-    public class SharedGameplayCanvas : MonoBehaviour, ISharedGameplayCanvas
+    public class SharedGameplayCanvas : CanvasBase, ISharedGameplayCanvas
     {
         private CancellationTokenSource _cancellationTokenSource;
         private TimeSpan _updatingRate;
@@ -25,11 +26,12 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
 
         private float _updatingFrequency = 0.25f;
         
-        public void Initialize()
+        public override void Initialize()
         {
             _cameraController = ServiceLocator.Get<ICameraController>();
             
             _updatingRate = TimeSpan.FromSeconds(_updatingFrequency);
+            base.Initialize();
         }
 
         public void StartUpdating()

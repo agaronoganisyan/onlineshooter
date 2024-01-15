@@ -1,7 +1,6 @@
 namespace Infrastructure.GameStateMachineLogic
 {
-    public class Lobby
+    public class Lobby 
     {
-        
     }
 }
