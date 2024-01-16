@@ -1,7 +1,9 @@
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
 using Gameplay.CameraLogic;
+using Gameplay.ShootingSystemLogic.EquipmentFactoryLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
+using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
 using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
@@ -16,15 +18,9 @@ namespace Infrastructure
 {
     public class GameBootstrapper : MonoBehaviour
     {
-        [SerializeField] private Weapon[] _weapons;
-        [SerializeField] GrenadeLauncher _grenadeLauncher;
-        
         [SerializeField] private PlayerConfig _playerConfig;
         [SerializeField] private PlayerInfoBlockConfig _playerInfoBlockConfig;
         [SerializeField] private HealthSystemConfig _healthSystemConfig;
-        
-        [SerializeField] private Player _player;
-        [SerializeField] private CameraController _cameraController;
         
         private async void Awake()
         {
@@ -34,17 +30,14 @@ namespace Infrastructure
 
         private void RegisterServices()
         {
-            IInputService inputService = new InputService();
-            ServiceLocator.Register<IInputService>(inputService);
+            ServiceLocator.Register<IInputService>(new InputService());
             
-            ServiceLocator.Register<IEquipment>(new Equipment(inputService));
-            
-            ServiceLocator.Register<ICameraController>(_cameraController);
+            ServiceLocator.Register<IEquipmentFactory>(new EquipmentFactory());
+            ServiceLocator.Register<IEquipmentSystem>(new EquipmentSystem());
+            ServiceLocator.Register<IEquipment>(new Equipment());
             
             ServiceLocator.Register<ISharedGameplayCanvasObjectFactory>(
                 new SharedGameplayCanvasObjectFactory());
-            
-            ServiceLocator.Register<Player>(_player);
             
             ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
             
@@ -54,17 +47,14 @@ namespace Infrastructure
 
         private async UniTask InitServices()
         {
-            IEquipment equipment = ServiceLocator.Get<IEquipment>();
-            equipment.SetUp(_weapons,_grenadeLauncher);
-            
-            _player.Initialize();
-            _player.Prepare();
-            
             ServiceLocator.Get<IGameInfrastructureFactory>().Initialize();
             await ServiceLocator.Get<IGameInfrastructureFactory>().CreateAndRegisterInfrastructure();
             
-            IInputService inputService = ServiceLocator.Get<IInputService>();
-            inputService.Initialize();
+            ServiceLocator.Get<IInputService>().Initialize();
+            
+            ServiceLocator.Get<IEquipmentFactory>().Initialize();
+            ServiceLocator.Get<IEquipment>().Initialize();
+            ServiceLocator.Get<IEquipmentSystem>().Initialize();
             
             ServiceLocator.Get<IAssetsProvider>().Initialize();
         }

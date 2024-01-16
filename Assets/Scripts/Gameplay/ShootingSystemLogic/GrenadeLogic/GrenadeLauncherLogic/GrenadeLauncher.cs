@@ -14,15 +14,13 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic
         
         private Grenade _currentGrenade;
         
-        private void Start()
+        public void Initialize(Transform activeContainer)
         {
-            Initialize();
-        }
-        
-        public void Initialize()
-        {
+            _transform.SetParent(activeContainer);
+            _transform.localPosition = Vector3.zero;
+            _transform.localEulerAngles = Vector3.zero;
+            
             _grenadeFactory = new GrenadeFactory(_grenadeConfig.Prefab, _grenadeConfig.InitialPoolSize);
-
         }
 
         public void Launch(Vector3 targetPosition, GrenadeLaunchingConfig grenadeLaunchingConfig)

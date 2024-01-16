@@ -26,6 +26,8 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
 
         private float _updatingFrequency = 0.25f;
         
+        private bool _isStopped;
+        
         public override void Initialize()
         {
             _cameraController = ServiceLocator.Get<ICameraController>();
@@ -36,12 +38,14 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
 
         public void StartUpdating()
         {
+            _isStopped = false;
             _cancellationTokenSource = new CancellationTokenSource();
             Updating();
         }
 
         public void Stop()
         {
+            _isStopped = true;
             _cancellationTokenSource?.Cancel();
         }
         
@@ -53,6 +57,8 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
 
         private void Update()
         {
+            if (_isStopped) return;
+            
             int playerInfoBlocksCount = _playerInfoBlocks.Count;
             for (int i = 0; i < playerInfoBlocksCount; i++)
             {

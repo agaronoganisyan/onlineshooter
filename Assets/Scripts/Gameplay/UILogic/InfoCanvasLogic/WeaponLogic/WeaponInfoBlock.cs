@@ -30,22 +30,31 @@ namespace Gameplay.UILogic.InfoCanvasLogic.WeaponLogic
         private  void Initialize()
         {
             _equipment = ServiceLocator.Get<IEquipment>();
-            _weapon = _equipment.GetWeaponByType(_weaponType);
+            
+            _equipment.OnEquipmentChanged += EquipmentChanged;
+            _equipment.OnCurrentWeaponChanged += UpdateBlockInfo;
 
             _blockColorAnimationDuration = _config.BlockColorAnimationDuration;
-            _imageFillingDuration = _weapon.WeaponConfig.Frequency;
-
-            _equipment.OnCurrentWeaponChanged += UpdateBlockInfo;
-            _weapon.OnAmmoChanged += UpdateAmmoInfo;
-
-            SetIconSprite(_weapon.WeaponConfig.IconSprite);
-            SetBlockColor(_equipment.CurrentWeapon.WeaponConfig.WeaponType);
+            
             SetIconFill(1);
         }
 
-        private void UpdateBlockInfo(WeaponType type)
+        private void EquipmentChanged()
         {
-            SetBlockColor(type);
+            if (_weapon != null) _weapon.OnAmmoChanged -= UpdateAmmoInfo;
+            
+            _weapon = _equipment.GetWeaponByType(_weaponType);
+            _weapon.OnAmmoChanged += UpdateAmmoInfo;
+
+            _imageFillingDuration = _weapon.WeaponConfig.Frequency;
+
+            SetIconSprite(_weapon.WeaponConfig.IconSprite);
+            SetBlockColor(_equipment.CurrentWeapon.WeaponConfig.WeaponType);
+        }
+        
+        private void UpdateBlockInfo(Weapon weapon)
+        {
+            SetBlockColor(weapon.WeaponConfig.WeaponType);
         }
         
         private void UpdateAmmoInfo(int currentCount, int maxCount)

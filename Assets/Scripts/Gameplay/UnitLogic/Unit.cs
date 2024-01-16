@@ -6,6 +6,7 @@ namespace Gameplay.UnitLogic
     {
         protected IUnitHitBox _hitBox;
 
+        public Transform Transform => _transform;
         [SerializeField] protected Transform _transform;
         [SerializeField] protected Transform _headTransform;
 
@@ -17,6 +18,11 @@ namespace Gameplay.UnitLogic
         public virtual void Prepare()
         {
             gameObject.SetActive(true);
+        }
+        
+        public virtual void Disable()
+        {
+            gameObject.SetActive(false);
         }
         
         public virtual void Update()

@@ -2,6 +2,7 @@ using ConfigsLogic;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
+using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
 using Gameplay.ShootingSystemLogic.StateMachineLogic;
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
 using Infrastructure.ServiceLogic;
@@ -16,6 +17,7 @@ namespace Gameplay.ShootingSystemLogic
         private IStateMachine<ShootingState> _stateMachine;
         
         private IEquipment _equipment;
+        private IEquipmentSystem _equipmentSystem;
         private IEquipmentContainer _equipmentContainer;
         private IEnemiesDetector _enemiesDetector;
         [SerializeField] private HeroAnimator _heroAnimator;
@@ -34,12 +36,13 @@ namespace Gameplay.ShootingSystemLogic
         
         public void Initialize()
         {
+            _equipmentSystem = ServiceLocator.Get<IEquipmentSystem>();
             _equipment = ServiceLocator.Get<IEquipment>();
             
             _equipmentContainer = new EquipmentContainer();
             _equipmentContainer.SetUp(_rightHandContainer,_leftHandContainer,_firstWeaponContainer, _secondWeaponContainer);
             
-            _enemiesDetector = new EnemiesDetector(_shootingSystemConfig, _equipment.CurrentWeapon.WeaponConfig, transform);
+            _enemiesDetector = new EnemiesDetector(_shootingSystemConfig, transform);
             
             _stateMachine = new SimpleStateMachine<ShootingState>();
             _stateMachine.Add(ShootingState.Initializing, new Initializing(ShootingState.Initializing, _stateMachine, _heroAnimator, _equipment, _equipmentContainer,

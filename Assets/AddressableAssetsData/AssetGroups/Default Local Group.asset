@@ -37,6 +37,26 @@ MonoBehaviour:
     m_Address: GameplayInfoCanvas
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 50bca654bab694ee1bec1170401161d2
+    m_Address: GrenadeLauncher_Classic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 63ea9abdf74c24b6a87785b05e8120a3
+    m_Address: Weapon_Second_Pistol
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2aaed9bdf603e41f6bfba7ea5762af1d
+    m_Address: Weapon_First_Rifle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 522499222e7cb4221be36aefa6e344b2
+    m_Address: Player
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2527a511d2c1542b293c62daecac12dc
+    m_Address: CameraController
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: adabe532a22de40518b40b2be3cc3380, type: 2}
   m_SchemaSet:

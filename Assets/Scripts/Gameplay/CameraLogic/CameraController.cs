@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Gameplay.UnitLogic.PlayerLogic;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
 using UnityEngine;
@@ -15,13 +16,14 @@ namespace Gameplay.CameraLogic
         public Transform CameraObjectTransform => _cameraObjectTransform;
         [SerializeField] private Transform _cameraObjectTransform;
         [SerializeField] private Transform _transform;
-        [SerializeField] private Transform _targetTransform;
+        private Transform _targetTransform;
         
         [SerializeField] private float _shakeDuration;
         [SerializeField] private float _shakeStrenght;
 
         public void Initialize()
         {
+            _targetTransform = ServiceLocator.Get<Player>().Transform;
             _inputService = ServiceLocator.Get<IInputService>();
             _inputService.OnRotationInputReceived += HandleRotation;
         }

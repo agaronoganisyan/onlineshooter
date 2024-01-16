@@ -24,6 +24,8 @@ namespace Gameplay.UnitLogic.PlayerLogic
             
             _playerController.Initialize();
             _shootingSystem.Initialize();
+            
+            Disable();
         }
         
         public override void Update()

@@ -36,28 +36,28 @@ namespace Infrastructure.GameFactoryLogic
         public async UniTask CreateAndRegisterInfrastructure()
         {
             await CreateLoadingCanvas();
-            //await CreatePlayer();
-            //await CreateCameraController();
+            await CreatePlayer();
+            await CreateCameraController();
             await CreateLobbyCanvas();
             await CreateInputCanvas();
             await CreateGameplayInfoCanvas();
             await CreateSharedCanvas();
         }
 
-        // private async UniTask CreatePlayer()
-        // {
-        //     GameObject prefab = await _assetsProvider.Load<GameObject>(_playerAddress);
-        //     Player obj = Object.Instantiate(prefab).GetComponent<Player>();
-        //     ServiceLocator.Register<Player>(obj);
-        //     obj.Initialize();
-        // }
-        // private async UniTask CreateCameraController()
-        // {
-        //     GameObject prefab = await _assetsProvider.Load<GameObject>(_cameraControllerAddress);
-        //     ICameraController obj = Object.Instantiate(prefab).GetComponent<ICameraController>();
-        //     ServiceLocator.Register<ICameraController>(obj);
-        //     obj.Initialize();
-        // }
+        private async UniTask CreatePlayer()
+        {
+            GameObject prefab = await _assetsProvider.Load<GameObject>(_playerAddress);
+            Player obj = Object.Instantiate(prefab).GetComponent<Player>();
+            ServiceLocator.Register<Player>(obj);
+            obj.Initialize();
+        }
+        private async UniTask CreateCameraController()
+        {
+            GameObject prefab = await _assetsProvider.Load<GameObject>(_cameraControllerAddress);
+            ICameraController obj = Object.Instantiate(prefab).GetComponent<ICameraController>();
+            ServiceLocator.Register<ICameraController>(obj);
+            obj.Initialize();
+        }
         private async UniTask CreateLoadingCanvas()
         {
             GameObject prefab = await _assetsProvider.Load<GameObject>(_loadingCanvasAddress);

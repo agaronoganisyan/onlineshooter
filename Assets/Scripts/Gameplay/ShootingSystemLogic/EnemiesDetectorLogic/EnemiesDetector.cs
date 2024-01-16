@@ -2,7 +2,10 @@ using System;
 using System.Threading;
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
+using Gameplay.ShootingSystemLogic.EquipmentLogic;
+using Gameplay.ShootingSystemLogic.WeaponLogic;
 using HelpersLogic;
+using Infrastructure.ServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
@@ -12,17 +15,18 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
         public event Action<Transform> OnEnemyDetected;
         public event Action OnNoEnemyDetected;
 
+        private readonly IEquipment _equipment;
         private readonly ShootingSystemConfig _shootingSystemConfig;
 
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly TimeSpan _detectionRate;
 
         private readonly Collider[] _detectedColliders;
         private readonly LayerMask _targetHitLayer;
         private readonly LayerMask _obstacleLayer;
         
-        private readonly float _detectionZoneAngle;
-        private readonly float _detectionZoneRadius;
+        private float _detectionZoneAngle;
+        private float _detectionZoneRadius;
         float _minimalDistance = float.MaxValue;
         
         private readonly Transform _unit;
@@ -32,12 +36,12 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
         
         private readonly Vector3 _offsetForTargetShooting;
         
-        public EnemiesDetector(ShootingSystemConfig shootingSystemConfig, WeaponConfig weaponConfig, Transform unit)
+        public EnemiesDetector(ShootingSystemConfig shootingSystemConfig, Transform unit)
         {
+            _equipment = ServiceLocator.Get<IEquipment>();
+            _equipment.OnCurrentWeaponChanged += WeaponChanged;
+            
             _shootingSystemConfig = shootingSystemConfig;
-
-            _detectionZoneAngle = weaponConfig.DetectionZoneAngle;
-            _detectionZoneRadius = weaponConfig.DetectionZoneRadius;
             
             _detectedColliders = new Collider[_shootingSystemConfig.MaxDetectingCollidersAmount];
             _detectionRate = TimeSpan.FromSeconds(_shootingSystemConfig.DetectionFrequency);
@@ -50,14 +54,21 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
             _unit = unit;
         }
 
+        private void WeaponChanged(Weapon weapon)
+        {
+            _detectionZoneAngle = weapon.WeaponConfig.DetectionZoneAngle;
+            _detectionZoneRadius = weapon.WeaponConfig.DetectionZoneRadius;
+        }
+        
         public void Start()
         {
+            _cancellationTokenSource = new CancellationTokenSource();
             Detection();
         }
 
         public void Stop()
         {
-            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource?.Cancel();
         }
 
         public bool IsThereTarget()
@@ -65,7 +76,7 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
             return _previousEnemy != null;
         }
         
-        private async UniTaskVoid Detection()
+        private async UniTask Detection()
         {
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
