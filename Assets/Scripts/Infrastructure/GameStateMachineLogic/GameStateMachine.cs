@@ -11,6 +11,9 @@ namespace Infrastructure.GameStateMachineLogic
         {
             _stateMachine = new AsyncStateMachine<GameState>();
 
+            _stateMachine.Add(GameState.Lobby, new Lobby(_stateMachine));
+            _stateMachine.Add(GameState.Match, new Match(_stateMachine));
+
             _stateMachine.Start(GameState.Lobby);
         }
 

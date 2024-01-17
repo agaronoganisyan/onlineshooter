@@ -6,8 +6,14 @@ namespace LobbyLogic
 {
     public class LobbyCanvas : CanvasBase, ILobbyCanvas
     {
+        [SerializeField] private LobbyPanel _lobbyPanel;
         [SerializeField] private GraphicRaycaster _graphicRaycaster;
-
+        
+        public override void Initialize()
+        {
+            _lobbyPanel.Initialize();
+        }
+        
         public override void Show(bool withAnimation = false)
         {
             base.Show(withAnimation);

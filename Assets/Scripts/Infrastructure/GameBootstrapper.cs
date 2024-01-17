@@ -1,6 +1,7 @@
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
 using Gameplay.CameraLogic;
+using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.EquipmentFactoryLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
@@ -10,6 +11,8 @@ using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic
 using Gameplay.UnitLogic.PlayerLogic;
 using Infrastructure.AssetManagementLogic;
 using Infrastructure.GameFactoryLogic;
+using Infrastructure.GameStateMachineLogic;
+using Infrastructure.SceneManagementLogic;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
 using UnityEngine;
@@ -41,7 +44,10 @@ namespace Infrastructure
             
             ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
             
+            ServiceLocator.Register<IOperationSystem>(new OperationSystem());
             ServiceLocator.Register<IAssetsProvider>(new AssetsProvider());
+            ServiceLocator.Register<ISceneSystem>(new SceneSystem());
+            ServiceLocator.Register<IGameStateMachine>(new GameStateMachine());
             ServiceLocator.Register<IGameInfrastructureFactory>(new GameInfrastructureFactory());
         }
 
@@ -56,7 +62,10 @@ namespace Infrastructure
             ServiceLocator.Get<IEquipment>().Initialize();
             ServiceLocator.Get<IEquipmentSystem>().Initialize();
             
+            ServiceLocator.Get<IOperationSystem>().Initialize();
             ServiceLocator.Get<IAssetsProvider>().Initialize();
+            ServiceLocator.Get<ISceneSystem>().Initialize();
+            ServiceLocator.Get<IGameStateMachine>().Initialize();
         }
     }
 }

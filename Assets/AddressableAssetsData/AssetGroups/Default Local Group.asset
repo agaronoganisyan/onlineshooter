@@ -57,6 +57,14 @@ MonoBehaviour:
     m_Address: CameraController
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: d133f50bed7ab4ee8b381b1dc74b0cdc
+    m_Address: Test
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: fd417a3415b1141bc8b16a2d2e891acc
+    m_Address: OperationConfig_Deathmatch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: adabe532a22de40518b40b2be3cc3380, type: 2}
   m_SchemaSet:

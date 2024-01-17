@@ -16,5 +16,7 @@ namespace InputLogic.InputServiceLogic
         Vector2 RotationDirection { get; set; }
     
         void Initialize();
+        void SetInputMode(InputMode mode);
+
     }
 }

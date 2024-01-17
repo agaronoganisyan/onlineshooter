@@ -4,6 +4,13 @@ using UnityEngine.InputSystem;
 
 namespace InputLogic.InputServiceLogic
 {
+    public enum InputMode
+    {
+        None,
+        UI,
+        Gameplay
+    }
+    
     public class InputService : IInputService
     {
         public event Action<Vector2> OnMovementInputReceived;
@@ -18,7 +25,7 @@ namespace InputLogic.InputServiceLogic
         public void Initialize()
         {
             _inputMap = new InputMap();
-            _inputMap.Gameplay.Enable();
+
             _inputMap.Gameplay.MovementDelta.performed += (context) => MovementDirection = context.ReadValue<Vector2>();
             _inputMap.Gameplay.RotationDelta.performed += ProcessRotation;
             _inputMap.Gameplay.Switching.performed += (context) => OnSwitchingInputReceived?.Invoke();
@@ -26,6 +33,19 @@ namespace InputLogic.InputServiceLogic
             _inputMap.Gameplay.Reloading.performed += (context) => OnReloadingInputReceived?.Invoke();
         }
     
+        public void SetInputMode(InputMode mode)
+        {
+            switch (mode)
+            {
+                case InputMode.Gameplay:
+                    _inputMap.Gameplay.Enable();
+                    break;
+                case InputMode.UI:
+                    _inputMap.Gameplay.Disable();
+                    break;
+            }
+        }
+        
         private void ProcessRotation(InputAction.CallbackContext context)
         {
             _cachedRotation += context.ReadValue<Vector2>();
