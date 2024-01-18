@@ -33,11 +33,6 @@ namespace Gameplay.CameraLogic
             _transform = target;
         }
 
-        private void Start()
-        {
-            Initialize();
-        }
-        
         private void LateUpdate()
         {
             HandleMovement();

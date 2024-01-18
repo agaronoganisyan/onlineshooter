@@ -1,6 +1,7 @@
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
 using Gameplay.CameraLogic;
+using Gameplay.MatchLogic;
 using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.EquipmentFactoryLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
@@ -45,6 +46,7 @@ namespace Infrastructure
             ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
             
             ServiceLocator.Register<IOperationSystem>(new OperationSystem());
+            ServiceLocator.Register<IMatchSystem>(new MatchSystem());
             ServiceLocator.Register<IAssetsProvider>(new AssetsProvider());
             ServiceLocator.Register<ISceneSystem>(new SceneSystem());
             ServiceLocator.Register<IGameStateMachine>(new GameStateMachine());
@@ -63,6 +65,7 @@ namespace Infrastructure
             ServiceLocator.Get<IEquipmentSystem>().Initialize();
             
             ServiceLocator.Get<IOperationSystem>().Initialize();
+            ServiceLocator.Get<IMatchSystem>().Initialize();
             ServiceLocator.Get<IAssetsProvider>().Initialize();
             ServiceLocator.Get<ISceneSystem>().Initialize();
             ServiceLocator.Get<IGameStateMachine>().Initialize();

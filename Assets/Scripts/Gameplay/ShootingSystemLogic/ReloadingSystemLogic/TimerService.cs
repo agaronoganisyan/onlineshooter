@@ -4,11 +4,10 @@ using Cysharp.Threading.Tasks;
 
 namespace Gameplay.ShootingSystemLogic.ReloadingSystemLogic
 {
-    public class TimerService : ITimerService
+    public abstract class TimerService 
     {
         public event Action OnStarted;
         public event Action OnFinished;
-
         public event Action OnStopped;
         
         private CancellationTokenSource _cancellationTokenSource;
@@ -16,7 +15,7 @@ namespace Gameplay.ShootingSystemLogic.ReloadingSystemLogic
         public void Start(float duration)
         {
             _cancellationTokenSource = new CancellationTokenSource();
-            Reloading(TimeSpan.FromSeconds(duration));
+            Timer(TimeSpan.FromSeconds(duration), _cancellationTokenSource);
         }
 
         public void Stop()
@@ -25,13 +24,9 @@ namespace Gameplay.ShootingSystemLogic.ReloadingSystemLogic
             OnStopped?.Invoke();
         }
         
-        private async UniTaskVoid Reloading(TimeSpan duration)
-        {
-            OnStarted?.Invoke();
-            
-            await UniTask.Delay(duration, cancellationToken: _cancellationTokenSource.Token);
-            
-            OnFinished?.Invoke();
-        }
+        protected abstract UniTaskVoid Timer(TimeSpan duration, CancellationTokenSource cancellationToken);
+        
+        protected void TimerStarted() => OnStarted?.Invoke();
+        protected void TimerFinished() => OnFinished?.Invoke();
     }
 }

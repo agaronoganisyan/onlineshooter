@@ -30,7 +30,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          [SerializeField] WeaponConfig _weaponConfig;
 
          private IFactory<Bullet> _bulletsFactory; 
-         private ITimerService _timerService;
+         private TimerService _timerService = new StandardTimerService();
 
          private Bullet _currentBullet;
         
@@ -57,7 +57,6 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
              _activeContainer = activeContainer;
              _reserveContainer = reserveContainer;
              
-             _timerService = new TimerService();
              _bulletsFactory = new BulletFactory(_weaponConfig.BulletPrefab,_weaponConfig.MaxAmmoCount/3);
 
              _timerService.OnStarted += ReloadingStarted;

@@ -13,6 +13,8 @@ namespace ConfigsLogic
     {
         public OperationType Type => _type;
         [SerializeField] private OperationType _type;
+        public float Duration => _duration;
+        [SerializeField, Tooltip("Duration in seconds")] private float _duration;
         public AssetReference Scene => _scene;
         [SerializeField] private AssetReference _scene;
     }

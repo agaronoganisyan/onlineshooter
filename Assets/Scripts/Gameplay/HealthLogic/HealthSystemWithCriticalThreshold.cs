@@ -9,8 +9,8 @@ namespace Gameplay.HealthLogic
         public event Action OnBelowCriticalThreshold;
         public event Action OnAboveCriticalThreshold;
         
-        private readonly ITimerService _timerForDelayBeforeRegeneration = new TimerService();
-        private readonly ITimerService _regenerationTimer = new TimerService();
+        private readonly TimerService _timerForDelayBeforeRegeneration = new StandardTimerService();
+        private readonly TimerService _regenerationTimer = new StandardTimerService();
         
         private readonly float _criticalHealthThreshold;
         private readonly float _delayBeforeRegeneration;
