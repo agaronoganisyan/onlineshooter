@@ -57,12 +57,12 @@ MonoBehaviour:
     m_Address: CameraController
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: d133f50bed7ab4ee8b381b1dc74b0cdc
-    m_Address: Test
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: fd417a3415b1141bc8b16a2d2e891acc
     m_Address: OperationConfig_Deathmatch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 40ef6e60490d68541971945758777f58
+    m_Address: Demo_Scene_1
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0
