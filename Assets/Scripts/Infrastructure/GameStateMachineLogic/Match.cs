@@ -1,6 +1,7 @@
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
 using Gameplay.MatchLogic;
+using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
 using Gameplay.UILogic.InfoCanvasLogic;
@@ -19,7 +20,9 @@ namespace Infrastructure.GameStateMachineLogic
         private IOperationSystem _operationSystem;
         private IEquipmentSystem _equipmentSystem;
         private IMatchSystem _matchSystem;
+        private ISpawnSystem _spawnSystem;
 
+        
         private OperationConfig _currentOperation;
 
         //Canvases
@@ -33,6 +36,8 @@ namespace Infrastructure.GameStateMachineLogic
             _operationSystem = ServiceLocator.Get<IOperationSystem>();
             _equipmentSystem = ServiceLocator.Get<IEquipmentSystem>();
             _matchSystem = ServiceLocator.Get<IMatchSystem>();
+            _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
+
             
             _inputCanvas = ServiceLocator.Get<IInputCanvas>();
             _gameplayInfoCanvas = ServiceLocator.Get<IGameplayInfoCanvas>();
@@ -46,6 +51,7 @@ namespace Infrastructure.GameStateMachineLogic
             await _equipmentSystem.Prepare();
             await _matchSystem.Prepare();
             
+            _spawnSystem.Spawn();
             _inputService.SetInputMode(InputMode.Gameplay);
 
             _matchSystem.Start();

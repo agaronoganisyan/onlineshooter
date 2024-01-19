@@ -5,17 +5,18 @@ using UnityEngine;
 
 namespace Gameplay.UnitLogic.PlayerLogic
 {
-    public class PlayerController: MonoBehaviour, IPlayerController
+    public class PlayerController: MonoBehaviour, IUnitController
     {
         [SerializeField] private HeroAnimator _heroAnimator;
-        
+        private IInputService _inputService;
+
         [SerializeField] private CharacterController _characterController;
 
+        public Transform Transform => _transform;
         [SerializeField] private Transform _transform;
 
         [SerializeField] private float _moveSpeed;
         [SerializeField] private float _rotationSpeed;
-        private IInputService _inputService;
 
         public void Initialize()
         {
@@ -23,6 +24,12 @@ namespace Gameplay.UnitLogic.PlayerLogic
             _heroAnimator.PlayIdle();
         }
 
+        public void Prepare(Vector3 position, Quaternion rotation)
+        {
+            _transform.position = position;
+            _transform.rotation = rotation;
+            
+        }
         public void Tick()
         {
             HandleMovement();

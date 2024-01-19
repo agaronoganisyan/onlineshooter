@@ -2,6 +2,7 @@ using ConfigsLogic;
 using Cysharp.Threading.Tasks;
 using Gameplay.CameraLogic;
 using Gameplay.MatchLogic;
+using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.EquipmentFactoryLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
@@ -45,6 +46,8 @@ namespace Infrastructure
             
             ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
             
+            ServiceLocator.Register<IPlayerMatchInfo>(new PlayerMatchInfo());
+            ServiceLocator.Register<ISpawnSystem>(new SpawnSystem());
             ServiceLocator.Register<IOperationSystem>(new OperationSystem());
             ServiceLocator.Register<IMatchSystem>(new MatchSystem());
             ServiceLocator.Register<IAssetsProvider>(new AssetsProvider());
@@ -55,6 +58,9 @@ namespace Infrastructure
 
         private async UniTask InitServices()
         {
+            ServiceLocator.Get<IPlayerMatchInfo>().Setup(TeamType.First);
+            
+            
             ServiceLocator.Get<IGameInfrastructureFactory>().Initialize();
             await ServiceLocator.Get<IGameInfrastructureFactory>().CreateAndRegisterInfrastructure();
             
@@ -64,6 +70,7 @@ namespace Infrastructure
             ServiceLocator.Get<IEquipment>().Initialize();
             ServiceLocator.Get<IEquipmentSystem>().Initialize();
             
+            ServiceLocator.Get<ISpawnSystem>().Initialize();
             ServiceLocator.Get<IOperationSystem>().Initialize();
             ServiceLocator.Get<IMatchSystem>().Initialize();
             ServiceLocator.Get<IAssetsProvider>().Initialize();

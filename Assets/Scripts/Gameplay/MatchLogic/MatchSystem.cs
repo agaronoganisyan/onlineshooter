@@ -7,6 +7,13 @@ using Infrastructure.ServiceLogic;
 
 namespace Gameplay.MatchLogic
 {
+    public enum TeamType
+    {
+        None,
+        First,
+        Second
+    }
+    
     public class MatchSystem : IMatchSystem
     {
         public event Action OnStarted;
