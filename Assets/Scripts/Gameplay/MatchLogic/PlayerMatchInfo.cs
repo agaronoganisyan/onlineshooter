@@ -1,3 +1,5 @@
+using Gameplay.MatchLogic.TeamsLogic;
+
 namespace Gameplay.MatchLogic
 {
     public class PlayerMatchInfo : IPlayerMatchInfo

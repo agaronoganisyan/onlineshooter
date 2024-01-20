@@ -1,16 +1,13 @@
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
-using Gameplay.CameraLogic;
 using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.SpawnLogic;
+using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.EquipmentFactoryLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
-using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
-using Gameplay.ShootingSystemLogic.WeaponLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
-using Gameplay.UnitLogic.PlayerLogic;
 using Infrastructure.AssetManagementLogic;
 using Infrastructure.GameFactoryLogic;
 using Infrastructure.GameStateMachineLogic;
@@ -23,6 +20,8 @@ namespace Infrastructure
 {
     public class GameBootstrapper : MonoBehaviour
     {
+        [SerializeField] private ForTests _forTests;
+        
         [SerializeField] private PlayerConfig _playerConfig;
         [SerializeField] private PlayerInfoBlockConfig _playerInfoBlockConfig;
         [SerializeField] private HealthSystemConfig _healthSystemConfig;
@@ -49,6 +48,7 @@ namespace Infrastructure
             ServiceLocator.Register<IPlayerMatchInfo>(new PlayerMatchInfo());
             ServiceLocator.Register<ISpawnSystem>(new SpawnSystem());
             ServiceLocator.Register<IOperationSystem>(new OperationSystem());
+            ServiceLocator.Register<ITeamsSystem>(new TeamsSystem());
             ServiceLocator.Register<IMatchSystem>(new MatchSystem());
             ServiceLocator.Register<IAssetsProvider>(new AssetsProvider());
             ServiceLocator.Register<ISceneSystem>(new SceneSystem());
@@ -58,8 +58,7 @@ namespace Infrastructure
 
         private async UniTask InitServices()
         {
-            ServiceLocator.Get<IPlayerMatchInfo>().Setup(TeamType.First);
-            
+            _forTests.Initialize();
             
             ServiceLocator.Get<IGameInfrastructureFactory>().Initialize();
             await ServiceLocator.Get<IGameInfrastructureFactory>().CreateAndRegisterInfrastructure();
@@ -72,6 +71,7 @@ namespace Infrastructure
             
             ServiceLocator.Get<ISpawnSystem>().Initialize();
             ServiceLocator.Get<IOperationSystem>().Initialize();
+            ServiceLocator.Get<ITeamsSystem>().Initialize();
             ServiceLocator.Get<IMatchSystem>().Initialize();
             ServiceLocator.Get<IAssetsProvider>().Initialize();
             ServiceLocator.Get<ISceneSystem>().Initialize();

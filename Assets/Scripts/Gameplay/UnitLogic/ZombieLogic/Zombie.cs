@@ -1,7 +1,4 @@
 using Gameplay.HealthLogic;
-using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
-using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
-using Infrastructure.ServiceLogic;
 
 namespace Gameplay.UnitLogic.ZombieLogic
 {

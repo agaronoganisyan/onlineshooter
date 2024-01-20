@@ -2,10 +2,12 @@ using ConfigsLogic;
 using Cysharp.Threading.Tasks;
 using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.SpawnLogic;
+using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
 using Gameplay.UILogic.InfoCanvasLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic;
+using Gameplay.UnitLogic.PlayerLogic;
 using Infrastructure.SceneManagementLogic;
 using Infrastructure.ServiceLogic;
 using Infrastructure.StateMachineLogic;
@@ -18,10 +20,11 @@ namespace Infrastructure.GameStateMachineLogic
     {
         private ISceneSystem _sceneSystem;
         private IOperationSystem _operationSystem;
+        private ITeamsSystem _teamsSystem;
         private IEquipmentSystem _equipmentSystem;
         private IMatchSystem _matchSystem;
         private ISpawnSystem _spawnSystem;
-
+        private Player _player;
         
         private OperationConfig _currentOperation;
 
@@ -34,10 +37,11 @@ namespace Infrastructure.GameStateMachineLogic
         {
             _sceneSystem = ServiceLocator.Get<ISceneSystem>();
             _operationSystem = ServiceLocator.Get<IOperationSystem>();
+            _teamsSystem = ServiceLocator.Get<ITeamsSystem>();
             _equipmentSystem = ServiceLocator.Get<IEquipmentSystem>();
             _matchSystem = ServiceLocator.Get<IMatchSystem>();
             _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
-
+            _player = ServiceLocator.Get<Player>();
             
             _inputCanvas = ServiceLocator.Get<IInputCanvas>();
             _gameplayInfoCanvas = ServiceLocator.Get<IGameplayInfoCanvas>();
@@ -50,7 +54,9 @@ namespace Infrastructure.GameStateMachineLogic
             await _sceneSystem.LoadScene(_currentOperation.Scene);
             await _equipmentSystem.Prepare();
             await _matchSystem.Prepare();
-            
+            _teamsSystem.AddUnitToTeam(_player);
+            await _teamsSystem.WaitPlayers();
+
             _spawnSystem.Spawn();
             _inputService.SetInputMode(InputMode.Gameplay);
 
@@ -71,7 +77,8 @@ namespace Infrastructure.GameStateMachineLogic
             _operationSystem.UnloadOperation();
             _equipmentSystem.ResetEquipment();
             _matchSystem.Cleanup();
-            
+            _teamsSystem.Cleanup();
+
             _sharedGameplayCanvas.Stop(); 
             _sharedGameplayCanvas.Hide();
             _inputCanvas.Hide();
