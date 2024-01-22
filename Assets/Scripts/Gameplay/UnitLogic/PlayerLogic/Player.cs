@@ -4,6 +4,7 @@ using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
 using Gameplay.ShootingSystemLogic;
 using Infrastructure.ServiceLogic;
+using UnityEngine;
 
 namespace Gameplay.UnitLogic.PlayerLogic
 {
@@ -36,8 +37,12 @@ namespace Gameplay.UnitLogic.PlayerLogic
         public override void Update()
         {
             base.Update();
-            
             _shootingSystem.Tick();
+            
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                Die();
+            }
         }
         
         public override void Prepare(SpawnPointInfo spawnPointInfo)

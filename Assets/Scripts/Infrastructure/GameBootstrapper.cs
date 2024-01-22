@@ -1,6 +1,8 @@
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
 using Gameplay.MatchLogic;
+using Gameplay.MatchLogic.PointsLogic;
+using Gameplay.MatchLogic.PointsLogic.PointsRuleLogic;
 using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.OperationLogic;
@@ -47,6 +49,8 @@ namespace Infrastructure
             
             ServiceLocator.Register<IPlayerMatchInfo>(new PlayerMatchInfo());
             ServiceLocator.Register<ISpawnSystem>(new SpawnSystem());
+            ServiceLocator.Register<DeathmatchPointsRuleSystem>(new DeathmatchPointsRuleSystem());
+            ServiceLocator.Register<IPointsSystem>(new PointsSystem());
             ServiceLocator.Register<IOperationSystem>(new OperationSystem());
             ServiceLocator.Register<ITeamsSystem>(new TeamsSystem());
             ServiceLocator.Register<IMatchSystem>(new MatchSystem());
@@ -73,6 +77,8 @@ namespace Infrastructure
             ServiceLocator.Get<IOperationSystem>().Initialize();
             ServiceLocator.Get<ITeamsSystem>().Initialize();
             ServiceLocator.Get<IMatchSystem>().Initialize();
+            ServiceLocator.Get<DeathmatchPointsRuleSystem>().Initialize();
+            ServiceLocator.Get<IPointsSystem>().Initialize();
             ServiceLocator.Get<IAssetsProvider>().Initialize();
             ServiceLocator.Get<ISceneSystem>().Initialize();
             ServiceLocator.Get<IGameStateMachine>().Initialize();

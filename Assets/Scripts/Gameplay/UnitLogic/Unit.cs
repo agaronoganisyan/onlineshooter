@@ -1,3 +1,4 @@
+using System;
 using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
 using UnityEngine;
 
@@ -5,6 +6,8 @@ namespace Gameplay.UnitLogic
 {
     public abstract class Unit : MonoBehaviour, IUnit
     {
+        public event Action OnDied;
+        
         protected IUnitHitBox _hitBox;
         private IUnitController _controller;
 
@@ -39,6 +42,11 @@ namespace Gameplay.UnitLogic
         public virtual void Update()
         {
             _controller.Tick();
+        }
+        
+        protected virtual void Die()
+        {
+            OnDied?.Invoke();
         }
     }
 }

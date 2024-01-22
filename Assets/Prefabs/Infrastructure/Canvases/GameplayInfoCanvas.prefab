@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 632828063958235964}
   - component: {fileID: 13318097203474148}
   - component: {fileID: 7955896625319373374}
+  - component: {fileID: 2745089598673982276}
   m_Layer: 5
   m_Name: BlueTeamPoints
   m_TagString: Untagged
@@ -77,6 +78,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2745089598673982276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039293745134596172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 290b415d8a474069ab14d39053d2231e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _team: 1
+  _valueText: {fileID: 1971264683671889157}
 --- !u!1 &2201162585823519172
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,6 +238,7 @@ GameObject:
   - component: {fileID: 4517210399858549042}
   - component: {fileID: 1851497535919687851}
   - component: {fileID: 4565054759427075765}
+  - component: {fileID: 8965483797678637307}
   m_Layer: 5
   m_Name: RedTeamPoints
   m_TagString: Untagged
@@ -289,6 +305,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8965483797678637307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6495602736231134936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 290b415d8a474069ab14d39053d2231e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _team: 2
+  _valueText: {fileID: 8661582299092066847}
 --- !u!1 &6739213841851484202
 GameObject:
   m_ObjectHideFlags: 0

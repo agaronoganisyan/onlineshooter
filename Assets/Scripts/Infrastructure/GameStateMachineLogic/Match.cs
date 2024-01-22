@@ -1,6 +1,7 @@
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
 using Gameplay.MatchLogic;
+using Gameplay.MatchLogic.PointsLogic;
 using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.OperationLogic;
@@ -21,8 +22,9 @@ namespace Infrastructure.GameStateMachineLogic
         private ISceneSystem _sceneSystem;
         private IOperationSystem _operationSystem;
         private ITeamsSystem _teamsSystem;
-        private IEquipmentSystem _equipmentSystem;
+        private IPointsSystem _pointsSystem;
         private IMatchSystem _matchSystem;
+        private IEquipmentSystem _equipmentSystem;
         private ISpawnSystem _spawnSystem;
         private Player _player;
         
@@ -38,6 +40,7 @@ namespace Infrastructure.GameStateMachineLogic
             _sceneSystem = ServiceLocator.Get<ISceneSystem>();
             _operationSystem = ServiceLocator.Get<IOperationSystem>();
             _teamsSystem = ServiceLocator.Get<ITeamsSystem>();
+            _pointsSystem = ServiceLocator.Get<IPointsSystem>();
             _equipmentSystem = ServiceLocator.Get<IEquipmentSystem>();
             _matchSystem = ServiceLocator.Get<IMatchSystem>();
             _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
@@ -56,6 +59,7 @@ namespace Infrastructure.GameStateMachineLogic
             await _matchSystem.Prepare();
             _teamsSystem.AddUnitToTeam(_player);
             await _teamsSystem.WaitPlayers();
+            await _pointsSystem.Prepare();
 
             _spawnSystem.Spawn();
             _inputService.SetInputMode(InputMode.Gameplay);
@@ -77,6 +81,7 @@ namespace Infrastructure.GameStateMachineLogic
             _operationSystem.UnloadOperation();
             _equipmentSystem.ResetEquipment();
             _matchSystem.Cleanup();
+            _pointsSystem.Cleanup();
             _teamsSystem.Cleanup();
 
             _sharedGameplayCanvas.Stop(); 
