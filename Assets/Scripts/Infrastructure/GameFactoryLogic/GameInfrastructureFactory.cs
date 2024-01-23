@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gameplay.CameraLogic;
+using Gameplay.UILogic.DebriefingCanvasLogic;
 using Gameplay.UILogic.InfoCanvasLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic;
 using Gameplay.UnitLogic.PlayerLogic;
@@ -25,6 +26,7 @@ namespace Infrastructure.GameFactoryLogic
         private string _inputCanvasAddress = "InputCanvas";
         private string _gameplayInfoCanvasAddress = "GameplayInfoCanvas";
         private string _sharedCanvasAddress = "SharedCanvas";
+        private string _debriefingCanvasAddress = "DebriefingCanvas";
 
         // _sharedGameplayCanvas.StartUpdating();
         
@@ -42,6 +44,8 @@ namespace Infrastructure.GameFactoryLogic
             await CreateInputCanvas();
             await CreateGameplayInfoCanvas();
             await CreateSharedCanvas();
+            await CreateDebriefingCanvas();
+
         }
 
         private async UniTask CreatePlayer()
@@ -91,6 +95,13 @@ namespace Infrastructure.GameFactoryLogic
             GameObject prefab = await _assetsProvider.Load<GameObject>(_sharedCanvasAddress);
             ISharedGameplayCanvas obj = Object.Instantiate(prefab).GetComponent<ISharedGameplayCanvas>();
             ServiceLocator.Register<ISharedGameplayCanvas>(obj);
+            obj.Initialize();
+        }
+        private async UniTask CreateDebriefingCanvas()
+        {
+            GameObject prefab = await _assetsProvider.Load<GameObject>(_debriefingCanvasAddress);
+            IDebriefingCanvas obj = Object.Instantiate(prefab).GetComponent<IDebriefingCanvas>();
+            //ServiceLocator.Register<IDebriefingCanvas>(obj);
             obj.Initialize();
         }
     }

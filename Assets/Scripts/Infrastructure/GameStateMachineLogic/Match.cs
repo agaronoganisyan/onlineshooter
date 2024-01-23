@@ -78,11 +78,11 @@ namespace Infrastructure.GameStateMachineLogic
         {
             await _loadingCanvas.Show();
             await _sceneSystem.UnloadScene();
-            _operationSystem.UnloadOperation();
             _equipmentSystem.ResetEquipment();
             _matchSystem.Cleanup();
             _pointsSystem.Cleanup();
             _teamsSystem.Cleanup();
+            _operationSystem.UnloadOperation();
 
             _sharedGameplayCanvas.Stop(); 
             _sharedGameplayCanvas.Hide();

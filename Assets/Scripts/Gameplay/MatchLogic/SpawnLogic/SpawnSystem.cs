@@ -6,7 +6,6 @@ using Infrastructure.ServiceLogic;
 namespace Gameplay.MatchLogic.SpawnLogic
 {
     public class SpawnSystem : ISpawnSystem
-
     {
         public event Action<SpawnPointInfo> OnSpawned;
 

@@ -4,6 +4,7 @@ using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.PointsLogic;
 using Gameplay.MatchLogic.PointsLogic.PointsRuleLogic;
 using Gameplay.MatchLogic.SpawnLogic;
+using Gameplay.MatchLogic.SpawnLogic.RespawnLogic;
 using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.EquipmentFactoryLogic;
@@ -49,6 +50,7 @@ namespace Infrastructure
             
             ServiceLocator.Register<IPlayerMatchInfo>(new PlayerMatchInfo());
             ServiceLocator.Register<ISpawnSystem>(new SpawnSystem());
+            ServiceLocator.Register<IRespawnSystem>(new RespawnSystem());
             ServiceLocator.Register<DeathmatchPointsRuleSystem>(new DeathmatchPointsRuleSystem());
             ServiceLocator.Register<IPointsSystem>(new PointsSystem());
             ServiceLocator.Register<IOperationSystem>(new OperationSystem());
@@ -74,6 +76,7 @@ namespace Infrastructure
             ServiceLocator.Get<IEquipmentSystem>().Initialize();
             
             ServiceLocator.Get<ISpawnSystem>().Initialize();
+            ServiceLocator.Get<IRespawnSystem>().Initialize();
             ServiceLocator.Get<IOperationSystem>().Initialize();
             ServiceLocator.Get<ITeamsSystem>().Initialize();
             ServiceLocator.Get<IMatchSystem>().Initialize();

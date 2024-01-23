@@ -33,9 +33,9 @@ namespace Gameplay.ShootingSystemLogic.ReloadingSystemLogic
             
             TimerStarted();
 
-            while (_currentTime.TotalSeconds > 0)
+            while (_currentTime.TotalSeconds > 0 && !cancellationToken.IsCancellationRequested)
             {
-                await UniTask.Delay(_valueUpdatingFrequency);
+                await UniTask.Delay(_valueUpdatingFrequency, cancellationToken: cancellationToken.Token);
                 
                 _currentTime = _currentTime.Subtract(TimeSpan.FromSeconds(1));
                 OnValueChanged?.Invoke(ResultInRightFormat(_currentTime));

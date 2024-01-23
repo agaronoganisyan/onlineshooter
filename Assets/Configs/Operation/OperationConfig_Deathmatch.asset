@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: OperationConfig_Deathmatch
   m_EditorClassIdentifier: 
   _type: 1
-  _duration: 180
+  _duration: 20
   _scene:
     m_AssetGUID: 40ef6e60490d68541971945758777f58
     m_SubObjectName: 
