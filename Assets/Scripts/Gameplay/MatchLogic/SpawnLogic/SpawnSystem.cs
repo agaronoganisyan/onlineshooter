@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Gameplay.MatchLogic.SpawnLogic.RespawnLogic;
 using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
 using Infrastructure.ServiceLogic;
 
@@ -9,6 +10,7 @@ namespace Gameplay.MatchLogic.SpawnLogic
     {
         public event Action<SpawnPointInfo> OnSpawned;
 
+        private IRespawnSystem _respawnSystem;
         private ISpawnPointSystem _spawnPointSystem;
         private IPlayerMatchInfo _playerMatchInfo;
         
@@ -19,6 +21,8 @@ namespace Gameplay.MatchLogic.SpawnLogic
         public void Initialize()
         {
             _playerMatchInfo = ServiceLocator.Get<IPlayerMatchInfo>();
+            _respawnSystem = ServiceLocator.Get<IRespawnSystem>();
+            _respawnSystem.OnFinished += Spawn;
         }
         
         public void Spawn()

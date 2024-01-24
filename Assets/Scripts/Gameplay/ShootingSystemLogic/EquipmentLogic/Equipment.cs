@@ -3,6 +3,7 @@ using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
+using InputLogic.InputServiceLogic.PlayerInputLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.EquipmentLogic
@@ -17,7 +18,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         public event Action<Weapon> OnCurrentWeaponChanged;
         public event Action OnGrenadeLaunchingStarted;
 
-        private IInputService _inputService;
+        private IPlayerInputHandler _inputService;
         
         public Weapon CurrentWeapon => _currentWeapon;
         private Weapon _currentWeapon;
@@ -34,7 +35,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
 
         public void Initialize()
         {
-            _inputService = ServiceLocator.Get<IInputService>();
+            _inputService = ServiceLocator.Get<IPlayerInputHandler>();
             
             _inputService.OnSwitchingInputReceived += StartWeaponSwitch;
             _inputService.OnReloadingInputReceived += ReloadCurrentWeapon;

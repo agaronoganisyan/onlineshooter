@@ -2,17 +2,15 @@ using System;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
 
-namespace InputLogic.InputServiceLogic
+namespace InputLogic.InputServiceLogic.PlayerInputLogic
 {
-    public interface IInputService : IService
+    public interface IPlayerInputHandler : IService
     {
-        event Action<Vector2> OnMovementDeltaReceived;
-        event Action<Vector2> OnRotationDeltaReceived;
         event Action OnSwitchingInputReceived;
         event Action OnThrowingInputReceived;
         event Action OnReloadingInputReceived;
+        Vector2 MovementDirection { get; }
+        Vector2 RotationDirection { get; }
         void Initialize();
-        void SetInputMode(InputMode mode);
-
     }
 }

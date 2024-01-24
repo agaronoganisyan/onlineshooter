@@ -1,14 +1,18 @@
 using DG.Tweening;
+using Gameplay.MatchLogic.SpawnLogic;
+using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
 using Gameplay.UnitLogic.PlayerLogic;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
+using InputLogic.InputServiceLogic.PlayerInputLogic;
 using UnityEngine;
 
 namespace Gameplay.CameraLogic
 {
     public class CameraController : MonoBehaviour , ICameraController
     {
-        private IInputService _inputService;
+        private IPlayerInputHandler _inputService;
+        private ISpawnSystem _spawnSystem;
 
         public Camera Camera => _camera;
         [SerializeField] private Camera _camera;
@@ -20,14 +24,25 @@ namespace Gameplay.CameraLogic
         
         [SerializeField] private float _shakeDuration;
         [SerializeField] private float _shakeStrenght;
+        private float _startYRotation;
 
         public void Initialize()
         {
             _targetTransform = ServiceLocator.Get<Player>().Transform;
-            _inputService = ServiceLocator.Get<IInputService>();
-            _inputService.OnRotationInputReceived += HandleRotation;
+            _inputService = ServiceLocator.Get<IPlayerInputHandler>();
+            
+            _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
+            _spawnSystem.OnSpawned += Prepare;
         }
 
+        public void Prepare(SpawnPointInfo spawnPointInfo)
+        {
+            _transform.position = spawnPointInfo.Position;
+            _transform.rotation = spawnPointInfo.Rotation;
+
+            _startYRotation = spawnPointInfo.Rotation.eulerAngles.y;
+        }
+        
         public void SetTarget(Transform target)
         {
             _transform = target;
@@ -36,6 +51,7 @@ namespace Gameplay.CameraLogic
         private void LateUpdate()
         {
             HandleMovement();
+            HandleRotation();
         }
 
         public void Shake()
@@ -45,14 +61,14 @@ namespace Gameplay.CameraLogic
             _cameraObjectTransform.DOShakeRotation(_shakeDuration, _shakeStrenght);
         }
 
-        void HandleMovement()
+        private void HandleRotation()
         {
-            _transform.position = _targetTransform.position;
+            _transform.localEulerAngles = new Vector3(0,  _startYRotation + _inputService.RotationDirection.x, 0);
         }
 
-        void HandleRotation(Vector2 rotation)
+        private void HandleMovement()
         {
-            _transform.localEulerAngles = new Vector3(0, rotation.x, 0);
+            _transform.position = _targetTransform.position;
         }
     }
 }

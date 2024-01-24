@@ -60,6 +60,7 @@ namespace Infrastructure.GameStateMachineLogic
             _teamsSystem.AddUnitToTeam(_player);
             await _teamsSystem.WaitPlayers();
             await _pointsSystem.Prepare();
+            await _spawnSystem.WaitSpawnPoints();
 
             _spawnSystem.Spawn();
             _inputService.SetInputMode(InputMode.Gameplay);
@@ -82,6 +83,7 @@ namespace Infrastructure.GameStateMachineLogic
             _matchSystem.Cleanup();
             _pointsSystem.Cleanup();
             _teamsSystem.Cleanup();
+            _spawnSystem.Cleanup();
             _operationSystem.UnloadOperation();
 
             _sharedGameplayCanvas.Stop(); 

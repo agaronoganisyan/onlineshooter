@@ -17,6 +17,7 @@ using Infrastructure.GameStateMachineLogic;
 using Infrastructure.SceneManagementLogic;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
+using InputLogic.InputServiceLogic.PlayerInputLogic;
 using UnityEngine;
 
 namespace Infrastructure
@@ -38,7 +39,8 @@ namespace Infrastructure
         private void RegisterServices()
         {
             ServiceLocator.Register<IInputService>(new InputService());
-            
+            ServiceLocator.Register<IPlayerInputHandler>(new PlayerInputHandler());
+
             ServiceLocator.Register<IEquipmentFactory>(new EquipmentFactory());
             ServiceLocator.Register<IEquipmentSystem>(new EquipmentSystem());
             ServiceLocator.Register<IEquipment>(new Equipment());
@@ -70,7 +72,8 @@ namespace Infrastructure
             await ServiceLocator.Get<IGameInfrastructureFactory>().CreateAndRegisterInfrastructure();
             
             ServiceLocator.Get<IInputService>().Initialize();
-            
+            ServiceLocator.Get<IPlayerInputHandler>().Initialize();
+
             ServiceLocator.Get<IEquipmentFactory>().Initialize();
             ServiceLocator.Get<IEquipment>().Initialize();
             ServiceLocator.Get<IEquipmentSystem>().Initialize();
