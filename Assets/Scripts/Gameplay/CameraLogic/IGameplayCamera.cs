@@ -3,11 +3,12 @@ using UnityEngine;
 
 namespace Gameplay.CameraLogic
 {
-    public interface ICameraController : IService
+    public interface IGameplayCamera : IService
     {
         Camera Camera { get; }
-        Transform CameraObjectTransform { get; }
+        Transform Transform { get; }
         void Initialize();
-        void SetTarget(Transform target);
+        void Enable();
+        void Disable();
     }
 }

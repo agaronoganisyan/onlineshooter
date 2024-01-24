@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gameplay.CameraLogic;
+using Gameplay.CameraLogic.ControllerLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
 using HelpersLogic;
 using Infrastructure.CanvasBaseLogic;
@@ -16,7 +17,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
         private CancellationTokenSource _cancellationTokenSource;
         private TimeSpan _updatingRate;
 
-        private ICameraController _cameraController;
+        private IGameplayCamera _gameplayCamera;
 
         [SerializeField] private LayerMask _obstacleLayer;
         
@@ -30,7 +31,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
         
         public override void Initialize()
         {
-            _cameraController = ServiceLocator.Get<ICameraController>();
+            _gameplayCamera = ServiceLocator.Get<IGameplayCamera>();
             
             _updatingRate = TimeSpan.FromSeconds(_updatingFrequency);
             base.Initialize();
@@ -73,7 +74,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
                 int playerInfoBlocksCount = _playerInfoBlocks.Count;
                 for (int i = 0; i < playerInfoBlocksCount; i++)
                 {
-                    if (!DetectionOnScreenFunctions.IsWorldTargetInsideScreenBorders(_cameraController.Camera,
+                    if (!DetectionOnScreenFunctions.IsWorldTargetInsideScreenBorders(_gameplayCamera.Camera,
                             _playerInfoBlocks[i].TargetHead.position))
                     {
                         _playerInfoBlocks[i].Disable();
@@ -81,7 +82,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
                     }
                     
                     if (DetectionOnScreenFunctions.IsTargetVisible(_playerInfoBlocks[i].TargetHead.position,
-                            _cameraController.CameraObjectTransform.position, _obstacleLayer))
+                            _gameplayCamera.Transform.position, _obstacleLayer))
                     {
                         _playerInfoBlocks[i].Enable();
                     }

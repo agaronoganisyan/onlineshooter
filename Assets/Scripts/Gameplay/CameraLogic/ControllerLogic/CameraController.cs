@@ -3,21 +3,15 @@ using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
 using Gameplay.UnitLogic.PlayerLogic;
 using Infrastructure.ServiceLogic;
-using InputLogic.InputServiceLogic;
 using InputLogic.InputServiceLogic.PlayerInputLogic;
 using UnityEngine;
 
-namespace Gameplay.CameraLogic
+namespace Gameplay.CameraLogic.ControllerLogic
 {
     public class CameraController : MonoBehaviour , ICameraController
     {
         private IPlayerInputHandler _inputService;
-        private ISpawnSystem _spawnSystem;
-
-        public Camera Camera => _camera;
-        [SerializeField] private Camera _camera;
         
-        public Transform CameraObjectTransform => _cameraObjectTransform;
         [SerializeField] private Transform _cameraObjectTransform;
         [SerializeField] private Transform _transform;
         private Transform _targetTransform;
@@ -30,17 +24,14 @@ namespace Gameplay.CameraLogic
         {
             _targetTransform = ServiceLocator.Get<Player>().Transform;
             _inputService = ServiceLocator.Get<IPlayerInputHandler>();
-            
-            _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
-            _spawnSystem.OnSpawned += Prepare;
         }
 
-        public void Prepare(SpawnPointInfo spawnPointInfo)
+        public void Prepare(Vector3 position, Quaternion rotation)
         {
-            _transform.position = spawnPointInfo.Position;
-            _transform.rotation = spawnPointInfo.Rotation;
+            _transform.position = position;
+            _transform.rotation = rotation;
 
-            _startYRotation = spawnPointInfo.Rotation.eulerAngles.y;
+            _startYRotation = rotation.eulerAngles.y;
         }
         
         public void SetTarget(Transform target)
@@ -48,6 +39,16 @@ namespace Gameplay.CameraLogic
             _transform = target;
         }
 
+        public void Enable()
+        {
+            enabled = true;
+        }
+
+        public void Disable()
+        {
+            enabled = false;
+        }
+        
         private void LateUpdate()
         {
             HandleMovement();

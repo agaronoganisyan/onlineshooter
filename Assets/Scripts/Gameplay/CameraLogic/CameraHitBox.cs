@@ -1,3 +1,4 @@
+using Gameplay.CameraLogic.ControllerLogic;
 using UnityEngine;
 
 namespace Gameplay.CameraLogic

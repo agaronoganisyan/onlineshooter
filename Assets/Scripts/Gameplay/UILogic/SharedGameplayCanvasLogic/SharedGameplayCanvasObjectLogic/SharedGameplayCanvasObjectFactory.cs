@@ -1,5 +1,6 @@
 using ConfigsLogic;
 using Gameplay.CameraLogic;
+using Gameplay.CameraLogic.ControllerLogic;
 using Gameplay.HealthLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
 using Infrastructure.ServiceLogic;
@@ -23,7 +24,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
             _playerConfig = ServiceLocator.Get<PlayerConfig>();
             _playerInfoBlockConfig = ServiceLocator.Get<PlayerInfoBlockConfig>();
 
-            _worldCamera = ServiceLocator.Get<ICameraController>().Camera;
+            _worldCamera = ServiceLocator.Get<IGameplayCamera>().Camera;
 
             _playerBlockInfoFactory = new PlayerInfoBlockFactory(_playerInfoBlockConfig.Prefab, _playerInfoBlockConfig.InitialPoolSize);            
         }

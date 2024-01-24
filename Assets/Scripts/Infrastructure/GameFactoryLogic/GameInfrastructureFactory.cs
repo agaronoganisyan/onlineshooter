@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gameplay.CameraLogic;
+using Gameplay.CameraLogic.ControllerLogic;
 using Gameplay.UILogic.DebriefingCanvasLogic;
 using Gameplay.UILogic.InfoCanvasLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic;
@@ -18,7 +19,7 @@ namespace Infrastructure.GameFactoryLogic
         private IAssetsProvider _assetsProvider;
 
         private string _playerAddress = "Player";
-        private string _cameraControllerAddress = "CameraController";
+        private string _gameplayCameraAddress = "GameplayCamera";
         
         //Canvases
         private string _loadingCanvasAddress = "LoadingCanvas";
@@ -57,9 +58,9 @@ namespace Infrastructure.GameFactoryLogic
         }
         private async UniTask CreateCameraController()
         {
-            GameObject prefab = await _assetsProvider.Load<GameObject>(_cameraControllerAddress);
-            ICameraController obj = Object.Instantiate(prefab).GetComponent<ICameraController>();
-            ServiceLocator.Register<ICameraController>(obj);
+            GameObject prefab = await _assetsProvider.Load<GameObject>(_gameplayCameraAddress);
+            IGameplayCamera obj = Object.Instantiate(prefab).GetComponent<IGameplayCamera>();
+            ServiceLocator.Register<IGameplayCamera>(obj);
             obj.Initialize();
         }
         private async UniTask CreateLoadingCanvas()
