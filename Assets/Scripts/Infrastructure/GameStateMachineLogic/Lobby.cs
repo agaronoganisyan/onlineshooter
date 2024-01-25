@@ -8,11 +8,11 @@ namespace Infrastructure.GameStateMachineLogic
 {
     public class Lobby : GameBaseState<GameState>
     {
-        private ILobbyCanvas _lobbyCanvas;
+        private ILobbyCanvasSystem _lobbyCanvas;
 
         public Lobby(IStateMachine<GameState> stateMachine) : base(stateMachine)
         {
-            _lobbyCanvas = ServiceLocator.Get<ILobbyCanvas>();
+            _lobbyCanvas = ServiceLocator.Get<ILobbyCanvasSystem>();
         }
         
         public override async UniTask Enter()

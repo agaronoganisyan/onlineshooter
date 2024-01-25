@@ -67,35 +67,35 @@ namespace Infrastructure.GameFactoryLogic
         {
             GameObject prefab = await _assetsProvider.Load<GameObject>(_loadingCanvasAddress);
             ILoadingCanvas obj = Object.Instantiate(prefab).GetComponent<ILoadingCanvas>();
-            ServiceLocator.Register<ILoadingCanvas>(obj);
+            //ServiceLocator.Register<ILoadingCanvas>(obj);
             obj.Initialize();
         }
         private async UniTask CreateLobbyCanvas()
         {
             GameObject prefab = await _assetsProvider.Load<GameObject>(_lobbyCanvasAddress);
             ILobbyCanvas obj = Object.Instantiate(prefab).GetComponent<ILobbyCanvas>();
-            ServiceLocator.Register<ILobbyCanvas>(obj);
+            //ServiceLocator.Register<ILobbyCanvas>(obj);
             obj.Initialize();
         }
         private async UniTask CreateInputCanvas()
         {
             GameObject prefab = await _assetsProvider.Load<GameObject>(_inputCanvasAddress);
             IInputCanvas obj = Object.Instantiate(prefab).GetComponent<IInputCanvas>();
-            ServiceLocator.Register<IInputCanvas>(obj);
+            //ServiceLocator.Register<IInputCanvas>(obj);
             obj.Initialize();
         }
         private async UniTask CreateGameplayInfoCanvas()
         {
             GameObject prefab = await _assetsProvider.Load<GameObject>(_gameplayInfoCanvasAddress);
             IGameplayInfoCanvas obj = Object.Instantiate(prefab).GetComponent<IGameplayInfoCanvas>();
-            ServiceLocator.Register<IGameplayInfoCanvas>(obj);
+            //ServiceLocator.Register<IGameplayInfoCanvas>(obj);
             obj.Initialize();
         }
         private async UniTask CreateSharedCanvas()
         {
             GameObject prefab = await _assetsProvider.Load<GameObject>(_sharedCanvasAddress);
             ISharedGameplayCanvas obj = Object.Instantiate(prefab).GetComponent<ISharedGameplayCanvas>();
-            ServiceLocator.Register<ISharedGameplayCanvas>(obj);
+            //ServiceLocator.Register<ISharedGameplayCanvas>(obj);
             obj.Initialize();
         }
         private async UniTask CreateDebriefingCanvas()

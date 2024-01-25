@@ -3,7 +3,8 @@ using Infrastructure.CanvasBaseLogic;
 
 namespace Infrastructure.LoadingCanvasLogic
 {
-    public interface ILoadingCanvas : ICanvasBase
+    public interface ILoadingScreenSystem : ICanvasSystemBase
     {
+        UniTask Show();
     }
 }

@@ -1,5 +1,3 @@
-using Gameplay.MatchLogic;
-using Gameplay.MatchLogic.SpawnLogic.RespawnLogic;
 using Gameplay.UILogic.DebriefingCanvasLogic.DebriefingLogic;
 using Gameplay.UILogic.DebriefingCanvasLogic.RespawnLogic;
 using Infrastructure.CanvasBaseLogic;
@@ -11,22 +9,19 @@ namespace Gameplay.UILogic.DebriefingCanvasLogic
 {
     public class DebriefingCanvas : CanvasBase, IDebriefingCanvas
     {
-        private IMatchSystem _matchSystem;
-        private IRespawnSystem _respawnSystem;
+        private IDebriefingCanvasSystem _canvasSystem;
         
         [SerializeField] private GraphicRaycaster _graphicRaycaster;
         
         [SerializeField] private DebriefingPanel _debriefingPanel;
         [SerializeField] private RespawnPanel _respawnPanel;
         
-        public void Initialize()
+        public override void Initialize()
         {
-            _matchSystem = ServiceLocator.Get<IMatchSystem>();
-            _respawnSystem = ServiceLocator.Get<IRespawnSystem>();
+            _canvasSystem = ServiceLocator.Get<IDebriefingCanvasSystem>();
             
-            _matchSystem.OnFinished += () => Show();
-            _respawnSystem.OnStarted += () => Show();
-            _respawnSystem.OnFinished += () => Hide(true);
+            _canvasSystem.OnShown += Show;
+            _canvasSystem.OnHidden += Hide;
             
             _debriefingPanel.Initialize();
             _respawnPanel.Initialize();

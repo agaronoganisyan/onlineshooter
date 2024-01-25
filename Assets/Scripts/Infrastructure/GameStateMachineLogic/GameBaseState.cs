@@ -23,14 +23,14 @@ namespace Infrastructure.GameStateMachineLogic
 
         protected IInputService _inputService;
         
-        protected ILoadingCanvas _loadingCanvas;
+        protected ILoadingScreenSystem _loadingCanvas;
 
         protected GameBaseState(IStateMachine<GameState> stateMachine)
         {
             _stateMachine = stateMachine;
 
             _inputService = ServiceLocator.Get<IInputService>();
-            _loadingCanvas = ServiceLocator.Get<ILoadingCanvas>();
+            _loadingCanvas = ServiceLocator.Get<ILoadingScreenSystem>();
         }
 
         public virtual async UniTask Enter()

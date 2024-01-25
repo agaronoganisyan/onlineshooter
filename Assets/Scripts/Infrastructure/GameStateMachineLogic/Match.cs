@@ -6,7 +6,9 @@ using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
+using Gameplay.UILogic.DebriefingCanvasLogic;
 using Gameplay.UILogic.InfoCanvasLogic;
+using Gameplay.UILogic.InfoCanvasLogic.WeaponLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic;
 using Gameplay.UnitLogic.PlayerLogic;
 using Infrastructure.SceneManagementLogic;
@@ -31,10 +33,11 @@ namespace Infrastructure.GameStateMachineLogic
         private OperationConfig _currentOperation;
 
         //Canvases
-        private IInputCanvas _inputCanvas;
-        private IGameplayInfoCanvas _gameplayInfoCanvas;
-        private ISharedGameplayCanvas _sharedGameplayCanvas;
-        
+        private IInputCanvasSystem _inputCanvas;
+        private IGameplayInfoCanvasSystem _gameplayInfoCanvas;
+        private ISharedGameplayCanvasSystem _sharedGameplayCanvas;
+        private IDebriefingCanvasSystem _debriefingCanvas;
+
         public Match(IStateMachine<GameState> stateMachine) : base(stateMachine)
         {
             _sceneSystem = ServiceLocator.Get<ISceneSystem>();
@@ -46,9 +49,10 @@ namespace Infrastructure.GameStateMachineLogic
             _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
             _player = ServiceLocator.Get<Player>();
             
-            _inputCanvas = ServiceLocator.Get<IInputCanvas>();
-            _gameplayInfoCanvas = ServiceLocator.Get<IGameplayInfoCanvas>();
-            _sharedGameplayCanvas = ServiceLocator.Get<ISharedGameplayCanvas>();
+            _inputCanvas = ServiceLocator.Get<IInputCanvasSystem>();
+            _gameplayInfoCanvas = ServiceLocator.Get<IGameplayInfoCanvasSystem>();
+            _sharedGameplayCanvas = ServiceLocator.Get<ISharedGameplayCanvasSystem>();
+            _debriefingCanvas = ServiceLocator.Get<IDebriefingCanvasSystem>();
         }
         
         public override async UniTask Enter()
@@ -86,10 +90,11 @@ namespace Infrastructure.GameStateMachineLogic
             _spawnSystem.Cleanup();
             _operationSystem.UnloadOperation();
 
-            _sharedGameplayCanvas.Stop(); 
+            _sharedGameplayCanvas.StopUpdating(); 
             _sharedGameplayCanvas.Hide();
             _inputCanvas.Hide();
             _gameplayInfoCanvas.Hide();
+            _debriefingCanvas.Hide();
         }
     }
 }

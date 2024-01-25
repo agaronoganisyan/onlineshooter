@@ -1,6 +1,8 @@
 using System;
+using ConfigsLogic;
 using Cysharp.Threading.Tasks;
 using Infrastructure.CanvasBaseLogic;
+using Infrastructure.ServiceLogic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,25 +10,29 @@ namespace Infrastructure.LoadingCanvasLogic
 {
     public class LoadingCanvas : CanvasBase, ILoadingCanvas
     {
+        private ILoadingScreenSystem _canvasSystem;
+        
         [SerializeField] private GraphicRaycaster _graphicRaycaster;
-
-        private TimeSpan _fadingDuration;
         
         public override void Initialize()
         {
-            _fadingDuration = TimeSpan.FromSeconds(_fadingAnimationDuration);
+            _canvasSystem = ServiceLocator.Get<ILoadingScreenSystem>();
+            
+            _fadingAnimationDuration = ServiceLocator.Get<LoadingScreenSystemConfig>().ShowingDuration;
+            
+            _canvasSystem.OnShown += Show;
+            _canvasSystem.OnHidden += Hide;
         }
 
-        public async UniTask Show()
+        public override void Show(bool withAnimation = false)
         {
-            base.Show(true);
+            base.Show(withAnimation);
             _graphicRaycaster.enabled = true;
-            await UniTask.Delay(_fadingDuration); 
         }
 
-        public void Hide()
+        public override void Hide(bool withAnimation = false)
         {
-            base.Hide(true);
+            base.Hide(withAnimation);
             _graphicRaycaster.enabled = false;
         }
     }
