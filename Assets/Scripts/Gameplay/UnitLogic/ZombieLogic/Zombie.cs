@@ -1,4 +1,5 @@
 using Gameplay.HealthLogic;
+using Gameplay.MatchLogic.TeamsLogic;
 
 namespace Gameplay.UnitLogic.ZombieLogic
 {
@@ -12,7 +13,16 @@ namespace Gameplay.UnitLogic.ZombieLogic
             _healthSystem = new SimpleHealthSystem();
             _hitBox.Initialize(_healthSystem);
             _healthSystem.Setup(1000);
-            //IPlayerInfoBlock playerInfoBlock = ServiceLocator.Get<ISharedGameplayCanvasObjectFactory>().GetPlayerBlockInfo(_healthSystem,_transform, _headTransform);
+        }
+        
+        public override void SetInfo(string unitName, TeamType teamType)
+        {
+            _info.Set(unitName,teamType,_healthSystem, _transform, _headTransform);
+        }
+
+        public override void AddInfoBar()
+        {
+            _sharedGameplayCanvas.AddObjectAddObject(_info);
         }
     }
 }

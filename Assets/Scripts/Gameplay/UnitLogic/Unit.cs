@@ -1,5 +1,8 @@
 using System;
 using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
+using Gameplay.MatchLogic.TeamsLogic;
+using Gameplay.UILogic.SharedGameplayCanvasLogic;
+using Infrastructure.ServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.UnitLogic
@@ -8,7 +11,9 @@ namespace Gameplay.UnitLogic
     {
         public event Action OnDied;
         
+        protected UnitInfo _info;
         protected IUnitHitBox _hitBox;
+        protected ISharedGameplayCanvasSystem _sharedGameplayCanvas;
         private IUnitController _controller;
 
         public Transform Transform => _transform;
@@ -17,6 +22,8 @@ namespace Gameplay.UnitLogic
 
         public virtual void Initialize()
         {
+            _sharedGameplayCanvas = ServiceLocator.Get<ISharedGameplayCanvasSystem>();
+            
             _hitBox = GetComponent<IUnitHitBox>();
             _controller = GetComponent<IUnitController>();
             
@@ -28,6 +35,10 @@ namespace Gameplay.UnitLogic
             _controller.Prepare(spawnPointInfo.Position,spawnPointInfo.Rotation);
             Enable();
         }
+        
+        public abstract void SetInfo(string unitName, TeamType teamType);
+
+        public abstract void AddInfoBar();
         
         protected virtual void Enable()
         {

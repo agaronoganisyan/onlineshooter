@@ -60,9 +60,8 @@ namespace Infrastructure
             ServiceLocator.Register<IDebriefingCanvasSystem>(new DebriefingCanvasSystem());
             ServiceLocator.Register<ISharedGameplayCanvasSystem>(new SharedGameplayCanvasSystem());
             ServiceLocator.Register<ISharedGameplayCanvasObjectFactory>(new SharedGameplayCanvasObjectFactory());
-            
-            ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
-            
+
+
             ServiceLocator.Register<IPlayerMatchInfo>(new PlayerMatchInfo());
             ServiceLocator.Register<ISpawnSystem>(new SpawnSystem());
             ServiceLocator.Register<IRespawnSystem>(new RespawnSystem());
@@ -75,9 +74,10 @@ namespace Infrastructure
             ServiceLocator.Register<ISceneSystem>(new SceneSystem());
             ServiceLocator.Register<IGameStateMachine>(new GameStateMachine());
             ServiceLocator.Register<IGameInfrastructureFactory>(new GameInfrastructureFactory());
-            
-            ServiceLocator.Register<LoadingScreenSystemConfig>(_loadingScreenSystemConfig);
 
+            ServiceLocator.Register<PlayerInfoBlockConfig>(_playerInfoBlockConfig);
+            ServiceLocator.Register<LoadingScreenSystemConfig>(_loadingScreenSystemConfig);
+            ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
         }
 
         private async UniTask InitServices()

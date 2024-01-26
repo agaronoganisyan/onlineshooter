@@ -2,6 +2,7 @@ using ConfigsLogic;
 using Gameplay.HealthLogic;
 using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
+using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.ShootingSystemLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
@@ -10,8 +11,8 @@ namespace Gameplay.UnitLogic.PlayerLogic
 {
     public class Player : Unit
     {
-        public HealthSystemWithCriticalThreshold HealthSystem => _playerHealthSystem;
-        private HealthSystemWithCriticalThreshold _playerHealthSystem;
+        public HealthSystemWithCriticalThreshold HealthSystem => _healthSystem;
+        private HealthSystemWithCriticalThreshold _healthSystem;
         private IShootingSystem _shootingSystem;
         private ISpawnSystem _spawnSystem;
 
@@ -22,10 +23,10 @@ namespace Gameplay.UnitLogic.PlayerLogic
             _shootingSystem = GetComponent<IShootingSystem>();
             
             _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
-            _playerHealthSystem = new HealthSystemWithCriticalThreshold(ServiceLocator.Get<HealthSystemConfig>());
+            _healthSystem = new HealthSystemWithCriticalThreshold(ServiceLocator.Get<HealthSystemConfig>());
 
-            _playerHealthSystem.Setup(1000);
-            _hitBox.Initialize(_playerHealthSystem);
+            _healthSystem.Setup(1000);
+            _hitBox.Initialize(_healthSystem);
             
             _shootingSystem.Initialize();
             
@@ -43,6 +44,16 @@ namespace Gameplay.UnitLogic.PlayerLogic
             {
                 Die();
             }
+        }
+        
+        public override void SetInfo(string unitName, TeamType teamType)
+        {
+            _info.Set(unitName,teamType,_healthSystem, _transform, _headTransform);
+        }
+
+        public override void AddInfoBar()
+        {
+            _sharedGameplayCanvas.AddObjectAddObject(_info);
         }
         
         public override void Prepare(SpawnPointInfo spawnPointInfo)

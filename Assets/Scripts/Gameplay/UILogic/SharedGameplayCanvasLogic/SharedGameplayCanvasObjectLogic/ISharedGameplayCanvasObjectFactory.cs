@@ -1,5 +1,6 @@
 using Gameplay.HealthLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
+using Gameplay.UnitLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
 {
     public interface ISharedGameplayCanvasObjectFactory : IService
     {
-        IPlayerInfoBlock GetPlayerBlockInfo(HealthSystem healthSystem, Transform target, Transform targetHead);
+        void Initialize();
+        IPlayerInfoBlock GetPlayerBlockInfo(UnitInfo info);
     }
 }

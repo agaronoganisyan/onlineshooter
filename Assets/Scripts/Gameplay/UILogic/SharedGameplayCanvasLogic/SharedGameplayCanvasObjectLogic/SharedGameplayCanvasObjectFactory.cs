@@ -2,7 +2,9 @@ using ConfigsLogic;
 using Gameplay.CameraLogic;
 using Gameplay.CameraLogic.ControllerLogic;
 using Gameplay.HealthLogic;
+using Gameplay.MatchLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
+using Gameplay.UnitLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
 
@@ -10,29 +12,33 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
 {
     public class SharedGameplayCanvasObjectFactory : ISharedGameplayCanvasObjectFactory
     {
-        private PlayerConfig _playerConfig;
+        private IPlayerMatchInfo _playerMatchInfo;
+        
         private PlayerInfoBlockConfig _playerInfoBlockConfig;
 
-        private ISharedGameplayCanvas _sharedGameplayCanvas;
-
         private PlayerInfoBlockFactory _playerBlockInfoFactory;
-
-        private Camera _worldCamera;
+        
+        private Camera _gameplayCamera;
 
         public void Initialize()
         {
-            _playerConfig = ServiceLocator.Get<PlayerConfig>();
+            _playerMatchInfo = ServiceLocator.Get<IPlayerMatchInfo>();
+            
             _playerInfoBlockConfig = ServiceLocator.Get<PlayerInfoBlockConfig>();
 
-            _worldCamera = ServiceLocator.Get<IGameplayCamera>().Camera;
+            _gameplayCamera = ServiceLocator.Get<IGameplayCamera>().Camera;
 
             _playerBlockInfoFactory = new PlayerInfoBlockFactory(_playerInfoBlockConfig.Prefab, _playerInfoBlockConfig.InitialPoolSize);            
         }
         
-        public IPlayerInfoBlock GetPlayerBlockInfo(HealthSystem healthSystem, Transform target, Transform targetHead)
+        public IPlayerInfoBlock GetPlayerBlockInfo(UnitInfo info)
         {
             IPlayerInfoBlock playerInfoBlock = _playerBlockInfoFactory.Get().GetComponent<IPlayerInfoBlock>();
-            playerInfoBlock.Initialize(_playerConfig, _playerInfoBlockConfig, healthSystem, target,targetHead, _worldCamera);
+            playerInfoBlock.Initialize(
+                info,
+                _playerInfoBlockConfig,
+                _gameplayCamera,
+                _playerMatchInfo.TeamType == info.TeamType);
             return playerInfoBlock;
         }
     }

@@ -1,6 +1,7 @@
 using ConfigsLogic;
 using Gameplay.HealthLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.HealthBarLogic;
+using Gameplay.UnitLogic;
 using TMPro;
 using UnityEngine;
 
@@ -14,24 +15,39 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
 
         public Transform TargetHead => _targetHeadTransform;
         
-        public void Initialize(PlayerConfig playerConfig, PlayerInfoBlockConfig playerInfoBlockConfig, HealthSystem healthSystem,
-            Transform target, Transform targetHead, Camera worldCamera)
+        public void Initialize(UnitInfo info, PlayerInfoBlockConfig playerInfoBlockConfig, Camera worldCamera, bool isTeammate)
         {
-            base.Initialize(target, targetHead, playerInfoBlockConfig.OffsetToTarget, worldCamera);
-            _healthBar.Initialize(healthSystem);
+            base.Initialize(info.Target, info.TargetHead, playerInfoBlockConfig.OffsetToTarget, worldCamera);
+            _healthBar.Initialize(info.HealthSystem,
+                isTeammate
+                    ? playerInfoBlockConfig.TeammateFirstColor
+                    : playerInfoBlockConfig.EnemyFirstColor,
+                isTeammate
+                    ? playerInfoBlockConfig.TeammateSecondColor
+                    : playerInfoBlockConfig.EnemySecondColor);
+            
+            _nameText.text = info.Name;
+            _nameText.color = isTeammate
+                ? playerInfoBlockConfig.TeammateFirstColor
+                : playerInfoBlockConfig.EnemyFirstColor;
 
-            _nameText.text = playerConfig.Name;
-            gameObject.SetActive(true);
+            Enable();
         }
 
-        public override void Enable()
+        public void Cleanup()
         {
-            base.Enable();
+            _healthBar.Cleanup();
+            Disable();
+        }
+        
+        public override void Show()
+        {
+            base.Show();
         }
 
-        public override void Disable()
+        public override void Hide()
         {
-            base.Disable();
+            base.Hide();
         }
         
         public override void SetParent(Transform parent)

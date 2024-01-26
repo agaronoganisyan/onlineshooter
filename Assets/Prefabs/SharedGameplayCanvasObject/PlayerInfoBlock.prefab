@@ -428,6 +428,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mainSlider: {fileID: 2155732095446711089}
   _effectSlider: {fileID: 2155732095134595024}
+  _mainSliderImage: {fileID: 2155732095980047486}
+  _backgroundImage: {fileID: 2155732094993858796}
 --- !u!1 &2155732095430429982
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,7 +675,7 @@ GameObject:
   - component: {fileID: 2155732095980047485}
   - component: {fileID: 2155732095980047486}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: MainSliderFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

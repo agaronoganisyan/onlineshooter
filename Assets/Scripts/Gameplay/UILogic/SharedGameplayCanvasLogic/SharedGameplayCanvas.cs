@@ -4,7 +4,9 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gameplay.CameraLogic;
 using Gameplay.CameraLogic.ControllerLogic;
+using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
+using Gameplay.UnitLogic;
 using HelpersLogic;
 using Infrastructure.CanvasBaseLogic;
 using Infrastructure.ServiceLogic;
@@ -17,11 +19,13 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
         private CancellationTokenSource _cancellationTokenSource;
         private TimeSpan _updatingRate;
 
+        private ISharedGameplayCanvasSystem _canvasSystem;
+        private ISharedGameplayCanvasObjectFactory _sharedGameplayCanvasObjectFactory;
         private IGameplayCamera _gameplayCamera;
 
         [SerializeField] private LayerMask _obstacleLayer;
         
-        [SerializeField] private Transform _transform;
+        private Transform _transform;
 
         private List<IPlayerInfoBlock> _playerInfoBlocks = new List<IPlayerInfoBlock>();
 
@@ -31,9 +35,21 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
         
         public override void Initialize()
         {
+            _canvasSystem = ServiceLocator.Get<ISharedGameplayCanvasSystem>();
+            _sharedGameplayCanvasObjectFactory = ServiceLocator.Get<ISharedGameplayCanvasObjectFactory>();
             _gameplayCamera = ServiceLocator.Get<IGameplayCamera>();
             
+            _canvasSystem.OnShown += Show;
+            _canvasSystem.OnHidden += Hide;
+            _canvasSystem.OnUpdatingStarted += StartUpdating;
+            _canvasSystem.OnUpdatingStopped += StopUpdating;
+            _canvasSystem.OnUnitInfoAdded += AddUnitInfo;
+            
+            _sharedGameplayCanvasObjectFactory.Initialize();
             _updatingRate = TimeSpan.FromSeconds(_updatingFrequency);
+
+            _transform = transform;
+            
             base.Initialize();
         }
 
@@ -44,16 +60,18 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
             Updating();
         }
 
-        public void Stop()
+        public void StopUpdating()
         {
             _isStopped = true;
             _cancellationTokenSource?.Cancel();
+            Cleanup();
         }
         
-        public void AddObject(IPlayerInfoBlock obj)
+        private void AddUnitInfo(UnitInfo info)
         {
-            obj.SetParent(_transform);
-            _playerInfoBlocks.Add(obj);
+            IPlayerInfoBlock playerInfoBlock = _sharedGameplayCanvasObjectFactory.GetPlayerBlockInfo(info);
+            playerInfoBlock.SetParent(_transform);
+            _playerInfoBlocks.Add(playerInfoBlock);
         }
 
         private void Update()
@@ -77,22 +95,31 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
                     if (!DetectionOnScreenFunctions.IsWorldTargetInsideScreenBorders(_gameplayCamera.Camera,
                             _playerInfoBlocks[i].TargetHead.position))
                     {
-                        _playerInfoBlocks[i].Disable();
+                        _playerInfoBlocks[i].Hide();
                         continue;    
                     }
                     
                     if (DetectionOnScreenFunctions.IsTargetVisible(_playerInfoBlocks[i].TargetHead.position,
                             _gameplayCamera.Transform.position, _obstacleLayer))
                     {
-                        _playerInfoBlocks[i].Enable();
+                        _playerInfoBlocks[i].Show();
                     }
                     else
                     {
-                        _playerInfoBlocks[i].Disable();
+                        _playerInfoBlocks[i].Hide();
                     }
                 }
                 
                 await UniTask.Delay(_updatingRate, cancellationToken: _cancellationTokenSource.Token);
+            }
+        }
+        
+        private void Cleanup()
+        {
+            int playerInfoBlocksCount = _playerInfoBlocks.Count;
+            for (int i = 0; i < playerInfoBlocksCount; i++)
+            {
+                _playerInfoBlocks[i].Cleanup();
             }
         }
     }

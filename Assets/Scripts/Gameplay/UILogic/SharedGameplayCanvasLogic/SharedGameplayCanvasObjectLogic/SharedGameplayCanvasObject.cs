@@ -34,7 +34,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
             _returnToPool?.Invoke(this);
         }
 
-        public virtual void Enable()
+        public virtual void Show()
         {
             if (_isEnabled) return;
             
@@ -43,13 +43,23 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
             _canvasGroup.DOFade(1, _fadingDuration);
         }
 
-        public virtual void Disable()
+        public virtual void Hide()
         {
             if (!_isEnabled) return;
             
             _isEnabled = false;
             _canvasGroup.DOComplete();
             _canvasGroup.DOFade(0, _fadingDuration);
+        }
+        
+        protected void Enable()
+        {
+            gameObject.SetActive(true);
+        }
+        
+        protected void Disable()
+        {
+            gameObject.SetActive(false);
         }
         
         public virtual void SetParent(Transform parent)
@@ -74,7 +84,6 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
 
         private void OnDisable()
         {
-            Disable();
             ReturnToPool();
         }
     }

@@ -19,5 +19,7 @@ public class ForTests : MonoBehaviour
     public void INJECT()
     {
         _teamsSystem.AddUnitToTeam(_unit);
+        _unit.SetInfo("96969506870",TeamType.Second);
+        _unit.AddInfoBar();
     }
 }
