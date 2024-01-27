@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.Layouts;
 using UnityEngine.InputSystem.OnScreen;
 
-namespace InputLogic.InputCanvasLogic
+namespace InputLogic.InputCanvasLogic.DragAreaLogic
 {
     public class DragArea : OnScreenControl, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {

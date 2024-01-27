@@ -99,6 +99,11 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
              return _ammo <= 0 ? true : false;
          }
 
+         public bool IsReloadingPossible()
+         {
+             return _ammo < _maxAmmoCount ? true : false;
+         }
+         
          public void StartReloading()
          {
              _timerService.Start(_reloadingDuration);

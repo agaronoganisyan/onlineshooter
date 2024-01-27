@@ -15,8 +15,10 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         public event Action OnCurrentWeaponReloadingStarted;
         public event Action OnCurrentWeaponReloadingFinished;
         public event Action OnWeaponSwitchingStarted;
+        public event Action OnWeaponSwitchingFinished;
         public event Action<Weapon> OnCurrentWeaponChanged;
         public event Action OnGrenadeLaunchingStarted;
+        public event Action OnGrenadeLaunchingFinished;
 
         private IPlayerInputHandler _inputService;
         
@@ -68,6 +70,16 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
             SubscribeToThisWeapon(_currentWeapon);
         }
 
+        public void FinishWeaponSwitching()
+        {
+            OnWeaponSwitchingFinished?.Invoke();
+        }
+
+        public void FinishGrenadeLaunching()
+        {
+            OnGrenadeLaunchingFinished?.Invoke();
+        }
+        
         public Weapon GetWeaponByType(WeaponType type)
         {
             for (int i = 0; i < _weapons.Length; i++)

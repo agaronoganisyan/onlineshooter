@@ -86,7 +86,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
             if (IsCurrentStateIsNonShootingType()) return;
         }
         
-        protected void ToShooting()
+        protected virtual void ToShooting()
         {
             if (_enemiesDetector.IsThereTarget()) _stateMachine.TransitToState(ShootingState.Shooting);
             else _stateMachine.TransitToState(ShootingState.Searching);

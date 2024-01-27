@@ -11,8 +11,10 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         event Action OnCurrentWeaponReloadingStarted;
         event Action OnCurrentWeaponReloadingFinished;
         event Action OnWeaponSwitchingStarted;
+        event Action OnWeaponSwitchingFinished;
         event Action<Weapon> OnCurrentWeaponChanged;
         event Action OnGrenadeLaunchingStarted;
+        event Action OnGrenadeLaunchingFinished;
         Weapon CurrentWeapon { get; }
         Weapon NextWeapon { get; }
         Weapon GetWeaponByType(WeaponType type);
@@ -20,5 +22,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         void Initialize();
         public void Prepare(Weapon firstWeapon, Weapon secondWeapon, GrenadeLauncher grenadeLauncher);
         public void SwitchWeapon();
+        void FinishWeaponSwitching();
+        void FinishGrenadeLaunching();
     }
 }

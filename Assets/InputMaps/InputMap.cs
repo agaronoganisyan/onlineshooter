@@ -197,17 +197,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""4092d0e0-516d-47b4-a28c-51ec67a5a5a7"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Throw"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""aaec9e6c-797a-4377-a1e7-399987716183"",
                     ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",

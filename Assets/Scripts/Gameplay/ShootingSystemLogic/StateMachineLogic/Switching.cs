@@ -35,5 +35,11 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
 
             _heroAnimator.SetRuntimeAnimatorController(_equipment.CurrentWeapon.WeaponConfig.AnimatorOverride);
         }
+        
+        protected override void ToShooting()
+        {
+            _equipment.FinishWeaponSwitching();
+            base.ToShooting();
+        }
     }
 }

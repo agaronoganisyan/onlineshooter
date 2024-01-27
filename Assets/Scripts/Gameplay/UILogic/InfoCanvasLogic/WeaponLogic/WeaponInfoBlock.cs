@@ -48,7 +48,7 @@ namespace Gameplay.UILogic.InfoCanvasLogic.WeaponLogic
 
             _imageFillingDuration = _weapon.WeaponConfig.Frequency;
 
-            SetIconSprite(_weapon.WeaponConfig.IconSprite);
+            SetIconSprite(_weapon.WeaponConfig.WeaponIconSprite);
             SetBlockColor(_equipment.CurrentWeapon.WeaponConfig.WeaponType);
         }
         

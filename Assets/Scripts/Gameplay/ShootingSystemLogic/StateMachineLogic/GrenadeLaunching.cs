@@ -37,5 +37,11 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         {
             _equipment.CurrentGrenadeLauncher.Launch(_target.position, _grenadeLaunchingConfig);
         }
+        
+        protected override void ToShooting()
+        {
+            _equipment.FinishGrenadeLaunching();
+            base.ToShooting();
+        }
     }
 }

@@ -1,6 +1,7 @@
 using Gameplay.ShootingSystemLogic.WeaponLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ConfigsLogic
 {
@@ -40,7 +41,9 @@ namespace ConfigsLogic
         [SerializeField] private Bullet _bulletPrefab;
         public AnimatorOverrideController AnimatorOverride => _animatorOverride;
         [SerializeField] private AnimatorOverrideController _animatorOverride;
-        public Sprite IconSprite => iconSprite;
-        [SerializeField] private Sprite iconSprite;
+        public Sprite WeaponIconSprite => weaponIconSprite;
+        [SerializeField] private Sprite weaponIconSprite;
+        public Sprite BulletIconSprite => _bulletIconSprite;
+        [SerializeField] private Sprite _bulletIconSprite;
     }
 }

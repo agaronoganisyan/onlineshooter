@@ -27,4 +27,5 @@ MonoBehaviour:
   _rotationInContainer: {x: 0, y: 0, z: 54.08}
   _bulletPrefab: {fileID: 7289835956803318236, guid: 6d5d3f7ff279d4a1d889bedfbc287f0e, type: 3}
   _animatorOverride: {fileID: 22100000, guid: f0f6568cbf91b4c2fbbe9bc4d5b275ab, type: 2}
-  iconSprite: {fileID: 21300000, guid: 87fddf0d3d4ce46eab6518560a084980, type: 3}
+  weaponIconSprite: {fileID: 21300000, guid: 87fddf0d3d4ce46eab6518560a084980, type: 3}
+  _bulletIconSprite: {fileID: 21300000, guid: 28c9c2b064e40477cafdcdb71247eeb4, type: 3}
