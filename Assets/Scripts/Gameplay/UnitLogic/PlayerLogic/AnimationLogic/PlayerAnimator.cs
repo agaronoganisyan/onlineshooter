@@ -4,7 +4,7 @@ using UnityEngine.Animations.Rigging;
 
 namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
 {
-    public class HeroAnimator : MonoBehaviour, IHeroAnimator
+    public class PlayerAnimator : MonoBehaviour, IPlayerAnimator
     {
         private readonly int _idleHash = Animator.StringToHash("Idle");
         private readonly int _aimHash = Animator.StringToHash("Aim");
@@ -17,7 +17,8 @@ namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
 
         [SerializeField] private Animator _animator;
         [SerializeField] private Rig _rig;
-        
+        [SerializeField] private RigBuilder _rigBuilder;
+
         public HeroAnimationEventHandler AnimationEventHandler => _heroAnimationEvent;
         [SerializeField] private HeroAnimationEventHandler _heroAnimationEvent;
 
@@ -25,9 +26,17 @@ namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
         
         private float _movementEasingSpeed = 7.5f;
         private float _transitionDuration = .4f;
-
-        public void Initialize()
+        
+        public void Prepare()
         {
+            _rigBuilder.enabled = true;
+            _animator.enabled = true;
+        }
+
+        public void Stop()
+        {
+            _rigBuilder.enabled = false;
+            _animator.enabled = false;
         }
         
         public void PlayMovement(Vector2 movementDirection)

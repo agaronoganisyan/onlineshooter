@@ -5,5 +5,6 @@ namespace Gameplay.ShootingSystemLogic
         void Initialize();
         void Tick();
         void Prepare();
+        void Stop();
     }
 }

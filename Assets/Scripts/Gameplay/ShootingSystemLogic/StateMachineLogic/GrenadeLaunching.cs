@@ -13,22 +13,22 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         private GrenadeLaunchingConfig _grenadeLaunchingConfig;
 
         public GrenadeLaunching(ShootingState key, IStateMachine<ShootingState> stateMachine,
-            IHeroAnimator heroAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer,
+            IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer,
             IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig,  GrenadeLaunchingConfig grenadeLaunchingConfig,
-            Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, heroAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
+            Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, playerAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
         {
             _grenadeLaunchingConfig = grenadeLaunchingConfig;
             
             equipment.OnGrenadeLaunchingStarted += () => _stateMachine.TransitToState(ShootingState.GrenadeLaunching);;
-            heroAnimator.AnimationEventHandler.OnThrow += Throw;
-            heroAnimator.AnimationEventHandler.OnThrowingFinished += ToShooting;
+            playerAnimator.AnimationEventHandler.OnThrow += Throw;
+            playerAnimator.AnimationEventHandler.OnThrowingFinished += ToShooting;
         }
         
         public override void Enter()
         {
             base.Enter();
             
-            _heroAnimator.PlayThrow();
+            PlayerAnimator.PlayThrow();
             
             if (_equipment.CurrentWeapon.IsReloading) _equipment.CurrentWeapon.StopReloading();
         }

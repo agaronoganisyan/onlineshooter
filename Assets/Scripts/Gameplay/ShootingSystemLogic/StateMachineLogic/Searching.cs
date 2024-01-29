@@ -10,7 +10,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
 {
     public class Searching : ShootingBaseState<ShootingState>
     {
-        public Searching(ShootingState key, IStateMachine<ShootingState> stateMachine, IHeroAnimator heroAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, heroAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
+        public Searching(ShootingState key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, playerAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
         {
             enemiesDetector.OnNoEnemyDetected += TryToEnterThisShootingState;
         }
@@ -18,7 +18,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         public override void Enter()
         {
             base.Enter();
-            _heroAnimator.PlayIdle();
+            PlayerAnimator.PlayIdle();
             
             if (_equipment.CurrentWeapon.IsRequiredReloading()) _equipment.CurrentWeapon.StartReloading();
         }

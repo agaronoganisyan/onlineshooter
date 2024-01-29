@@ -32,8 +32,16 @@ namespace Gameplay.UnitLogic
         
         public virtual void Prepare(SpawnPointInfo spawnPointInfo)
         {
+            enabled = true;
             _controller.Prepare(spawnPointInfo.Position,spawnPointInfo.Rotation);
+            _hitBox.Prepare();
             Enable();
+        }
+        
+        protected virtual void Stop()
+        {
+            enabled = false;
+            _controller.Stop();
         }
         
         public abstract void SetInfo(string unitName, TeamType teamType);

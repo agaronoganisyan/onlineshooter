@@ -8,5 +8,6 @@ namespace Gameplay.UnitLogic
         void Initialize();
         void Prepare(Vector3 position, Quaternion rotation);
         void Tick();
+        void Stop();
     }
 }

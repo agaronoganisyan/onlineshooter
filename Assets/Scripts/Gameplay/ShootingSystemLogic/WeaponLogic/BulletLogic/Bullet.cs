@@ -10,6 +10,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic
 
         [SerializeField] private Rigidbody _rigidbody;
 
+        public Transform Transform => _transform;
         [SerializeField] private Transform _transform;
 
         public float Damage => _damage;

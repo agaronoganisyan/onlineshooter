@@ -23,6 +23,7 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
         protected LayerMask _obstacleLayer;
         protected LayerMask _cameraLayer;
         
+        public Transform Transform => _transform;
         [SerializeField] protected Transform _transform;
 
         public float Damage => _damage;

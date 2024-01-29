@@ -10,18 +10,18 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
 {
     public class Switching : ShootingBaseState<ShootingState>
     {
-        public Switching(ShootingState key, IStateMachine<ShootingState> stateMachine, IHeroAnimator heroAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, heroAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
+        public Switching(ShootingState key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, playerAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
         {
             equipment.OnWeaponSwitchingStarted += () => _stateMachine.TransitToState(ShootingState.Switching);;
-            heroAnimator.AnimationEventHandler.OnSwitchWeapon += Switch;
-            heroAnimator.AnimationEventHandler.OnSwitchingFinished += ToShooting;
+            playerAnimator.AnimationEventHandler.OnSwitchWeapon += Switch;
+            playerAnimator.AnimationEventHandler.OnSwitchingFinished += ToShooting;
         }
         
         public override void Enter()
         {
             base.Enter();
             
-            _heroAnimator.PlayDraw();
+            PlayerAnimator.PlayDraw();
             
             if (_equipment.CurrentWeapon.IsReloading) _equipment.CurrentWeapon.StopReloading();
         }
@@ -33,7 +33,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
             _equipment.CurrentWeapon.Draw();
             _equipment.NextWeapon.LayDown();
 
-            _heroAnimator.SetRuntimeAnimatorController(_equipment.CurrentWeapon.WeaponConfig.AnimatorOverride);
+            PlayerAnimator.SetRuntimeAnimatorController(_equipment.CurrentWeapon.WeaponConfig.AnimatorOverride);
         }
         
         protected override void ToShooting()

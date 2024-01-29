@@ -18,7 +18,8 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         Shooting,
         Reloading,
         Switching,
-        GrenadeLaunching
+        GrenadeLaunching,
+        Stopping
     }
     
     public abstract class ShootingBaseState<State> : ISimpleState<State> where State : Enum
@@ -28,7 +29,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         
         protected readonly IStateMachine<ShootingState> _stateMachine;
         
-        protected readonly IHeroAnimator _heroAnimator;
+        protected readonly IPlayerAnimator PlayerAnimator;
         private readonly IEnemiesDetector _enemiesDetector;
         protected readonly IEquipment _equipment;
         protected readonly IEquipmentContainer _equipmentContainer;
@@ -42,14 +43,14 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         private readonly float _crosshairMovementSpeed;
         protected readonly float _minAngleToStartingShooting;
         
-        protected ShootingBaseState(State key, IStateMachine<ShootingState> stateMachine, IHeroAnimator heroAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer,
+        protected ShootingBaseState(State key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer,
             IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed)
         {
             _stateKey = key;
 
             _stateMachine = stateMachine;
 
-            _heroAnimator = heroAnimator;
+            PlayerAnimator = playerAnimator;
             _enemiesDetector = enemiesDetector;
             _equipment = equipment;
             _equipmentContainer = equipmentContainer;

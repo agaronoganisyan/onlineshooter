@@ -3,12 +3,13 @@ using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic;
 using InputLogic.InputServiceLogic.PlayerInputLogic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Gameplay.UnitLogic.PlayerLogic
 {
     public class PlayerController: MonoBehaviour, IUnitController
     {
-        [SerializeField] private HeroAnimator _heroAnimator;
+        [FormerlySerializedAs("_heroAnimator")] [SerializeField] private PlayerAnimator playerAnimator;
         private IPlayerInputHandler _inputService;
 
         [SerializeField] private CharacterController _characterController;
@@ -23,12 +24,13 @@ namespace Gameplay.UnitLogic.PlayerLogic
         public void Initialize()
         {
             _inputService = ServiceLocator.Get<IPlayerInputHandler>();
-            _heroAnimator.PlayIdle();
+            playerAnimator.PlayIdle();
         }
 
         public void Prepare(Vector3 position, Quaternion rotation)
         {
-            Debug.Log($"position {position}");
+            _characterController.enabled = true;
+            
             _transform.position = position;
             _transform.rotation = rotation;
 
@@ -41,6 +43,11 @@ namespace Gameplay.UnitLogic.PlayerLogic
             HandleRotation();
         }
 
+        public void Stop()
+        {
+            _characterController.enabled = false;
+        }
+
         private void HandleMovement()
         {
             var movementDirection = new Vector3(_inputService.MovementDirection.x, 0, _inputService.MovementDirection.y);
@@ -49,7 +56,7 @@ namespace Gameplay.UnitLogic.PlayerLogic
             if (movementDirection.magnitude > 0)
                 _characterController.Move(adjustedDirection * (_moveSpeed * Time.deltaTime));
             
-            _heroAnimator.PlayMovement(_inputService.MovementDirection);
+            playerAnimator.PlayMovement(_inputService.MovementDirection);
         }
 
         private void HandleRotation()

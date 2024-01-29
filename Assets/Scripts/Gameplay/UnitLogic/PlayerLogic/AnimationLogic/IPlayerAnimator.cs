@@ -2,9 +2,11 @@ using UnityEngine;
 
 namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
 {
-    public interface IHeroAnimator
+    public interface IPlayerAnimator
     {
         HeroAnimationEventHandler AnimationEventHandler { get; }
+        void Prepare();
+        void Stop();
         void PlayMovement(Vector2 movementDirection);
         void PlayIdle();
         void PlayAim();

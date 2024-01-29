@@ -9,6 +9,7 @@ using Infrastructure.ServiceLogic;
 using Infrastructure.StateMachineLogic;
 using Infrastructure.StateMachineLogic.Simple;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Gameplay.ShootingSystemLogic
 {
@@ -20,7 +21,7 @@ namespace Gameplay.ShootingSystemLogic
         private IEquipmentSystem _equipmentSystem;
         private IEquipmentContainer _equipmentContainer;
         private IEnemiesDetector _enemiesDetector;
-        [SerializeField] private HeroAnimator _heroAnimator;
+        [FormerlySerializedAs("_heroAnimator")] [SerializeField] private PlayerAnimator playerAnimator;
         
         [SerializeField] private ShootingSystemConfig _shootingSystemConfig;
         [SerializeField] private GrenadeLaunchingConfig _grenadeLaunchingConfig;
@@ -45,18 +46,20 @@ namespace Gameplay.ShootingSystemLogic
             _enemiesDetector = new EnemiesDetector(_shootingSystemConfig, transform);
             
             _stateMachine = new SimpleStateMachine<ShootingState>();
-            _stateMachine.Add(ShootingState.Initializing, new Initializing(ShootingState.Initializing, _stateMachine, _heroAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.Initializing, new Initializing(ShootingState.Initializing, _stateMachine, playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _shootingSystemConfig, _crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
-            _stateMachine.Add(ShootingState.Searching, new Searching(ShootingState.Searching, _stateMachine, _heroAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.Searching, new Searching(ShootingState.Searching, _stateMachine, playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _shootingSystemConfig, _crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
-            _stateMachine.Add(ShootingState.Shooting, new Shooting(ShootingState.Shooting, _stateMachine,_heroAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.Shooting, new Shooting(ShootingState.Shooting, _stateMachine,playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _shootingSystemConfig, _crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
-            _stateMachine.Add(ShootingState.Reloading, new Reloading(ShootingState.Reloading, _stateMachine,_heroAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.Reloading, new Reloading(ShootingState.Reloading, _stateMachine,playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _shootingSystemConfig, _crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
-            _stateMachine.Add(ShootingState.Switching, new Switching(ShootingState.Switching, _stateMachine, _heroAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.Switching, new Switching(ShootingState.Switching, _stateMachine, playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _shootingSystemConfig, _crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
-            _stateMachine.Add(ShootingState.GrenadeLaunching, new GrenadeLaunching(ShootingState.GrenadeLaunching, _stateMachine, _heroAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.GrenadeLaunching, new GrenadeLaunching(ShootingState.GrenadeLaunching, _stateMachine, playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _shootingSystemConfig, _grenadeLaunchingConfig,_crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
+            _stateMachine.Add(ShootingState.Stopping, new Stopping(ShootingState.Initializing, _stateMachine, playerAnimator, _equipment, _equipmentContainer,
+                _enemiesDetector, _shootingSystemConfig, _crosshair, _crosshairBasePosition, _crosshairMovementSpeed));
         }
 
         public void Prepare()
@@ -65,7 +68,13 @@ namespace Gameplay.ShootingSystemLogic
             _enemiesDetector.Start();
             
         }
-        
+
+        public void Stop()
+        {
+            _stateMachine.Start(ShootingState.Stopping);
+            _enemiesDetector.Stop();
+        }
+
         public void Tick()
         {
             _stateMachine.Tick();
