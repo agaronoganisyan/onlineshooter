@@ -1,5 +1,6 @@
 using System;
 using ConfigsLogic;
+using Gameplay.ShootingSystemLogic.AimLogic;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
@@ -29,42 +30,32 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         
         protected readonly IStateMachine<ShootingState> _stateMachine;
         
-        protected readonly IPlayerAnimator PlayerAnimator;
+        protected readonly IPlayerAnimator _playerAnimator;
         private readonly IEnemiesDetector _enemiesDetector;
         protected readonly IEquipment _equipment;
         protected readonly IEquipmentContainer _equipmentContainer;
+        protected IAim _aim;
 
-        private readonly Transform _crosshair;
-        private readonly Transform _crosshairBasePosition;
-        protected Transform _target;
+        protected ShootingSystemConfig _shootingSystemConfig;
         
-        private readonly Vector3 _offsetForTargetShooting;
-        
-        private readonly float _crosshairMovementSpeed;
         protected readonly float _minAngleToStartingShooting;
         
         protected ShootingBaseState(State key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer,
-            IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed)
+            IEnemiesDetector enemiesDetector, IAim aim, ShootingSystemConfig shootingSystemConfig)
         {
             _stateKey = key;
 
             _stateMachine = stateMachine;
 
-            PlayerAnimator = playerAnimator;
+            _playerAnimator = playerAnimator;
             _enemiesDetector = enemiesDetector;
             _equipment = equipment;
+            _aim = aim;
             _equipmentContainer = equipmentContainer;
             
-            _crosshair = crosshair;
-            _crosshairBasePosition = crosshairBasePosition;
-            _offsetForTargetShooting = shootingSystemConfig.OffsetForTargetShooting;
-            _crosshairMovementSpeed = crosshairMovementSpeed;
-            _minAngleToStartingShooting = shootingSystemConfig.MinAngleToStartingShooting;
+            _shootingSystemConfig = shootingSystemConfig;
             
-            _enemiesDetector.OnEnemyDetected += AimToTarget;
-            _enemiesDetector.OnNoEnemyDetected += SetCrosshairBasePosition;
-            
-            SetCrosshairBasePosition();
+            _minAngleToStartingShooting = _shootingSystemConfig.MinAngleToStartingShooting;
         }
         
         public virtual void Enter()
@@ -78,8 +69,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
 
         public virtual void Update()
         {
-            _crosshair.position = Vector3.MoveTowards(_crosshair.position, _target.position + _offsetForTargetShooting,
-                _crosshairMovementSpeed * Time.deltaTime);
+            _aim.Tick();
         }
         
         protected virtual void TryToEnterThisShootingState()
@@ -91,16 +81,6 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         {
             if (_enemiesDetector.IsThereTarget()) _stateMachine.TransitToState(ShootingState.Shooting);
             else _stateMachine.TransitToState(ShootingState.Searching);
-        }
-        
-        private void AimToTarget(Transform target)
-        {
-            _target = target;
-        }
-
-        private void SetCrosshairBasePosition()
-        {
-            _target = _crosshairBasePosition;
         }
         
         protected bool IsCurrentStateIsNonShootingType()

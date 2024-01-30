@@ -1,14 +1,17 @@
+using Infrastructure.ServiceLogic;
 using UnityEngine;
 
 namespace ConfigsLogic
 {
     [CreateAssetMenu(fileName = "ShootingSystemConfig", menuName = "Configs/New ShootingSystemConfig")]
-    public class ShootingSystemConfig : ScriptableObject
+    public class ShootingSystemConfig : ScriptableObject, IService
     {
         public float DetectionFrequency => _detectionFrequency;
         [SerializeField, Tooltip("How many seconds should pass for the next detection")] private float _detectionFrequency;
         public Vector3 OffsetForTargetShooting => _offsetForTargetShooting;
         [SerializeField] private Vector3 _offsetForTargetShooting;
+        public float AimingSpeed => _aimingSpeed;
+        [SerializeField] private float _aimingSpeed;
         public int MaxDetectingCollidersAmount => _maxDetectingCollidersAmount;
         [SerializeField] private int _maxDetectingCollidersAmount;
         public int MinAngleToStartingShooting => minAngleToStartingShooting;
@@ -16,6 +19,7 @@ namespace ConfigsLogic
         public LayerMask TargetHitLayer => _targetHitLayer;
         [SerializeField] private LayerMask _targetHitLayer;
         public LayerMask ObstacleLayer => _obstacleLayer;
+
         [SerializeField] private LayerMask _obstacleLayer;
     }
 }

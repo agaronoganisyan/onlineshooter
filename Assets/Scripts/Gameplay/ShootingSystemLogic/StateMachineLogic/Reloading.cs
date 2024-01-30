@@ -1,4 +1,5 @@
 using ConfigsLogic;
+using Gameplay.ShootingSystemLogic.AimLogic;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
@@ -10,17 +11,17 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
 {
     public class Reloading : ShootingBaseState<ShootingState>
     {
-        public Reloading(ShootingState key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, playerAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
+        public Reloading(ShootingState key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, IAim aim, ShootingSystemConfig shootingSystemConfig) : base(key, stateMachine, playerAnimator, equipment, equipmentContainer, enemiesDetector, aim, shootingSystemConfig)
         {
             equipment.OnCurrentWeaponReloadingStarted += () => _stateMachine.TransitToState(ShootingState.Reloading);
             equipment.OnCurrentWeaponReloadingFinished += ToShooting;
         }
-        
+
         public override void Enter()
         {
             base.Enter();
             
-            PlayerAnimator.PlayReload();
+            _playerAnimator.PlayReload();
         }
     }
 }

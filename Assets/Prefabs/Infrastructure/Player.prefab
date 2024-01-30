@@ -2065,8 +2065,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9122536343025520925}
+  - component: {fileID: 5226095737737405009}
   m_Layer: 0
-  m_Name: Crosshair
+  m_Name: Aim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2088,6 +2089,20 @@ Transform:
   m_Father: {fileID: 9122536344791681622}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5226095737737405009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9122536343025520922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c40b81b2621349a18c7e93cde8aa8ded, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _transform: {fileID: 9122536343025520925}
+  _aimBaseTransform: {fileID: 9122536344522577244}
 --- !u!1 &9122536343094179024
 GameObject:
   m_ObjectHideFlags: 0
@@ -2216,7 +2231,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9122536343957558309}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2309,7 +2324,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9122536344522577244}
   m_Layer: 0
-  m_Name: CrosshairBasePosition
+  m_Name: AimBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2663,16 +2678,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ce8be6c59724df2b6209be7ef91cf69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAnimator: {fileID: 7431348719017926522}
   _shootingSystemConfig: {fileID: 11400000, guid: 0bdf1e0caf36544b49ddcb1985ae53a7, type: 2}
   _grenadeLaunchingConfig: {fileID: 11400000, guid: 1592576e773c842549a6c457dde46e01, type: 2}
   _rightHandContainer: {fileID: 7431348719017926515}
   _leftHandContainer: {fileID: 9122536343188380258}
   _firstWeaponContainer: {fileID: 7431348719017926421}
   _secondWeaponContainer: {fileID: 9122536344476350638}
-  _crosshair: {fileID: 9122536343025520925}
-  _crosshairBasePosition: {fileID: 9122536344522577244}
-  _crosshairMovementSpeed: 15
 --- !u!114 &9122536344791681611
 MonoBehaviour:
   m_ObjectHideFlags: 0

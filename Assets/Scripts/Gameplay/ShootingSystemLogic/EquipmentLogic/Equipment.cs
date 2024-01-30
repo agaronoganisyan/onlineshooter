@@ -12,6 +12,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
     public class Equipment : IEquipment
     {
         public event Action OnEquipmentChanged;
+        public event Action OnCurrentWeaponFired;
         public event Action OnCurrentWeaponReloadingStarted;
         public event Action OnCurrentWeaponReloadingFinished;
         public event Action OnWeaponSwitchingStarted;
@@ -121,12 +122,14 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         {
             weapon.OnReloadingStarted += CurrentWeaponReloadingStarted;
             weapon.OnReloadingFinished += CurrentWeaponReloadingFinished;
+            weapon.OnFired += CurrentWeaponFired;
         }
 
         private void UnsubscribeFromThisWeapon(Weapon weapon)
         {
             weapon.OnReloadingStarted -= CurrentWeaponReloadingStarted;
             weapon.OnReloadingFinished -= CurrentWeaponReloadingFinished;
+            weapon.OnFired -= CurrentWeaponFired;
         }
         void CurrentWeaponReloadingStarted()
         {
@@ -137,6 +140,12 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         {
             OnCurrentWeaponReloadingFinished?.Invoke();
         }
+        
+        private void CurrentWeaponFired()
+        {
+            OnCurrentWeaponFired?.Invoke();
+        }
+        
         private int GetNextWeaponID(int currentID)
         {
             currentID++;

@@ -22,18 +22,19 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
     
     public abstract class Weapon : MonoBehaviour
     {
-        public event Action OnReloadingStarted; 
-         public event Action OnReloadingFinished; 
-         public event Action<int, int> OnAmmoChanged; 
+        public event Action OnReloadingStarted;
+        public event Action OnReloadingFinished;
+        public event Action OnFired;
+        public event Action<int, int> OnAmmoChanged;
 
          public WeaponConfig WeaponConfig => _weaponConfig;
          [SerializeField] WeaponConfig _weaponConfig;
 
-         private IFactory<Bullet> _bulletsFactory; 
+         private IFactory<Bullet> _bulletsFactory;
          private TimerService _timerService = new StandardTimerService();
 
          private Bullet _currentBullet;
-        
+
          public Transform ShootPoint => _shootPoint;
          [SerializeField] private Transform _shootPoint;
          [SerializeField] private Transform _transform;
@@ -42,7 +43,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
 
          private int _ammo;
          private int _maxAmmoCount;
-         
+
          private float _nextShootTime;
          private float _frequency;
          private float _bulletDamage;
@@ -51,6 +52,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
 
          public bool IsReloading => _isReloading;
          private bool _isReloading;
+
 
          public void Initialize(Transform activeContainer,Transform reserveContainer)
          {
@@ -89,6 +91,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
 
              _nextShootTime = Time.time + 1 * _frequency;
              _ammo--;
+             OnFired?.Invoke();
              SetAmmo(_ammo);
              
              if (_ammo <= 0) StartReloading();
@@ -103,7 +106,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          {
              return _ammo < _maxAmmoCount ? true : false;
          }
-         
+
          public void StartReloading()
          {
              _timerService.Start(_reloadingDuration);
@@ -130,7 +133,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
              _transform.localPosition = _weaponConfig.PositionInContainer;
              _transform.localEulerAngles = _weaponConfig.RotationInContainer;
          }
-         
+
          void SetAmmo(int ammoCount)
          {
              _ammo = ammoCount;
@@ -142,7 +145,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
              _isReloading = true;
              OnReloadingStarted?.Invoke();
          }
-         
+
          void ReloadingFinished()
          {
              _isReloading = false;

@@ -92,17 +92,10 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
                     if (DetectionFunctions.IsWithinAngle(_unit.position, _unit.forward, _detectedEnemy.position, _detectionZoneAngle) && !IsThereObstacle(_detectedEnemy.position))
                     {
                         float distance = GetDistanceToTarget(_detectedEnemy.position);
-                            
-                        if (i == 0)
+                        
+                        if (distance <= _minimalDistance)
                         {
                             PrepareFinalEnemy(_detectedEnemy, distance);
-                        }
-                        else
-                        {
-                            if (distance <= _minimalDistance)
-                            {
-                                PrepareFinalEnemy(_detectedEnemy, distance);
-                            }
                         }
                     }
                 }

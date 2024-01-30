@@ -1,4 +1,5 @@
 using ConfigsLogic;
+using Gameplay.ShootingSystemLogic.AimLogic;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
@@ -10,19 +11,19 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
 {
     public class Searching : ShootingBaseState<ShootingState>
     {
-        public Searching(ShootingState key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, playerAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
+        public Searching(ShootingState key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, IAim aim, ShootingSystemConfig shootingSystemConfig) : base(key, stateMachine, playerAnimator, equipment, equipmentContainer, enemiesDetector, aim, shootingSystemConfig)
         {
             enemiesDetector.OnNoEnemyDetected += TryToEnterThisShootingState;
         }
-        
+
         public override void Enter()
         {
             base.Enter();
-            PlayerAnimator.PlayIdle();
+            _playerAnimator.PlayIdle();
             
             if (_equipment.CurrentWeapon.IsRequiredReloading()) _equipment.CurrentWeapon.StartReloading();
         }
-        
+
         protected override void TryToEnterThisShootingState()
         {
             base.TryToEnterThisShootingState();

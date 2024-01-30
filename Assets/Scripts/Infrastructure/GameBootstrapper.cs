@@ -7,6 +7,7 @@ using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.MatchLogic.SpawnLogic.RespawnLogic;
 using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.OperationLogic;
+using Gameplay.ShootingSystemLogic.AimLogic;
 using Gameplay.ShootingSystemLogic.EquipmentFactoryLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
@@ -37,6 +38,7 @@ namespace Infrastructure
         [SerializeField] private PlayerInfoBlockConfig _playerInfoBlockConfig;
         [SerializeField] private HealthSystemConfig _healthSystemConfig;
         [SerializeField] private LoadingScreenSystemConfig _loadingScreenSystemConfig;
+        [SerializeField] private ShootingSystemConfig _shootingSystemConfig;
 
         private async void Awake()
         {
@@ -52,6 +54,7 @@ namespace Infrastructure
             ServiceLocator.Register<IEquipmentFactory>(new EquipmentFactory());
             ServiceLocator.Register<IEquipmentSystem>(new EquipmentSystem());
             ServiceLocator.Register<IEquipment>(new Equipment());
+            ServiceLocator.Register<IAimSystem>(new AimSystem());
             
             ServiceLocator.Register<ILoadingScreenSystem>(new LoadingScreenSystem());
             ServiceLocator.Register<ILobbyCanvasSystem>(new LobbyCanvasSystem());
@@ -60,7 +63,6 @@ namespace Infrastructure
             ServiceLocator.Register<IDebriefingCanvasSystem>(new DebriefingCanvasSystem());
             ServiceLocator.Register<ISharedGameplayCanvasSystem>(new SharedGameplayCanvasSystem());
             ServiceLocator.Register<ISharedGameplayCanvasObjectFactory>(new SharedGameplayCanvasObjectFactory());
-
 
             ServiceLocator.Register<IPlayerMatchInfo>(new PlayerMatchInfo());
             ServiceLocator.Register<ISpawnSystem>(new SpawnSystem());
@@ -78,6 +80,8 @@ namespace Infrastructure
             ServiceLocator.Register<PlayerInfoBlockConfig>(_playerInfoBlockConfig);
             ServiceLocator.Register<LoadingScreenSystemConfig>(_loadingScreenSystemConfig);
             ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
+            ServiceLocator.Register<ShootingSystemConfig>(_shootingSystemConfig);
+
         }
 
         private async UniTask InitServices()
@@ -93,7 +97,7 @@ namespace Infrastructure
             ServiceLocator.Get<IEquipmentFactory>().Initialize();
             ServiceLocator.Get<IEquipment>().Initialize();
             ServiceLocator.Get<IEquipmentSystem>().Initialize();
-            
+
             ServiceLocator.Get<ILoadingScreenSystem>().Initialize();
             ServiceLocator.Get<IDebriefingCanvasSystem>().Initialize();
             ServiceLocator.Get<IGameplayInfoCanvasSystem>().Initialize();

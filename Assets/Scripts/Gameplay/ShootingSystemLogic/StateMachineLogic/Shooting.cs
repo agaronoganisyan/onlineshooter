@@ -1,4 +1,5 @@
 using ConfigsLogic;
+using Gameplay.ShootingSystemLogic.AimLogic;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
@@ -10,15 +11,15 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
 {
     public class Shooting : ShootingBaseState<ShootingState>
     {
-        public Shooting(ShootingState key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, ShootingSystemConfig shootingSystemConfig, Transform crosshair, Transform crosshairBasePosition, float crosshairMovementSpeed) : base(key, stateMachine, playerAnimator, equipment, equipmentContainer, enemiesDetector, shootingSystemConfig, crosshair, crosshairBasePosition, crosshairMovementSpeed)
+        public Shooting(ShootingState key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer, IEnemiesDetector enemiesDetector, IAim aim, ShootingSystemConfig shootingSystemConfig) : base(key, stateMachine, playerAnimator, equipment, equipmentContainer, enemiesDetector, aim, shootingSystemConfig)
         {
             enemiesDetector.OnEnemyDetected += (T) => TryToEnterThisShootingState();
         }
-        
+
         public override void Enter()
         {
             base.Enter();
-            PlayerAnimator.PlayAim();
+            _playerAnimator.PlayAim();
             
             if (_equipment.CurrentWeapon.IsRequiredReloading()) _equipment.CurrentWeapon.StartReloading();
         }
@@ -27,10 +28,10 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         {
             base.Update();
             
-            if (!_equipment.CurrentWeapon.IsReadyToFire(_target,_minAngleToStartingShooting)) return;
+            if (!_equipment.CurrentWeapon.IsReadyToFire(_aim.Transform,_minAngleToStartingShooting)) return;
             _equipment.CurrentWeapon.Fire();
         }
-        
+
         protected override void TryToEnterThisShootingState()
         {
             base.TryToEnterThisShootingState();
