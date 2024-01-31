@@ -1,4 +1,7 @@
 using DG.Tweening;
+using Gameplay.ShootingSystemLogic.EquipmentLogic;
+using Infrastructure.ServiceLogic;
+using InputLogic.InputServiceLogic.PlayerInputLogic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.Layouts;
@@ -6,8 +9,11 @@ using UnityEngine.InputSystem.OnScreen;
 
 namespace InputLogic.InputCanvasLogic
 {
-    public class InputButton : OnScreenControl, IPointerDownHandler, IDragHandler, IPointerUpHandler
+    public abstract class InputButton : OnScreenControl, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
+        protected IPlayerGameplayInputHandler _inputHandler;
+        protected IEquipment _equipment;
+        
         [InputControl(layout = "Button")]
         [SerializeField] private string m_ControlPath;
 
@@ -26,6 +32,22 @@ namespace InputLogic.InputCanvasLogic
             set => m_ControlPath = value;
         }
 
+        protected virtual void Initialize()
+        {
+            _inputHandler = ServiceLocator.Get<IPlayerGameplayInputHandler>();
+            _equipment = ServiceLocator.Get<IEquipment>();
+            
+            _equipment.OnEquipmentChanged += Prepare;
+        }
+        
+        protected abstract void Prepare();
+        
+        protected virtual void SetEnableStatus(bool status)
+        {
+            if (status) Enable();
+            else Disable();
+        }
+        
         protected void Enable()
         {
             _canvasGroup.interactable = true;

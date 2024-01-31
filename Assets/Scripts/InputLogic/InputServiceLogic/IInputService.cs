@@ -13,6 +13,6 @@ namespace InputLogic.InputServiceLogic
         event Action OnReloadingInputReceived;
         void Initialize();
         void SetInputMode(InputMode mode);
-
+        void SetActionMapEnableStatus(InputMode mode, bool status);
     }
 }

@@ -21,7 +21,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         public event Action OnGrenadeLaunchingStarted;
         public event Action OnGrenadeLaunchingFinished;
 
-        private IPlayerInputHandler _inputService;
+        private IPlayerGameplayInputHandler gameplayInputService;
         
         public Weapon CurrentWeapon => _currentWeapon;
         private Weapon _currentWeapon;
@@ -38,11 +38,11 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
 
         public void Initialize()
         {
-            _inputService = ServiceLocator.Get<IPlayerInputHandler>();
+            gameplayInputService = ServiceLocator.Get<IPlayerGameplayInputHandler>();
             
-            _inputService.OnSwitchingInputReceived += StartWeaponSwitch;
-            _inputService.OnReloadingInputReceived += ReloadCurrentWeapon;
-            _inputService.OnThrowingInputReceived += StartThrowing;
+            gameplayInputService.OnSwitchingInputReceived += StartWeaponSwitch;
+            gameplayInputService.OnReloadingInputReceived += ReloadCurrentWeapon;
+            gameplayInputService.OnThrowingInputReceived += StartThrowing;
         }
         
         public void Prepare(Weapon firstWeapon, Weapon secondWeapon, GrenadeLauncher grenade)

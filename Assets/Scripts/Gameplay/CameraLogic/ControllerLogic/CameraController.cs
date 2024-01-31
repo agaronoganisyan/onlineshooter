@@ -10,7 +10,7 @@ namespace Gameplay.CameraLogic.ControllerLogic
 {
     public class CameraController : MonoBehaviour , ICameraController
     {
-        private IPlayerInputHandler _inputService;
+        private IPlayerGameplayInputHandler gameplayInputService;
         
         [SerializeField] private Transform _cameraObjectTransform;
         [SerializeField] private Transform _transform;
@@ -23,7 +23,7 @@ namespace Gameplay.CameraLogic.ControllerLogic
         public void Initialize()
         {
             _targetTransform = ServiceLocator.Get<Player>().Transform;
-            _inputService = ServiceLocator.Get<IPlayerInputHandler>();
+            gameplayInputService = ServiceLocator.Get<IPlayerGameplayInputHandler>();
         }
 
         public void Prepare(Vector3 position, Quaternion rotation)
@@ -64,7 +64,7 @@ namespace Gameplay.CameraLogic.ControllerLogic
 
         private void HandleRotation()
         {
-            _transform.localEulerAngles = new Vector3(0,  _startYRotation + _inputService.RotationDirection.x, 0);
+            _transform.localEulerAngles = new Vector3(0,  _startYRotation + gameplayInputService.RotationDirection.x, 0);
         }
 
         private void HandleMovement()

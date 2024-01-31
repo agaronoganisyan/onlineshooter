@@ -15,7 +15,7 @@ MonoBehaviour:
   _weaponType: 2
   _modelType: 2
   _detectionZoneAngle: 50
-  _detectionZoneRadius: 8
+  _detectionZoneRadius: 14
   _damage: 25
   _bulletSpeed: 5
   _maxAmmoCount: 3

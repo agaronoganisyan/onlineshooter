@@ -1,5 +1,3 @@
-using Gameplay.ShootingSystemLogic.EquipmentLogic;
-using Infrastructure.ServiceLogic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,8 +5,6 @@ namespace InputLogic.InputCanvasLogic.WeaponSwitchingButtonLogic
 {
     public class WeaponSwitchingButton : InputButton
     {
-        private IEquipment _equipment;
-        
         [SerializeField] private Image _icon;
         
         private void Start()
@@ -16,22 +12,16 @@ namespace InputLogic.InputCanvasLogic.WeaponSwitchingButtonLogic
             Initialize();
         }
 
-        private void Initialize()
+        protected override void Initialize()
         {
-            _equipment = ServiceLocator.Get<IEquipment>();
-            
-            _equipment.OnEquipmentChanged += Prepare;
+            base.Initialize();
+
             _equipment.OnCurrentWeaponChanged += (weapon) => ChangeWeapon();
             
-            _equipment.OnCurrentWeaponReloadingStarted += Disable;
-            _equipment.OnCurrentWeaponReloadingFinished += Enable;
-            _equipment.OnWeaponSwitchingStarted += Disable;
-            _equipment.OnWeaponSwitchingFinished += Enable;
-            _equipment.OnGrenadeLaunchingStarted += Disable;
-            _equipment.OnGrenadeLaunchingFinished += Enable;
+            _inputHandler.OnSwitchingInputStatusChanged += SetEnableStatus;
         }
 
-        private void Prepare()
+        protected override void Prepare()
         {
             ChangeWeapon();
             Enable();

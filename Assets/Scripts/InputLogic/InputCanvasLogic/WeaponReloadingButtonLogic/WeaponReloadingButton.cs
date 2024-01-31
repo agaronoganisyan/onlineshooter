@@ -8,7 +8,6 @@ namespace InputLogic.InputCanvasLogic.WeaponReloadingButtonLogic
 {
     public class WeaponReloadingButton : InputButton
     {
-        private IEquipment _equipment;
         private Weapon _weapon;
 
         [SerializeField] private Image _icon;
@@ -18,27 +17,27 @@ namespace InputLogic.InputCanvasLogic.WeaponReloadingButtonLogic
             Initialize();
         }
 
-        private void Initialize()
+        protected override void Initialize()
         {
-            _equipment = ServiceLocator.Get<IEquipment>();
-            
-            _equipment.OnEquipmentChanged += Prepare;
+            base.Initialize();
+
             _equipment.OnCurrentWeaponChanged += ChangeWeapon;
             
-            _equipment.OnCurrentWeaponReloadingStarted += Disable;
-            _equipment.OnCurrentWeaponReloadingFinished += TryToEnableButton;
-            _equipment.OnWeaponSwitchingStarted += Disable;
-            _equipment.OnWeaponSwitchingFinished += TryToEnableButton;
-            _equipment.OnGrenadeLaunchingStarted += Disable;
-            _equipment.OnGrenadeLaunchingFinished += TryToEnableButton;
+            _inputHandler.OnReloadingInputStatusChanged += SetEnableStatus;
         }
 
-        private void Prepare()
+        protected override void Prepare()
         {
             ChangeWeapon(_equipment.CurrentWeapon);
             TryToEnableButton();
         }
 
+        protected override void SetEnableStatus(bool status)
+        {
+            if (status) TryToEnableButton();
+            else Disable();
+        }
+        
         private void AmmoChanged(int currentCount, int maxCount)
         {
             if (currentCount < maxCount) Enable();

@@ -45,5 +45,18 @@ namespace InputLogic.InputServiceLogic
                     break;
             }
         }
+        
+        public void SetActionMapEnableStatus(InputMode mode, bool status)
+        {
+            switch (mode)
+            {
+                case InputMode.Gameplay:
+                    if (status) 
+                        _inputMap.Gameplay.Enable();
+                    else 
+                        _inputMap.Gameplay.Disable();
+                    break;
+            }
+        }
     }
 }

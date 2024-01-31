@@ -10,7 +10,7 @@ namespace Gameplay.UnitLogic.PlayerLogic
     public class PlayerController: MonoBehaviour, IUnitController
     {
         [FormerlySerializedAs("_heroAnimator")] [SerializeField] private PlayerAnimator playerAnimator;
-        private IPlayerInputHandler _inputService;
+        private IPlayerGameplayInputHandler gameplayInputService;
 
         [SerializeField] private CharacterController _characterController;
 
@@ -23,7 +23,7 @@ namespace Gameplay.UnitLogic.PlayerLogic
 
         public void Initialize()
         {
-            _inputService = ServiceLocator.Get<IPlayerInputHandler>();
+            gameplayInputService = ServiceLocator.Get<IPlayerGameplayInputHandler>();
             playerAnimator.PlayIdle();
         }
 
@@ -50,19 +50,19 @@ namespace Gameplay.UnitLogic.PlayerLogic
 
         private void HandleMovement()
         {
-            var movementDirection = new Vector3(_inputService.MovementDirection.x, 0, _inputService.MovementDirection.y);
+            var movementDirection = new Vector3(gameplayInputService.MovementDirection.x, 0, gameplayInputService.MovementDirection.y);
             var adjustedDirection = _transform.rotation * movementDirection;
 
             if (movementDirection.magnitude > 0)
                 _characterController.Move(adjustedDirection * (_moveSpeed * Time.deltaTime));
             
-            playerAnimator.PlayMovement(_inputService.MovementDirection);
+            playerAnimator.PlayMovement(gameplayInputService.MovementDirection);
         }
 
         private void HandleRotation()
         {
             _transform.localRotation = Quaternion.Lerp(_transform.localRotation,
-                Quaternion.Euler(0, _startYRotation + _inputService.RotationDirection.x, 0), _rotationSpeed * Time.deltaTime);
+                Quaternion.Euler(0, _startYRotation + gameplayInputService.RotationDirection.x, 0), _rotationSpeed * Time.deltaTime);
         }
     }
 }
