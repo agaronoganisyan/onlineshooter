@@ -52,9 +52,9 @@ namespace Gameplay.ShootingSystemLogic.AimLogic
             OnAimPositionChanged?.Invoke(_transform.position);
         }
         
-        private void WeaponChanged(Weapon weapon)
+        private void WeaponChanged(WeaponConfig weaponInfo)
         {
-            _offsetFromBaseUnit = new Vector3(0,0,weapon.WeaponConfig.DetectionZoneRadius);
+            _offsetFromBaseUnit = new Vector3(0,0,weaponInfo.DetectionZoneRadius);
             _aimBaseTransform.localPosition = _offsetFromBaseUnit;
         }
         

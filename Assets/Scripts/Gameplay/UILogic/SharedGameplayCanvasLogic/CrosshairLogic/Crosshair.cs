@@ -1,3 +1,4 @@
+using ConfigsLogic;
 using DG.Tweening;
 using Gameplay.CameraLogic;
 using Gameplay.ShootingSystemLogic.AimLogic;
@@ -14,7 +15,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.CrosshairLogic
     {
         private IAimSystem _aimSystem;
         private IEquipment _equipment;
-        private Weapon _weapon;
+        private WeaponConfig _weaponInfo;
 
         private Camera _gameplayCamera;
         
@@ -61,9 +62,9 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.CrosshairLogic
 
         private void EquipmentChanged()
         {
-            _weapon = _equipment.CurrentWeapon;
+            _weaponInfo = _equipment.CurrentWeaponInfo;
 
-            WeaponChanged(_weapon);
+            WeaponChanged(_weaponInfo);
         }
 
         private void WasFire()
@@ -75,10 +76,10 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.CrosshairLogic
             }
         }
         
-        private void WeaponChanged(Weapon weapon)
+        private void WeaponChanged(WeaponConfig weapon)
         {
-            _weapon = weapon;
-            _crosshairSidesAnimationDuration = _weapon.WeaponConfig.Frequency;
+            _weaponInfo = weapon;
+            _crosshairSidesAnimationDuration = _weaponInfo.Frequency;
 
             StopRelaoder();
         }

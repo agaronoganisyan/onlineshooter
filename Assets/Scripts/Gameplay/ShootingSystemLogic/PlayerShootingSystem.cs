@@ -3,14 +3,13 @@ using Gameplay.ShootingSystemLogic.AimLogic;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
-using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
 using Gameplay.ShootingSystemLogic.StateMachineLogic;
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
 using Infrastructure.ServiceLogic;
 using Infrastructure.StateMachineLogic;
 using Infrastructure.StateMachineLogic.Simple;
+using InputLogic.InputServiceLogic.PlayerInputLogic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Gameplay.ShootingSystemLogic
 {
@@ -18,6 +17,7 @@ namespace Gameplay.ShootingSystemLogic
     {
         private IStateMachine<ShootingState> _stateMachine;
         
+        private IPlayerGameplayInputHandler _gameplayInputHandler;
         private IEquipment _equipment;
         private IEquipmentContainer _equipmentContainer;
         private IEnemiesDetector _enemiesDetector;
@@ -25,16 +25,11 @@ namespace Gameplay.ShootingSystemLogic
         private IAimSystem _aimSystem;
         private IAim _aim;
         
-        [SerializeField] private ShootingSystemConfig _shootingSystemConfig;
-        [SerializeField] private GrenadeLaunchingConfig _grenadeLaunchingConfig;
-
-        [SerializeField] private Transform _rightHandContainer;
-        [SerializeField] private Transform _leftHandContainer;
-        [SerializeField] private Transform _firstWeaponContainer;
-        [SerializeField] private Transform _secondWeaponContainer;
+        ShootingSystemConfig _shootingSystemConfig;
         
         public void Initialize()
         {
+            _gameplayInputHandler = ServiceLocator.Get<IPlayerGameplayInputHandler>();
             _equipment = ServiceLocator.Get<IEquipment>();
             _aimSystem = ServiceLocator.Get<IAimSystem>();
             
@@ -42,25 +37,24 @@ namespace Gameplay.ShootingSystemLogic
             _equipmentContainer = GetComponent<IEquipmentContainer>();
             _aim = GetComponentInChildren<IAim>();
             
-            _equipmentContainer = new EquipmentContainer();
-            _equipmentContainer.SetUp(_rightHandContainer,_leftHandContainer,_firstWeaponContainer, _secondWeaponContainer);
+            _shootingSystemConfig = ServiceLocator.Get<ShootingSystemConfig>();
             
-            _enemiesDetector = new EnemiesDetector(_shootingSystemConfig, transform);
+            _enemiesDetector = new EnemiesDetector(transform);
             
             _stateMachine = new SimpleStateMachine<ShootingState>();
-            _stateMachine.Add(ShootingState.Initializing, new Initializing(ShootingState.Initializing, _stateMachine, _playerAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.Initializing, new Initializing(ShootingState.Initializing, _stateMachine, _gameplayInputHandler, _playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _aim, _shootingSystemConfig));
-            _stateMachine.Add(ShootingState.Searching, new Searching(ShootingState.Searching, _stateMachine, _playerAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.Searching, new Searching(ShootingState.Searching, _stateMachine, _gameplayInputHandler, _playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _aim, _shootingSystemConfig));
-            _stateMachine.Add(ShootingState.Shooting, new Shooting(ShootingState.Shooting, _stateMachine,_playerAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.Shooting, new Shooting(ShootingState.Shooting, _stateMachine, _gameplayInputHandler, _playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _aim, _shootingSystemConfig));
-            _stateMachine.Add(ShootingState.Reloading, new Reloading(ShootingState.Reloading, _stateMachine,_playerAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.Reloading, new Reloading(ShootingState.Reloading, _stateMachine, _gameplayInputHandler, _playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _aim, _shootingSystemConfig));
-            _stateMachine.Add(ShootingState.Switching, new Switching(ShootingState.Switching, _stateMachine, _playerAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.Switching, new Switching(ShootingState.Switching, _stateMachine, _gameplayInputHandler, _playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _aim, _shootingSystemConfig));
-            _stateMachine.Add(ShootingState.GrenadeLaunching, new GrenadeLaunching(ShootingState.GrenadeLaunching, _stateMachine, _playerAnimator, _equipment, _equipmentContainer, 
-                _enemiesDetector, _aim, _shootingSystemConfig, _grenadeLaunchingConfig));
-            _stateMachine.Add(ShootingState.Stopping, new Stopping(ShootingState.Switching, _stateMachine, _playerAnimator, _equipment, _equipmentContainer,
+            _stateMachine.Add(ShootingState.GrenadeLaunching, new GrenadeLaunching(ShootingState.GrenadeLaunching, _stateMachine, _gameplayInputHandler, _playerAnimator, _equipment, _equipmentContainer,
+                _enemiesDetector, _aim, _shootingSystemConfig));
+            _stateMachine.Add(ShootingState.Stopping, new Stopping(ShootingState.Stopping, _stateMachine, _gameplayInputHandler, _playerAnimator, _equipment, _equipmentContainer,
                 _enemiesDetector, _aim, _shootingSystemConfig));
             
             _aim.Initialize(_enemiesDetector);

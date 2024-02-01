@@ -12,14 +12,19 @@ namespace ConfigsLogic
         [SerializeField] private Vector3 _offsetForTargetShooting;
         public float AimingSpeed => _aimingSpeed;
         [SerializeField] private float _aimingSpeed;
-        public int MaxDetectingCollidersAmount => _maxDetectingCollidersAmount;
-        [SerializeField] private int _maxDetectingCollidersAmount;
         public int MinAngleToStartingShooting => minAngleToStartingShooting;
         [SerializeField] private int minAngleToStartingShooting;
+        public float GrenadeLaunchingAngle => _grenadeLaunchingAngle;
+        [SerializeField] private float _grenadeLaunchingAngle;
+        public float CameraDetectionRadius => _cameraDetectionRadius;
+        [SerializeField] private float _cameraDetectionRadius;
+        public int MaxDetectingCollidersAmount => _maxDetectingCollidersAmount;
+        [SerializeField] private int _maxDetectingCollidersAmount;
         public LayerMask TargetHitLayer => _targetHitLayer;
         [SerializeField] private LayerMask _targetHitLayer;
         public LayerMask ObstacleLayer => _obstacleLayer;
-
         [SerializeField] private LayerMask _obstacleLayer;
+        public LayerMask CameraLayer => _cameraLayer;
+        [SerializeField] private LayerMask _cameraLayer;
     }
 }

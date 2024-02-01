@@ -24,8 +24,6 @@ namespace ConfigsLogic
         [SerializeField] private int _maxAmmoCount;
         public float Frequency => _frequency;
         [SerializeField, Tooltip("How many seconds should pass for the next shot")] private float _frequency;
-        public float ReloadingDuration => _reloadingDuration;
-        [SerializeField] private float _reloadingDuration;
         public Vector3 PositionInHand => _positionInHand;
         [Header("Hand Block")]
         [SerializeField] private Vector3 _positionInHand;

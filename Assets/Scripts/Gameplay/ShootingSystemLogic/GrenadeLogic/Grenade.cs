@@ -39,15 +39,15 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
             _returnToPool = returnAction;
         }
 
-        public void Activate(Vector3 startPosition, Vector3 targetPosition, GrenadeLaunchingConfig grenadeLaunchingConfig, GrenadeConfig grenadeConfig)
+        public void Activate(Vector3 startPosition, Vector3 targetPosition, ShootingSystemConfig shootingSystemConfig, GrenadeConfig grenadeConfig)
         {
-            if (!_isInitialized) Initialize(grenadeLaunchingConfig, grenadeConfig);
+            if (!_isInitialized) Initialize(shootingSystemConfig, grenadeConfig);
 
-            Vector3 direction = GetLaunchingDirection(startPosition,targetPosition, -grenadeLaunchingConfig.LaunchingAngle).normalized;
+            Vector3 direction = GetLaunchingDirection(startPosition,targetPosition, -shootingSystemConfig.GrenadeLaunchingAngle).normalized;
             _transform.SetPositionAndRotation(startPosition, Quaternion.LookRotation(direction));
             gameObject.SetActive(true);
             
-            _rigidbody.velocity = direction * BallisticFunctions.GetForce(startPosition,targetPosition, grenadeLaunchingConfig.LaunchingAngle);
+            _rigidbody.velocity = direction * BallisticFunctions.GetForce(startPosition,targetPosition, shootingSystemConfig.GrenadeLaunchingAngle);
             Vector3 rotationDirection = new Vector3(10,20,0);
             _rigidbody.angularVelocity = rotationDirection;// TEST
         }
@@ -59,17 +59,17 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
             _returnToPool?.Invoke(this);
         }
 
-        void Initialize(GrenadeLaunchingConfig grenadeLaunchingConfig, GrenadeConfig grenadeConfig)
+        void Initialize(ShootingSystemConfig shootingSystemConfig, GrenadeConfig grenadeConfig)
         {
             _isInitialized = true;
 
-            _detectedColliders = new Collider[grenadeLaunchingConfig.MaxDetectingCollidersAmount];
-            _targetHitLayer = grenadeLaunchingConfig.TargetHitLayer;
-            _obstacleLayer = grenadeLaunchingConfig.ObstacleLayer;
-            _cameraLayer= grenadeLaunchingConfig.CameraLayer;
+            _detectedColliders = new Collider[shootingSystemConfig.MaxDetectingCollidersAmount];
+            _targetHitLayer = shootingSystemConfig.TargetHitLayer;
+            _obstacleLayer = shootingSystemConfig.ObstacleLayer;
+            _cameraLayer= shootingSystemConfig.CameraLayer;
             
             _impactRadius = grenadeConfig.ImpactRadius;
-            _cameraShakeRadius = grenadeLaunchingConfig.CameraDetectionRadius;
+            _cameraShakeRadius = shootingSystemConfig.CameraDetectionRadius;
             _damage = grenadeConfig.Damage;
         }
 

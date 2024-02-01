@@ -1,9 +1,8 @@
 using System;
+using ConfigsLogic;
+using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
-using Infrastructure.ServiceLogic;
-using InputLogic.InputServiceLogic;
-using InputLogic.InputServiceLogic.PlayerInputLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.EquipmentLogic
@@ -13,19 +12,19 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
     {
         public event Action OnEquipmentChanged;
         public event Action OnCurrentWeaponFired;
+        public event Action<int,int> OnCurrentWeaponAmmoChanged;
+        public event Action OnCurrentWeaponReloadingRequired;
         public event Action OnCurrentWeaponReloadingStarted;
         public event Action OnCurrentWeaponReloadingFinished;
         public event Action OnWeaponSwitchingStarted;
+        public event Action<WeaponConfig> OnCurrentWeaponChanged;
         public event Action OnWeaponSwitchingFinished;
-        public event Action<Weapon> OnCurrentWeaponChanged;
         public event Action OnGrenadeLaunchingStarted;
         public event Action OnGrenadeLaunchingFinished;
-
-        private IPlayerGameplayInputHandler gameplayInputService;
         
-        public Weapon CurrentWeapon => _currentWeapon;
+        public WeaponConfig CurrentWeaponInfo => _currentWeapon.Config;
         private Weapon _currentWeapon;
-        public Weapon NextWeapon => _nextWeapon;
+        public WeaponConfig NextWeaponInfo => _nextWeapon.Config;
         private Weapon _nextWeapon;
         
         private Weapon[] _weapons = new Weapon[2];
@@ -36,16 +35,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         private int _currentWeaponID;
         private int _weaponsCount;
 
-        public void Initialize()
-        {
-            gameplayInputService = ServiceLocator.Get<IPlayerGameplayInputHandler>();
-            
-            gameplayInputService.OnSwitchingInputReceived += StartWeaponSwitch;
-            gameplayInputService.OnReloadingInputReceived += ReloadCurrentWeapon;
-            gameplayInputService.OnThrowingInputReceived += StartThrowing;
-        }
-        
-        public void Prepare(Weapon firstWeapon, Weapon secondWeapon, GrenadeLauncher grenade)
+        public void Initialize(Weapon firstWeapon, Weapon secondWeapon, GrenadeLauncher grenade)
         {
             if (_currentWeapon != null) UnsubscribeFromThisWeapon(_currentWeapon);
             
@@ -61,7 +51,22 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
             
             OnEquipmentChanged?.Invoke();
         }
+        
+        public void Prepare(IEquipmentContainer equipmentContainer)
+        {
+            _currentWeapon.Initialize(equipmentContainer);
+            _nextWeapon.Initialize(equipmentContainer);
+            _currentGrenadeLauncher.Initialize(equipmentContainer);
+            
+            _currentWeapon.Draw();
+            _nextWeapon.LayDown();
+        }
 
+        public void ReloadWeapon()
+        {
+            _currentWeapon.FinishReloading();
+        }
+        
         public void SwitchWeapon()
         {
             UnsubscribeFromThisWeapon(_currentWeapon);
@@ -69,6 +74,34 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
             _currentWeaponID = GetNextWeaponID(_currentWeaponID);
             SetWeapon(_currentWeaponID);
             SubscribeToThisWeapon(_currentWeapon);
+            
+            _currentWeapon.Draw();
+            _nextWeapon.LayDown();
+        }
+
+        public void WeaponFire()
+        {
+            _currentWeapon.Fire();
+        }
+
+        public void StartWeaponReloading()
+        {
+            OnCurrentWeaponReloadingStarted?.Invoke();
+        }
+
+        public void StartWeaponSwitching()
+        {
+            OnWeaponSwitchingStarted?.Invoke();
+        }
+
+        public void StartGrenadeLaunching()
+        {
+            OnGrenadeLaunchingStarted?.Invoke();   
+        }
+
+        public void FinishWeaponReloading()
+        {
+            OnCurrentWeaponReloadingFinished?.Invoke();
         }
 
         public void FinishWeaponSwitching()
@@ -80,24 +113,33 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         {
             OnGrenadeLaunchingFinished?.Invoke();
         }
-        
-        public Weapon GetWeaponByType(WeaponType type)
+
+        public bool IsWeaponRequiredReloading()
+        {
+            return _currentWeapon.IsRequiredReloading();
+        }
+
+        public bool IsWeaponReloadingPossible()
+        {
+            return _currentWeapon.IsReloadingPossible();
+        }
+
+        public bool IsWeaponReadyToFire(Transform target, float minAngleToStartingShooting)
+        {
+            return _currentWeapon.IsReadyToFire(target,minAngleToStartingShooting);
+        }
+
+        public WeaponConfig GetWeaponInfoByType(WeaponType type)
         {
             for (int i = 0; i < _weapons.Length; i++)
             {
-                if (_weapons[i].WeaponConfig.WeaponType == type)
+                if (_weapons[i].Config.WeaponType == type)
                 {
-                    return _weapons[i];
+                    return _weapons[i].Config;
                 }
             }
 
             return null;
-        }
-        
-        private void StartWeaponSwitch()
-        {
-            _currentWeapon.StopReloading();
-            OnWeaponSwitchingStarted?.Invoke();
         }
         
         private void SetWeapon(int weaponID)
@@ -105,45 +147,35 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
             _currentWeapon = _weapons[weaponID];
             _nextWeapon = _weapons[GetNextWeaponID(weaponID)];
             
-            OnCurrentWeaponChanged?.Invoke(_currentWeapon);
-        }
-
-        private void ReloadCurrentWeapon()
-        {
-            _currentWeapon.StartReloading();
-        }
-        
-        private void StartThrowing()
-        {
-            OnGrenadeLaunchingStarted?.Invoke();
+            OnCurrentWeaponChanged?.Invoke(_currentWeapon.Config);
         }
         
         private void SubscribeToThisWeapon(Weapon weapon)
         {
-            weapon.OnReloadingStarted += CurrentWeaponReloadingStarted;
-            weapon.OnReloadingFinished += CurrentWeaponReloadingFinished;
+            weapon.OnReloadingRequired += CurrentWeaponReloadingRequired;
             weapon.OnFired += CurrentWeaponFired;
+            weapon.OnAmmoChanged += CurrentWeaponAmmoChanged;
         }
 
         private void UnsubscribeFromThisWeapon(Weapon weapon)
         {
-            weapon.OnReloadingStarted -= CurrentWeaponReloadingStarted;
-            weapon.OnReloadingFinished -= CurrentWeaponReloadingFinished;
+            weapon.OnReloadingRequired -= CurrentWeaponReloadingRequired;
             weapon.OnFired -= CurrentWeaponFired;
+            weapon.OnAmmoChanged -= CurrentWeaponAmmoChanged;
         }
-        void CurrentWeaponReloadingStarted()
+        private void CurrentWeaponReloadingRequired()
         {
-            OnCurrentWeaponReloadingStarted?.Invoke();
+            OnCurrentWeaponReloadingRequired?.Invoke();
         }
 
-        void CurrentWeaponReloadingFinished()
-        {
-            OnCurrentWeaponReloadingFinished?.Invoke();
-        }
-        
         private void CurrentWeaponFired()
         {
             OnCurrentWeaponFired?.Invoke();
+        }
+
+        private void CurrentWeaponAmmoChanged(int currentCount, int maxCount)
+        {
+            OnCurrentWeaponAmmoChanged?.Invoke(currentCount,maxCount);
         }
         
         private int GetNextWeaponID(int currentID)

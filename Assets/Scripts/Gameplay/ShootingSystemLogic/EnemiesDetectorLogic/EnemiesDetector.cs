@@ -18,12 +18,10 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
         private readonly IEquipment _equipment;
         private readonly ShootingSystemConfig _shootingSystemConfig;
 
-        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _cancellationTokenSource;
         private readonly TimeSpan _detectionRate;
 
         private readonly Collider[] _detectedColliders;
-        private readonly LayerMask _targetHitLayer;
-        private readonly LayerMask _obstacleLayer;
         
         private float _detectionZoneAngle;
         private float _detectionZoneRadius;
@@ -34,30 +32,23 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
         private Transform _previousEnemy;
         private Transform _finalEnemy;
         
-        private readonly Vector3 _offsetForTargetShooting;
-        
-        public EnemiesDetector(ShootingSystemConfig shootingSystemConfig, Transform unit)
+        public EnemiesDetector(Transform unit)
         {
+            _shootingSystemConfig = ServiceLocator.Get<ShootingSystemConfig>();
+            
             _equipment = ServiceLocator.Get<IEquipment>();
             _equipment.OnCurrentWeaponChanged += WeaponChanged;
             
-            _shootingSystemConfig = shootingSystemConfig;
-            
             _detectedColliders = new Collider[_shootingSystemConfig.MaxDetectingCollidersAmount];
             _detectionRate = TimeSpan.FromSeconds(_shootingSystemConfig.DetectionFrequency);
-
-            _targetHitLayer = _shootingSystemConfig.TargetHitLayer;
-            _obstacleLayer = _shootingSystemConfig.ObstacleLayer;
-
-            _offsetForTargetShooting = _shootingSystemConfig.OffsetForTargetShooting;
-
+            
             _unit = unit;
         }
 
-        private void WeaponChanged(Weapon weapon)
+        private void WeaponChanged(WeaponConfig weaponInfo)
         {
-            _detectionZoneAngle = weapon.WeaponConfig.DetectionZoneAngle;
-            _detectionZoneRadius = weapon.WeaponConfig.DetectionZoneRadius;
+            _detectionZoneAngle = weaponInfo.DetectionZoneAngle;
+            _detectionZoneRadius = weaponInfo.DetectionZoneRadius;
         }
         
         public void Start()
@@ -80,7 +71,7 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
         {
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
-                int collidersAmount = Physics.OverlapSphereNonAlloc(_unit.position, _detectionZoneRadius, _detectedColliders,_targetHitLayer);
+                int collidersAmount = Physics.OverlapSphereNonAlloc(_unit.position, _detectionZoneRadius, _detectedColliders,_shootingSystemConfig.TargetHitLayer);
                 
                 _finalEnemy = null;
                 _detectedEnemy = null;
@@ -89,7 +80,9 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
                 for (int i = 0; i < collidersAmount; i++)
                 {
                     _detectedEnemy = _detectedColliders[i].transform;
-                    if (DetectionFunctions.IsWithinAngle(_unit.position, _unit.forward, _detectedEnemy.position, _detectionZoneAngle) && !IsThereObstacle(_detectedEnemy.position))
+                    if (!IsUnitItself(_detectedEnemy) 
+                        && DetectionFunctions.IsWithinAngle(_unit.position, _unit.forward, _detectedEnemy.position, _detectionZoneAngle)
+                        && !IsThereObstacle(_detectedEnemy.position))                    
                     {
                         float distance = GetDistanceToTarget(_detectedEnemy.position);
                         
@@ -107,9 +100,14 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
             }
         }
         
+        private bool IsUnitItself(Transform detectedUnit)
+        {
+            return _unit == detectedUnit;
+        }
+        
         private bool IsThereObstacle(Vector3 targetPos)
         {
-            return Physics.Linecast(_unit.position + _offsetForTargetShooting, targetPos + _offsetForTargetShooting,_obstacleLayer);
+            return Physics.Linecast(_unit.position + _shootingSystemConfig.OffsetForTargetShooting, targetPos + _shootingSystemConfig.OffsetForTargetShooting,_shootingSystemConfig.ObstacleLayer);
         }
 
         private float GetDistanceToTarget(Vector3 targetPos)

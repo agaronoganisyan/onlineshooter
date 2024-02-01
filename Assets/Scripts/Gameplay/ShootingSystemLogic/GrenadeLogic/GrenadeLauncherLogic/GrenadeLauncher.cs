@@ -1,4 +1,5 @@
 using ConfigsLogic;
+using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic;
 using Infrastructure;
 using UnityEngine;
@@ -14,16 +15,16 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic
         
         private Grenade _currentGrenade;
         
-        public void Initialize(Transform activeContainer)
+        public void Initialize(IEquipmentContainer equipmentContainer)
         {
-            _transform.SetParent(activeContainer);
+            _transform.SetParent(equipmentContainer.LeftHandContainer);
             _transform.localPosition = Vector3.zero;
             _transform.localEulerAngles = Vector3.zero;
             
             _grenadeFactory = new GrenadeFactory(_grenadeConfig.Prefab, _grenadeConfig.InitialPoolSize);
         }
 
-        public void Launch(Vector3 targetPosition, GrenadeLaunchingConfig grenadeLaunchingConfig)
+        public void Launch(Vector3 targetPosition, ShootingSystemConfig grenadeLaunchingConfig)
         {
             _currentGrenade = _grenadeFactory.Get();
             _currentGrenade.Activate(_transform.position, targetPosition, grenadeLaunchingConfig, _grenadeConfig);

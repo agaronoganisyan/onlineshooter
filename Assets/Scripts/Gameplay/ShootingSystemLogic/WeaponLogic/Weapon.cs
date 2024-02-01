@@ -1,6 +1,6 @@
 using System;
 using ConfigsLogic;
-using Gameplay.ShootingSystemLogic.ReloadingSystemLogic;
+using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic;
 using HelpersLogic;
 using UnityEngine;
@@ -22,20 +22,17 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
     
     public abstract class Weapon : MonoBehaviour
     {
-        public event Action OnReloadingStarted;
-        public event Action OnReloadingFinished;
         public event Action OnFired;
         public event Action<int, int> OnAmmoChanged;
+        public event Action OnReloadingRequired;
 
-         public WeaponConfig WeaponConfig => _weaponConfig;
-         [SerializeField] WeaponConfig _weaponConfig;
+         public WeaponConfig Config => _config;
+         [SerializeField] WeaponConfig _config;
 
          private IFactory<Bullet> _bulletsFactory;
-         private TimerService _timerService = new StandardTimerService();
 
          private Bullet _currentBullet;
 
-         public Transform ShootPoint => _shootPoint;
          [SerializeField] private Transform _shootPoint;
          [SerializeField] private Transform _transform;
          private Transform _activeContainer;
@@ -45,33 +42,21 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          private int _maxAmmoCount;
 
          private float _nextShootTime;
-         private float _frequency;
-         private float _bulletDamage;
-         private float _bulletSpeed;
-         private float _reloadingDuration;
-
-         public bool IsReloading => _isReloading;
+        
          private bool _isReloading;
-
-
-         public void Initialize(Transform activeContainer,Transform reserveContainer)
+        
+         public void Initialize(IEquipmentContainer equipmentContainer)
          {
-             _activeContainer = activeContainer;
-             _reserveContainer = reserveContainer;
+             _activeContainer = equipmentContainer.RightHandContainer;
+             _reserveContainer = Config.WeaponType == WeaponType.First ?
+                 equipmentContainer.FirstWeaponContainer :
+                 equipmentContainer.SecondWeaponContainer;
              
-             _bulletsFactory = new BulletFactory(_weaponConfig.BulletPrefab,_weaponConfig.MaxAmmoCount/3);
+             _bulletsFactory = new BulletFactory(_config.BulletPrefab,_config.MaxAmmoCount/3);
 
-             _timerService.OnStarted += ReloadingStarted;
-             _timerService.OnFinished += ReloadingFinished;
-
-             _maxAmmoCount = _weaponConfig.MaxAmmoCount;
+             _maxAmmoCount = _config.MaxAmmoCount;
              _ammo = _maxAmmoCount;
-
-             _frequency = _weaponConfig.Frequency;
-             _bulletDamage = _weaponConfig.Damage;
-             _bulletSpeed = _weaponConfig.BulletSpeed;
-             _reloadingDuration = _weaponConfig.ReloadingDuration;
-
+             
              _isReloading = false;
          }
 
@@ -87,9 +72,9 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
              if (Time.time < _nextShootTime) return; //ДОБАВИТЬ БЫ РАЗБРОССССССС
              
              _currentBullet = _bulletsFactory.Get();
-             _currentBullet.Activate(_shootPoint.position, _shootPoint.forward,_bulletDamage,_bulletSpeed);
+             _currentBullet.Activate(_shootPoint.position, _shootPoint.forward, _config.BulletSpeed, _config.Damage);
 
-             _nextShootTime = Time.time + 1 * _frequency;
+             _nextShootTime = Time.time + 1 * _config.Frequency;
              _ammo--;
              OnFired?.Invoke();
              SetAmmo(_ammo);
@@ -107,31 +92,18 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
              return _ammo < _maxAmmoCount ? true : false;
          }
 
-         public void StartReloading()
-         {
-             _timerService.Start(_reloadingDuration);
-         }
-
-         public void StopReloading()
-         {
-             if (!_isReloading) return; 
-             
-             _isReloading = false;
-             _timerService.Stop();
-         }
-
          public void Draw()
          {
              _transform.SetParent(_activeContainer);
-             _transform.localPosition = _weaponConfig.PositionInHand;
-             _transform.localEulerAngles = _weaponConfig.RotationInHand;
+             _transform.localPosition = _config.PositionInHand;
+             _transform.localEulerAngles = _config.RotationInHand;
          }
 
          public void LayDown()
          {
              _transform.SetParent(_reserveContainer);
-             _transform.localPosition = _weaponConfig.PositionInContainer;
-             _transform.localEulerAngles = _weaponConfig.RotationInContainer;
+             _transform.localPosition = _config.PositionInContainer;
+             _transform.localEulerAngles = _config.RotationInContainer;
          }
 
          void SetAmmo(int ammoCount)
@@ -140,17 +112,16 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
              OnAmmoChanged?.Invoke(_ammo, _maxAmmoCount);
          }
 
-         void ReloadingStarted()
+         void StartReloading()
          {
              _isReloading = true;
-             OnReloadingStarted?.Invoke();
+             OnReloadingRequired?.Invoke();
          }
-
-         void ReloadingFinished()
+         
+         public void FinishReloading()
          {
              _isReloading = false;
              SetAmmo(_maxAmmoCount);
-             OnReloadingFinished?.Invoke();
          }
     }
 }

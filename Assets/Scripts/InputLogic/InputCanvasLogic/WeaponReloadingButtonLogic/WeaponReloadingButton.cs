@@ -1,6 +1,5 @@
-using Gameplay.ShootingSystemLogic.EquipmentLogic;
+using ConfigsLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
-using Infrastructure.ServiceLogic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +7,6 @@ namespace InputLogic.InputCanvasLogic.WeaponReloadingButtonLogic
 {
     public class WeaponReloadingButton : InputButton
     {
-        private Weapon _weapon;
-
         [SerializeField] private Image _icon;
         
         private void Start()
@@ -22,13 +19,14 @@ namespace InputLogic.InputCanvasLogic.WeaponReloadingButtonLogic
             base.Initialize();
 
             _equipment.OnCurrentWeaponChanged += ChangeWeapon;
+            _equipment.OnCurrentWeaponAmmoChanged += AmmoChanged;
             
             _inputHandler.OnReloadingInputStatusChanged += SetEnableStatus;
         }
 
         protected override void Prepare()
         {
-            ChangeWeapon(_equipment.CurrentWeapon);
+            ChangeWeapon(_equipment.CurrentWeaponInfo);
             TryToEnableButton();
         }
 
@@ -46,18 +44,13 @@ namespace InputLogic.InputCanvasLogic.WeaponReloadingButtonLogic
 
         private void TryToEnableButton()
         {
-            if(_weapon.IsReloadingPossible()) Enable();
+            if(_equipment.IsWeaponReloadingPossible()) Enable();
             else Disable();
         }
 
-        private void ChangeWeapon(Weapon weapon)
+        private void ChangeWeapon(WeaponConfig weaponInfo)
         {
-            if (_weapon != null) _weapon.OnAmmoChanged -= AmmoChanged;
-
-            _weapon = weapon;
-            _weapon.OnAmmoChanged += AmmoChanged;
-            
-            SetIconSprite(_weapon.WeaponConfig.BulletIconSprite);
+            SetIconSprite(weaponInfo.BulletIconSprite);
         }
 
         private void SetIconSprite(Sprite icon)

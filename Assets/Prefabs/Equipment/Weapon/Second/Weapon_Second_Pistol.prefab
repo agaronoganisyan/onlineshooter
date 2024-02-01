@@ -128,6 +128,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e04c7f280f5489c9b55b538c913783d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weaponConfig: {fileID: 11400000, guid: 9415f9361a6f148babb066321ce280d1, type: 2}
+  _config: {fileID: 11400000, guid: 9415f9361a6f148babb066321ce280d1, type: 2}
   _shootPoint: {fileID: 917383288175221891}
   _transform: {fileID: 7613306889908435186}

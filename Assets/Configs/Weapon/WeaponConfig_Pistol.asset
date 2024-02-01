@@ -17,10 +17,9 @@ MonoBehaviour:
   _detectionZoneAngle: 50
   _detectionZoneRadius: 14
   _damage: 25
-  _bulletSpeed: 5
+  _bulletSpeed: 50
   _maxAmmoCount: 3
   _frequency: 0.75
-  _reloadingDuration: 2.5
   _positionInHand: {x: 0, y: 0, z: 0}
   _rotationInHand: {x: 0, y: 11, z: 3.17}
   _positionInContainer: {x: 0.33, y: 0.055, z: 0.026}

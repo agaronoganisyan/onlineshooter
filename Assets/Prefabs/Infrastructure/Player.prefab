@@ -2577,7 +2577,8 @@ GameObject:
   - component: {fileID: 9122536344791681609}
   - component: {fileID: 9122536344791681608}
   - component: {fileID: 9122536344791681611}
-  m_Layer: 0
+  - component: {fileID: 4809541202866726450}
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2678,12 +2679,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ce8be6c59724df2b6209be7ef91cf69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _shootingSystemConfig: {fileID: 11400000, guid: 0bdf1e0caf36544b49ddcb1985ae53a7, type: 2}
-  _grenadeLaunchingConfig: {fileID: 11400000, guid: 1592576e773c842549a6c457dde46e01, type: 2}
-  _rightHandContainer: {fileID: 7431348719017926515}
-  _leftHandContainer: {fileID: 9122536343188380258}
-  _firstWeaponContainer: {fileID: 7431348719017926421}
-  _secondWeaponContainer: {fileID: 9122536344476350638}
 --- !u!114 &9122536344791681611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2696,3 +2691,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c1e5758eb644590a06974b681ece4f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4809541202866726450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9122536344791681621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 456fbedc396b439c8e6ad24ec8691cce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rightHandContainer: {fileID: 7431348719017926515}
+  _leftHandContainer: {fileID: 9122536343188380258}
+  _firstWeaponContainer: {fileID: 7431348719017926421}
+  _secondWeaponContainer: {fileID: 9122536344476350638}

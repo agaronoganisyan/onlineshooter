@@ -95,7 +95,6 @@ namespace Infrastructure
             ServiceLocator.Get<IPlayerGameplayInputHandler>().Initialize();
 
             ServiceLocator.Get<IEquipmentFactory>().Initialize();
-            ServiceLocator.Get<IEquipment>().Initialize();
             ServiceLocator.Get<IEquipmentSystem>().Initialize();
 
             ServiceLocator.Get<ILoadingScreenSystem>().Initialize();

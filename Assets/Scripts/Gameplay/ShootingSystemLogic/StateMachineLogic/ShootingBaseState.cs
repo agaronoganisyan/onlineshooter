@@ -7,6 +7,7 @@ using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
 using Infrastructure.StateMachineLogic;
 using Infrastructure.StateMachineLogic.Simple;
+using InputLogic.InputServiceLogic.PlayerInputLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.StateMachineLogic
@@ -30,23 +31,25 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         
         protected readonly IStateMachine<ShootingState> _stateMachine;
         
+        protected readonly IPlayerGameplayInputHandler _gameplayInputHandler;
         protected readonly IPlayerAnimator _playerAnimator;
-        private readonly IEnemiesDetector _enemiesDetector;
         protected readonly IEquipment _equipment;
         protected readonly IEquipmentContainer _equipmentContainer;
+        private readonly IEnemiesDetector _enemiesDetector;
         protected IAim _aim;
 
         protected ShootingSystemConfig _shootingSystemConfig;
         
         protected readonly float _minAngleToStartingShooting;
         
-        protected ShootingBaseState(State key, IStateMachine<ShootingState> stateMachine, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer,
+        protected ShootingBaseState(State key, IStateMachine<ShootingState> stateMachine, IPlayerGameplayInputHandler gameplayInputHandler, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer,
             IEnemiesDetector enemiesDetector, IAim aim, ShootingSystemConfig shootingSystemConfig)
         {
             _stateKey = key;
 
             _stateMachine = stateMachine;
 
+            _gameplayInputHandler = gameplayInputHandler;
             _playerAnimator = playerAnimator;
             _enemiesDetector = enemiesDetector;
             _equipment = equipment;
@@ -74,7 +77,6 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         
         protected virtual void TryToEnterThisShootingState()
         {
-            if (IsCurrentStateIsNonShootingType()) return;
         }
         
         protected virtual void ToShooting()

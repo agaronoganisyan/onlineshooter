@@ -29,7 +29,7 @@ namespace InputLogic.InputCanvasLogic.WeaponSwitchingButtonLogic
         
         private void ChangeWeapon()
         {
-            SetIconSprite(_equipment.NextWeapon.WeaponConfig.WeaponIconSprite);
+            SetIconSprite(_equipment.NextWeaponInfo.WeaponIconSprite);
         }
 
         private void SetIconSprite(Sprite icon)

@@ -30,7 +30,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic
             _secondWeapon = await _equipmentFactory.GetWeapon(_secondWeaponAddress);
             _grenadeLauncher = await _equipmentFactory.GetGrenadeLauncher(_grenadeLauncherAddress);
             
-            _equipment.Prepare(_firstWeapon, _secondWeapon, _grenadeLauncher);
+            _equipment.Initialize(_firstWeapon, _secondWeapon, _grenadeLauncher);
         }
         
         public void ResetEquipment()
