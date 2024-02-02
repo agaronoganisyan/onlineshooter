@@ -30,12 +30,12 @@ namespace Gameplay.UnitLogic
             _isStopped = false;
         }
         
-        public void TakeDamage(RifleBullet bullet)
+        public void TakeDamage(Bullet bullet)
         {
             BaseHealthDecrease(bullet.Damage, bullet.Transform);
         }
 
-        public void TakeDamage(Classic grenade)
+        public void TakeDamage(Grenade grenade)
         {
             BaseHealthDecrease(grenade.Damage, grenade.Transform);
         }

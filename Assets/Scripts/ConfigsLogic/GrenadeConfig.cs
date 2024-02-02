@@ -14,9 +14,5 @@ namespace ConfigsLogic
         [SerializeField] private float _impactRadius;
         public float ReloadingDuration => _reloadingDuration;
         [SerializeField] private float _reloadingDuration;
-        public int InitialPoolSize => initialPoolSize;
-        [SerializeField] private int initialPoolSize;
-        public Grenade Prefab => _prefab;
-        [SerializeField] private Grenade _prefab;
     }
 }

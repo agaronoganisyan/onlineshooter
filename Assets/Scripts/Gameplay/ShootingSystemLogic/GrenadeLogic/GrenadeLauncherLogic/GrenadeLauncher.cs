@@ -2,6 +2,7 @@ using ConfigsLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic;
 using Infrastructure;
+using Infrastructure.ServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic
@@ -9,7 +10,7 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic
     public abstract class GrenadeLauncher  : MonoBehaviour, IInitializable
     {
         [SerializeField] private GrenadeConfig _grenadeConfig;
-        private IFactory<Grenade> _grenadeFactory;
+        private IGrenadeFactory _grenadeFactory;
 
         [SerializeField] private Transform _transform;
         
@@ -21,13 +22,13 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic
             _transform.localPosition = Vector3.zero;
             _transform.localEulerAngles = Vector3.zero;
             
-            _grenadeFactory = new GrenadeFactory(_grenadeConfig.Prefab, _grenadeConfig.InitialPoolSize);
+            _grenadeFactory = ServiceLocator.Get<IGrenadeFactory>();
         }
 
-        public void Launch(Vector3 targetPosition, ShootingSystemConfig grenadeLaunchingConfig)
+        public void Launch(Vector3 targetPosition)
         {
             _currentGrenade = _grenadeFactory.Get();
-            _currentGrenade.Activate(_transform.position, targetPosition, grenadeLaunchingConfig, _grenadeConfig);
+            _currentGrenade.Activate(_transform.position, targetPosition,  _grenadeConfig.Damage,_grenadeConfig.ImpactRadius);
         }
     }
 }

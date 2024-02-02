@@ -6,10 +6,8 @@ using UnityEngine;
 
 namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic
 {
-    public abstract class SharedGameplayCanvasObject: MonoBehaviour, IPoolable<SharedGameplayCanvasObject>
+    public abstract class SharedGameplayCanvasObject: MonoBehaviour
     {
-        private Action<SharedGameplayCanvasObject> _returnToPool;
-
         private Camera _camera;
         [SerializeField] private CanvasGroup _canvasGroup;
         
@@ -23,17 +21,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
         
         private bool _isEnabled;
         private bool _isHidden;
-
-        public void PoolInitialize(Action<SharedGameplayCanvasObject> returnAction)
-        {
-            _returnToPool = returnAction;
-        }
-
-        public void ReturnToPool()
-        {
-            _returnToPool?.Invoke(this);
-        }
-
+        
         public virtual void Show()
         {
             if (_isEnabled) return;
@@ -80,11 +68,6 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
             _targetHeadTransform = targetHead;
             _offsetToTarget = offsetToTarget;
             _camera = worldCamera;
-        }
-
-        private void OnDisable()
-        {
-            ReturnToPool();
         }
     }
 }

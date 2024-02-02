@@ -3,6 +3,7 @@ using ConfigsLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic;
 using HelpersLogic;
+using Infrastructure.ServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.WeaponLogic
@@ -29,7 +30,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          public WeaponConfig Config => _config;
          [SerializeField] WeaponConfig _config;
 
-         private IFactory<Bullet> _bulletsFactory;
+         private IBulletFactory _bulletsFactory;
 
          private Bullet _currentBullet;
 
@@ -52,7 +53,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
                  equipmentContainer.FirstWeaponContainer :
                  equipmentContainer.SecondWeaponContainer;
              
-             _bulletsFactory = new BulletFactory(_config.BulletPrefab,_config.MaxAmmoCount/3);
+             _bulletsFactory = ServiceLocator.Get<IBulletFactory>();
 
              _maxAmmoCount = _config.MaxAmmoCount;
              _ammo = _maxAmmoCount;

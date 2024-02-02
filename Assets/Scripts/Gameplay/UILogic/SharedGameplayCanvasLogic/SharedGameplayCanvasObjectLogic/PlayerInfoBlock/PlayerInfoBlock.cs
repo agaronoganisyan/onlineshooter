@@ -1,14 +1,18 @@
+using System;
 using ConfigsLogic;
 using Gameplay.HealthLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.HealthBarLogic;
 using Gameplay.UnitLogic;
+using PoolLogic;
 using TMPro;
 using UnityEngine;
 
 namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock
 {
-    public class PlayerInfoBlock : SharedGameplayCanvasObject, IPlayerInfoBlock
+    public class PlayerInfoBlock : SharedGameplayCanvasObject, IPlayerInfoBlock, IPoolable<PlayerInfoBlock>
     {
+        private Action<PlayerInfoBlock> _returnToPool;
+        
         [SerializeField] private HealthBar _healthBar;
         
         [SerializeField] private TextMeshProUGUI _nameText;
@@ -58,6 +62,21 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
         public override void Tick()
         {
             base.Tick();
+        }
+
+        private void OnDisable()
+        {
+            ReturnToPool();
+        }
+        
+        public void PoolInitialize(Action<PlayerInfoBlock> returnAction)
+        {
+            _returnToPool = returnAction;
+        }
+
+        public void ReturnToPool()
+        {
+            _returnToPool?.Invoke(this);
         }
     }
 }

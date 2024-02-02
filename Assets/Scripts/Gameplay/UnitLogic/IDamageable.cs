@@ -5,7 +5,7 @@ namespace Gameplay.UnitLogic
 {
     public interface IDamageable
     {
-        void TakeDamage(RifleBullet bullet);
-        void TakeDamage(Classic grenade);
+        void TakeDamage(Bullet bullet);
+        void TakeDamage(Grenade grenade);
     }
 }

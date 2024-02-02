@@ -11,11 +11,14 @@ using Gameplay.ShootingSystemLogic.AimLogic;
 using Gameplay.ShootingSystemLogic.EquipmentFactoryLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
+using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
+using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic;
 using Gameplay.UILogic.DebriefingCanvasLogic;
 using Gameplay.UILogic.InfoCanvasLogic;
 using Gameplay.UILogic.InfoCanvasLogic.WeaponLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
+using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
 using Infrastructure.AssetManagementLogic;
 using Infrastructure.GameFactoryLogic;
 using Infrastructure.GameStateMachineLogic;
@@ -39,7 +42,10 @@ namespace Infrastructure
         [SerializeField] private HealthSystemConfig _healthSystemConfig;
         [SerializeField] private LoadingScreenSystemConfig _loadingScreenSystemConfig;
         [SerializeField] private ShootingSystemConfig _shootingSystemConfig;
-
+        [SerializeField] private BulletFactoryConfig _bulletFactoryConfig;
+        [SerializeField] private GrenadeFactoryConfig _grenadeFactoryConfig;
+        [SerializeField] private PlayerInfoBlockFactoryConfig _playerInfoBlockFactoryConfig;
+        
         private async void Awake()
         {
             RegisterServices();
@@ -63,6 +69,9 @@ namespace Infrastructure
             ServiceLocator.Register<IDebriefingCanvasSystem>(new DebriefingCanvasSystem());
             ServiceLocator.Register<ISharedGameplayCanvasSystem>(new SharedGameplayCanvasSystem());
             ServiceLocator.Register<ISharedGameplayCanvasObjectFactory>(new SharedGameplayCanvasObjectFactory());
+            ServiceLocator.Register<IPlayerInfoBlockFactory>(new PlayerInfoBlockFactory());
+            ServiceLocator.Register<IBulletFactory>(new BulletFactory());
+            ServiceLocator.Register<IGrenadeFactory>(new GrenadeFactory());
 
             ServiceLocator.Register<IPlayerMatchInfo>(new PlayerMatchInfo());
             ServiceLocator.Register<ISpawnSystem>(new SpawnSystem());
@@ -81,7 +90,9 @@ namespace Infrastructure
             ServiceLocator.Register<LoadingScreenSystemConfig>(_loadingScreenSystemConfig);
             ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
             ServiceLocator.Register<ShootingSystemConfig>(_shootingSystemConfig);
-
+            ServiceLocator.Register<BulletFactoryConfig>(_bulletFactoryConfig);
+            ServiceLocator.Register<GrenadeFactoryConfig>(_grenadeFactoryConfig);
+            ServiceLocator.Register<PlayerInfoBlockFactoryConfig>(_playerInfoBlockFactoryConfig);
         }
 
         private async UniTask InitServices()
@@ -102,6 +113,11 @@ namespace Infrastructure
             ServiceLocator.Get<IGameplayInfoCanvasSystem>().Initialize();
             ServiceLocator.Get<IInputCanvasSystem>().Initialize();
             ServiceLocator.Get<ISharedGameplayCanvasSystem>().Initialize();
+            
+            ServiceLocator.Get<IBulletFactory>().Initialize();
+            ServiceLocator.Get<IGrenadeFactory>().Initialize();
+            ServiceLocator.Get<IPlayerInfoBlockFactory>().Initialize();
+            ServiceLocator.Get<ISharedGameplayCanvasObjectFactory>().Initialize();
             
             ServiceLocator.Get<ISpawnSystem>().Initialize();
             ServiceLocator.Get<IRespawnSystem>().Initialize();

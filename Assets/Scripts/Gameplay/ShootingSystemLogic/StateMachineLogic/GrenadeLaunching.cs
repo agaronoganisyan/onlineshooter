@@ -36,7 +36,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         
         private void Throw()
         {
-            _equipment.CurrentGrenadeLauncher.Launch(_aim.Transform.position, _shootingSystemConfig);
+            _equipment.LaunchGrenade(_aim.Transform.position);
         }
 
         protected override void ToShooting()

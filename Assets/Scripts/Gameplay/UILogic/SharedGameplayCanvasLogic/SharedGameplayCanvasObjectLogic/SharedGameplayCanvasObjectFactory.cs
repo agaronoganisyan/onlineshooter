@@ -16,7 +16,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
         
         private PlayerInfoBlockConfig _playerInfoBlockConfig;
 
-        private PlayerInfoBlockFactory _playerBlockInfoFactory;
+        private IPlayerInfoBlockFactory _playerBlockInfoFactory;
         
         private Camera _gameplayCamera;
 
@@ -28,7 +28,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
 
             _gameplayCamera = ServiceLocator.Get<IGameplayCamera>().Camera;
 
-            _playerBlockInfoFactory = new PlayerInfoBlockFactory(_playerInfoBlockConfig.Prefab, _playerInfoBlockConfig.InitialPoolSize);            
+            _playerBlockInfoFactory = ServiceLocator.Get<IPlayerInfoBlockFactory>();  
         }
         
         public IPlayerInfoBlock GetPlayerBlockInfo(UnitInfo info)

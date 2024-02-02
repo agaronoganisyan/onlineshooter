@@ -585,6 +585,9 @@ MonoBehaviour:
   _healthSystemConfig: {fileID: 11400000, guid: 7ed5f4aededca4c8ab59d123dd13e2c4, type: 2}
   _loadingScreenSystemConfig: {fileID: 11400000, guid: fbb006d1b89fc4f7b87b346ab1d11258, type: 2}
   _shootingSystemConfig: {fileID: 11400000, guid: 0bdf1e0caf36544b49ddcb1985ae53a7, type: 2}
+  _bulletFactoryConfig: {fileID: 11400000, guid: d85813028bf624775ab142f95f3b42c2, type: 2}
+  _grenadeFactoryConfig: {fileID: 11400000, guid: 0c793fe1a4cd7458db2b3134a4cfae56, type: 2}
+  _playerInfoBlockFactoryConfig: {fileID: 11400000, guid: 4d82cfed3d5ca426096693a1623276fe, type: 2}
 --- !u!4 &1978139895
 Transform:
   m_ObjectHideFlags: 0

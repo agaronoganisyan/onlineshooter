@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8098725611865028976}
-  - component: {fileID: -2680112332209802328}
   - component: {fileID: 2861579499806796763}
   - component: {fileID: 9080764266458626992}
   - component: {fileID: 1300283833671524392}
   - component: {fileID: 4119348637215911788}
+  - component: {fileID: 1367187880540547639}
   m_Layer: 13
   m_Name: Grenade
   m_TagString: Untagged
@@ -36,20 +36,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-2680112332209802328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3334613138862281920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f651d124fa664558ab7bac497f19a605, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rigidbody: {fileID: 1300283833671524392}
-  _transform: {fileID: 8098725611865028976}
 --- !u!33 &2861579499806796763
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -130,3 +116,17 @@ CapsuleCollider:
   m_Height: 1.52
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1367187880540547639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3334613138862281920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65e284fb388948b09ef5236c042916eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rigidbody: {fileID: 1300283833671524392}
+  _transform: {fileID: 8098725611865028976}

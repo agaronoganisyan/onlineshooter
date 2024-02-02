@@ -129,6 +129,11 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
             return _currentWeapon.IsReadyToFire(target,minAngleToStartingShooting);
         }
 
+        public void LaunchGrenade(Vector3 position)
+        {
+            _currentGrenadeLauncher.Launch(position);
+        }
+        
         public WeaponConfig GetWeaponInfoByType(WeaponType type)
         {
             for (int i = 0; i < _weapons.Length; i++)

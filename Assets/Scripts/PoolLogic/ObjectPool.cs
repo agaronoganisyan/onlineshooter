@@ -12,25 +12,17 @@ namespace PoolLogic
         private T _prefab;
         private Stack<T> _pooledObjects = new Stack<T>();
         
-        public ObjectPool(T prefab, int initialSize)
+        public void Initialize(T prefab, int initialSize)
         {
             _prefab = prefab;
-            Spawn(initialSize);
+            
+            InitialSpawn(initialSize);
         }
 
         public T Pull()
         {
-            T pooledObject;
-            if (_pooledObjects.Count > 0)
-                pooledObject = _pooledObjects.Pop();
-            else
-            {
-                pooledObject = Object.Instantiate(_prefab).GetComponent<T>();   
-            }
-
-            //pooledObject.gameObject.SetActive(true);
-            pooledObject.PoolInitialize(Push);
-
+            T pooledObject = _pooledObjects.Count > 0 ? _pooledObjects.Pop() : CreateNew();
+            
             return pooledObject;
         }
 
@@ -45,17 +37,31 @@ namespace PoolLogic
             _onPushBackAllObjects?.Invoke();
         }
         
-        private void Spawn(int amount)
+        private void InitialSpawn(int amount)
         {
             T createdObject;
             
             for (int i = 0; i < amount; i++)
             {
                 createdObject = Object.Instantiate(_prefab).GetComponent<T>();
-                _pooledObjects.Push(createdObject);
                 _onPushBackAllObjects += createdObject.ReturnToPool;
+                createdObject.PoolInitialize(Push);
                 createdObject.gameObject.SetActive(false);
+                
+                _pooledObjects.Push(createdObject);
             }
+        }
+
+        private T CreateNew()
+        {
+            T createdObject;
+            
+            createdObject = Object.Instantiate(_prefab).GetComponent<T>();
+            _onPushBackAllObjects += createdObject.ReturnToPool;
+            createdObject.PoolInitialize(Push);
+            createdObject.gameObject.SetActive(false);
+
+            return createdObject;
         }
     }
 }

@@ -39,5 +39,6 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         bool IsWeaponRequiredReloading();
         bool IsWeaponReloadingPossible();
         bool IsWeaponReadyToFire(Transform target, float minAngleToStartingShooting);
+        void LaunchGrenade(Vector3 position);
     }
 }
