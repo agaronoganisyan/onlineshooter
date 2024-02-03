@@ -7,7 +7,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
 {
     public interface IPlayerInfoBlock
     {
-        void Initialize(UnitInfo info, PlayerInfoBlockConfig playerInfoBlockConfig, Camera worldCamera, bool isTeammate);
+        void Prepare(Unit unit, bool isTeammate);
         void Show();
         void Hide();
         void Cleanup();

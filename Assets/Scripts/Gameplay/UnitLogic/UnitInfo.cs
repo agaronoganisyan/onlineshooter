@@ -9,8 +9,8 @@ namespace Gameplay.UnitLogic
         public string Name { get; private set; }
         public TeamType TeamType{ get; private set; }
         public HealthSystem HealthSystem { get; private set; }
-        public Transform Target { get; private set; }
-        public Transform TargetHead { get; private set; }
+        public Transform Transform { get; private set; }
+        public Transform HeadTransform { get; private set; }
         public void Set(
             string unitName,
             TeamType teamType,
@@ -21,8 +21,8 @@ namespace Gameplay.UnitLogic
             Name = unitName;
             TeamType = teamType;
             HealthSystem = healthSystem;
-            Target = target;
-            TargetHead = targetHead;
+            Transform = target;
+            HeadTransform = targetHead;
         }
     }
 }

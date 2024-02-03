@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using Gameplay.UnitLogic;
 using HelpersLogic;
 using PoolLogic;
 using UnityEngine;
@@ -11,35 +12,34 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
         private Camera _camera;
         [SerializeField] private CanvasGroup _canvasGroup;
         
+        protected Unit _unit;
+        
         [SerializeField] private RectTransform _transform;
-        private Transform _targetTransform;
-        protected Transform _targetHeadTransform;
 
         private Vector3 _offsetToTarget;
 
         private float _fadingDuration = 0.5f;
         
-        private bool _isEnabled;
-        private bool _isHidden;
-        
+        private bool _isShown;
+
         public virtual void Show()
         {
-            if (_isEnabled) return;
+            if (_isShown) return;
             
-            _isEnabled = true;
+            _isShown = true;
             _canvasGroup.DOComplete();
             _canvasGroup.DOFade(1, _fadingDuration);
         }
 
         public virtual void Hide()
         {
-            if (!_isEnabled) return;
+            if (!_isShown) return;
             
-            _isEnabled = false;
+            _isShown = false;
             _canvasGroup.DOComplete();
             _canvasGroup.DOFade(0, _fadingDuration);
         }
-        
+
         protected void Enable()
         {
             gameObject.SetActive(true);
@@ -49,7 +49,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
         {
             gameObject.SetActive(false);
         }
-        
+
         public virtual void SetParent(Transform parent)
         {
             _transform.SetParent(parent);
@@ -59,13 +59,12 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
         public virtual void Tick()
         {
             if (_canvasGroup.alpha == 0) return;
-            _transform.position = DetectionOnScreenFunctions.GetScreenPosition(_camera,_targetHeadTransform.position+ _offsetToTarget);
+            _transform.position = DetectionOnScreenFunctions.GetScreenPosition(_camera,_unit.Info.HeadTransform.position + _offsetToTarget);
         }
 
-        protected void Initialize(Transform target, Transform targetHead, Vector3 offsetToTarget, Camera worldCamera)
+        protected void Prepare(Unit unit, Vector3 offsetToTarget, Camera worldCamera)
         {
-            _targetTransform = target;
-            _targetHeadTransform = targetHead;
+            _unit = unit;
             _offsetToTarget = offsetToTarget;
             _camera = worldCamera;
         }

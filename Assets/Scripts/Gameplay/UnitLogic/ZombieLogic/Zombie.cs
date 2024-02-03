@@ -22,7 +22,7 @@ namespace Gameplay.UnitLogic.ZombieLogic
 
         public override void AddInfoBar()
         {
-            _sharedGameplayCanvas.AddObjectAddObject(_info);
+            _sharedGameplayCanvas.AddUnitInfoObject(this);
         }
     }
 }

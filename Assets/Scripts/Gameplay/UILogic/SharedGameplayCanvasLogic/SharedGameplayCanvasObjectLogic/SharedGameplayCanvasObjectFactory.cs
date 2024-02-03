@@ -14,32 +14,28 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
     {
         private IPlayerMatchInfo _playerMatchInfo;
         
-        private PlayerInfoBlockConfig _playerInfoBlockConfig;
-
         private IPlayerInfoBlockFactory _playerBlockInfoFactory;
         
-        private Camera _gameplayCamera;
-
         public void Initialize()
         {
             _playerMatchInfo = ServiceLocator.Get<IPlayerMatchInfo>();
             
-            _playerInfoBlockConfig = ServiceLocator.Get<PlayerInfoBlockConfig>();
-
-            _gameplayCamera = ServiceLocator.Get<IGameplayCamera>().Camera;
-
             _playerBlockInfoFactory = ServiceLocator.Get<IPlayerInfoBlockFactory>();  
         }
         
-        public IPlayerInfoBlock GetPlayerBlockInfo(UnitInfo info)
+        public IPlayerInfoBlock GetPlayerBlockInfo(Unit unit)
         {
-            IPlayerInfoBlock playerInfoBlock = _playerBlockInfoFactory.Get().GetComponent<IPlayerInfoBlock>();
-            playerInfoBlock.Initialize(
-                info,
-                _playerInfoBlockConfig,
-                _gameplayCamera,
-                _playerMatchInfo.TeamType == info.TeamType);
+            IPlayerInfoBlock playerInfoBlock = _playerBlockInfoFactory.Get();
+            playerInfoBlock.Prepare(
+                unit,
+                _playerMatchInfo.TeamType == unit.Info.TeamType);
+            
             return playerInfoBlock;
+        }
+
+        public void ReturnAllObjectToPool()
+        {
+            _playerBlockInfoFactory.ReturnAllObjectToPool();
         }
     }
 }

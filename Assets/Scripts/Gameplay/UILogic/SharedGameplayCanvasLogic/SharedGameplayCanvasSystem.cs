@@ -1,6 +1,7 @@
 using System;
 using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.SpawnLogic.RespawnLogic;
+using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
 using Gameplay.UnitLogic;
 using Infrastructure.CanvasBaseLogic;
 using Infrastructure.ServiceLogic;
@@ -11,8 +12,9 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
     {
         public event Action OnUpdatingStarted;
         public event Action OnUpdatingStopped;
-        public event Action<UnitInfo> OnUnitInfoAdded;
-
+        public event Action<Unit> OnUnitInfoAdded;
+        public event Action<IPlayerInfoBlock> OnUnitInfoRemoved;
+        
         private IMatchSystem _matchSystem;
         private IRespawnSystem _respawnSystem;
 
@@ -36,9 +38,14 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
             OnUpdatingStopped?.Invoke();
         }
         
-        public void AddObjectAddObject(UnitInfo unitInfo)
+        public void AddUnitInfoObject(Unit unit)
         {
-            OnUnitInfoAdded?.Invoke(unitInfo);
+            OnUnitInfoAdded?.Invoke(unit);
+        }
+
+        public void RemoveUnitInfoObject(IPlayerInfoBlock info)
+        {
+            OnUnitInfoRemoved?.Invoke(info);
         }
     }
 }

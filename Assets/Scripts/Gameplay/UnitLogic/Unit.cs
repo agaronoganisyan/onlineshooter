@@ -11,6 +11,7 @@ namespace Gameplay.UnitLogic
     {
         public event Action OnDied;
         
+        public UnitInfo Info => _info;
         protected UnitInfo _info;
         protected IUnitHitBox _hitBox;
         protected ISharedGameplayCanvasSystem _sharedGameplayCanvas;

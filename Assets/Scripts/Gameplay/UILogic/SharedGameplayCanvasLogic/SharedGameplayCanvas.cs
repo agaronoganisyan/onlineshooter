@@ -44,17 +44,20 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
             _canvasSystem.OnUpdatingStarted += StartUpdating;
             _canvasSystem.OnUpdatingStopped += StopUpdating;
             _canvasSystem.OnUnitInfoAdded += AddUnitInfo;
-            
-            _sharedGameplayCanvasObjectFactory.Initialize();
+            _canvasSystem.OnUnitInfoRemoved += RemoveUnitInfo;
             _updatingRate = TimeSpan.FromSeconds(_updatingFrequency);
 
             _transform = transform;
             
+            Disable();
+            
             base.Initialize();
         }
 
-        public void StartUpdating()
+       public void StartUpdating()
         {
+            Enable();
+            
             _isStopped = false;
             _cancellationTokenSource = new CancellationTokenSource();
             Updating();
@@ -62,18 +65,26 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
 
         public void StopUpdating()
         {
+            Disable();
+            
             _isStopped = true;
             _cancellationTokenSource?.Cancel();
             Cleanup();
         }
-        
-        private void AddUnitInfo(UnitInfo info)
+
+        private void AddUnitInfo(Unit unit)
         {
-            IPlayerInfoBlock playerInfoBlock = _sharedGameplayCanvasObjectFactory.GetPlayerBlockInfo(info);
+            IPlayerInfoBlock playerInfoBlock = _sharedGameplayCanvasObjectFactory.GetPlayerBlockInfo(unit);
             playerInfoBlock.SetParent(_transform);
             _playerInfoBlocks.Add(playerInfoBlock);
         }
 
+        private void RemoveUnitInfo(IPlayerInfoBlock infoBlock)
+        {
+            _playerInfoBlocks.Remove(infoBlock);
+            infoBlock.Cleanup();
+        }
+        
         private void Update()
         {
             if (_isStopped) return;
@@ -84,7 +95,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
                 _playerInfoBlocks[i].Tick();
             }
         }
-
+        
         private async UniTaskVoid Updating()
         {
             while (!_cancellationTokenSource.IsCancellationRequested)
@@ -113,7 +124,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
                 await UniTask.Delay(_updatingRate, cancellationToken: _cancellationTokenSource.Token);
             }
         }
-        
+
         private void Cleanup()
         {
             int playerInfoBlocksCount = _playerInfoBlocks.Count;
@@ -121,6 +132,16 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic
             {
                 _playerInfoBlocks[i].Cleanup();
             }
+        }
+        
+        private void Enable()
+        {
+            enabled = true;
+        }
+
+        private void Disable()
+        {
+            enabled = false;
         }
     }
 }

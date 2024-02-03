@@ -9,6 +9,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
     public interface ISharedGameplayCanvasObjectFactory : IService
     {
         void Initialize();
-        IPlayerInfoBlock GetPlayerBlockInfo(UnitInfo info);
+        IPlayerInfoBlock GetPlayerBlockInfo(Unit info);
+        void ReturnAllObjectToPool();
     }
 }

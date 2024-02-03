@@ -7,7 +7,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.HealthBarLogic
     {
         private HealthSystem _healthSystem;
         
-        public void Initialize(HealthSystem healthSystem, Color mainBarColor, Color backgroundColor)
+        public void Prepare(HealthSystem healthSystem, Color mainBarColor, Color backgroundColor)
         {
             _healthSystem = healthSystem;
             
@@ -15,12 +15,12 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.HealthBarLogic
             
             Prepare(mainBarColor, backgroundColor);
         }
-        
+
         public void Cleanup()
         {
             _healthSystem.OnChanged -= UpdateHealthInfo;
         }
-        
+
         private void UpdateHealthInfo(float currentCount, float maxCount)
         {
             UpdateValue(currentCount, maxCount);
