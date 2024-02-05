@@ -1,3 +1,4 @@
+using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
 using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.UnitLogic;
 using Infrastructure.ServiceLogic;
@@ -18,8 +19,15 @@ public class ForTests : MonoBehaviour
     [ContextMenu("INJECT")]
     public void INJECT()
     {
-        _teamsSystem.AddUnitToTeam(_unit);
         _unit.SetInfo("96969506870",TeamType.Second);
-        _unit.AddInfoBar();
+        _teamsSystem.AddUnitToTeam(_unit);
+    }
+        
+    [ContextMenu("RESPAWN")]
+    public void RESPAWN()
+    {
+        SpawnPointInfo sp = new SpawnPointInfo();
+        sp.Setup(new Vector3(0,0,0), Quaternion.Euler(0,0,0));
+        _unit.Respawn(sp);
     }
 }

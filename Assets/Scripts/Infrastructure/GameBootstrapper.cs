@@ -1,5 +1,6 @@
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
+using Gameplay.HealthLogic;
 using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.PointsLogic;
 using Gameplay.MatchLogic.PointsLogic.PointsRuleLogic;
@@ -73,6 +74,8 @@ namespace Infrastructure
             ServiceLocator.Register<IBulletFactory>(new BulletFactory());
             ServiceLocator.Register<IGrenadeFactory>(new GrenadeFactory());
 
+            ServiceLocator.Register<PlayerHealthSystem>(new PlayerHealthSystem());
+            
             ServiceLocator.Register<IPlayerMatchInfo>(new PlayerMatchInfo());
             ServiceLocator.Register<ISpawnSystem>(new SpawnSystem());
             ServiceLocator.Register<IRespawnSystem>(new RespawnSystem());

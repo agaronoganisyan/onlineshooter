@@ -6,10 +6,13 @@ using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
+using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
+using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic;
 using Gameplay.UILogic.DebriefingCanvasLogic;
 using Gameplay.UILogic.InfoCanvasLogic;
 using Gameplay.UILogic.InfoCanvasLogic.WeaponLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic;
+using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
 using Gameplay.UnitLogic.PlayerLogic;
 using Infrastructure.SceneManagementLogic;
 using Infrastructure.ServiceLogic;
@@ -38,6 +41,11 @@ namespace Infrastructure.GameStateMachineLogic
         private ISharedGameplayCanvasSystem _sharedGameplayCanvas;
         private IDebriefingCanvasSystem _debriefingCanvas;
 
+        //Factories
+        private IBulletFactory _bulletFactory;
+        private IGrenadeFactory _grenadeFactory;
+        private ISharedGameplayCanvasObjectFactory _sharedGameplayCanvasObjectFactory;
+        
         public Match(IStateMachine<GameState> stateMachine) : base(stateMachine)
         {
             _sceneSystem = ServiceLocator.Get<ISceneSystem>();
@@ -53,6 +61,10 @@ namespace Infrastructure.GameStateMachineLogic
             _gameplayInfoCanvas = ServiceLocator.Get<IGameplayInfoCanvasSystem>();
             _sharedGameplayCanvas = ServiceLocator.Get<ISharedGameplayCanvasSystem>();
             _debriefingCanvas = ServiceLocator.Get<IDebriefingCanvasSystem>();
+            
+            _bulletFactory = ServiceLocator.Get<IBulletFactory>();
+            _grenadeFactory = ServiceLocator.Get<IGrenadeFactory>();
+            _sharedGameplayCanvasObjectFactory = ServiceLocator.Get<ISharedGameplayCanvasObjectFactory>();
         }
         
         public override async UniTask Enter()
@@ -90,6 +102,10 @@ namespace Infrastructure.GameStateMachineLogic
             _spawnSystem.Cleanup();
             _operationSystem.UnloadOperation();
 
+            _bulletFactory.ReturnAllObjectToPool();
+            _grenadeFactory.ReturnAllObjectToPool();
+            _sharedGameplayCanvasObjectFactory.ReturnAllObjectToPool();
+            
             _sharedGameplayCanvas.StopUpdating(); 
             _sharedGameplayCanvas.Hide();
             _inputCanvas.Hide();

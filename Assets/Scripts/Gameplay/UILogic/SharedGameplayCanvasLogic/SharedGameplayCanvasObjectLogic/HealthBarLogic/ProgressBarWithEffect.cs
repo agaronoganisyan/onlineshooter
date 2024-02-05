@@ -30,7 +30,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.HealthBarLogic
             
             _mainSlider.value = targetValue;
 
-            _effectSlider.DOComplete();
+            //_effectSlider.DOComplete();
             _effectSlider.DOValue(targetValue, _effectDuration).SetDelay(_delayBeforeEffect);
         }
     }

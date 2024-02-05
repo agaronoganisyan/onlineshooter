@@ -1,8 +1,9 @@
 using System;
+using Infrastructure.ServiceLogic;
 
 namespace Gameplay.HealthLogic
 {
-    public abstract class HealthSystem
+    public abstract class HealthSystem : IService
     {
         public event Action<float, float> OnChanged;
         public event Action OnEnded;
@@ -10,7 +11,7 @@ namespace Gameplay.HealthLogic
         protected float _maxCount;
         protected float _currentCount;
 
-        public virtual void Setup(float maxCount)
+        public virtual void Prepare(float maxCount)
         {
             _maxCount = maxCount;
             _currentCount = _maxCount;

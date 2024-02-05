@@ -52,6 +52,8 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
 
         public virtual void SetParent(Transform parent)
         {
+            if (!gameObject.activeSelf) return;
+            
             _transform.SetParent(parent);
             _transform.localScale = Vector3.one;
         }

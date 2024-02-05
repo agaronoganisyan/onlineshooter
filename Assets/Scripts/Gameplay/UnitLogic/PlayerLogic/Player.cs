@@ -13,13 +13,11 @@ namespace Gameplay.UnitLogic.PlayerLogic
 {
     public class Player : Unit
     {
-        public HealthSystemWithCriticalThreshold HealthSystem => _healthSystem;
-        private HealthSystemWithCriticalThreshold _healthSystem;
         private IShootingSystem _shootingSystem;
         private ISpawnSystem _spawnSystem;
+        private PlayerHealthSystem _healthSystem;
         private IPlayerAnimator _playerAnimator;
         private IRagdollHandler _ragdollHandler;
-
         
         public override void Initialize()
         {
@@ -28,17 +26,16 @@ namespace Gameplay.UnitLogic.PlayerLogic
             _playerAnimator = GetComponentInChildren<IPlayerAnimator>();
             _ragdollHandler = GetComponentInChildren<IRagdollHandler>();
             _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
-            _healthSystem = new HealthSystemWithCriticalThreshold(ServiceLocator.Get<HealthSystemConfig>());
+            _healthSystem = ServiceLocator.Get<PlayerHealthSystem>();
 
             _hitBox.Initialize(_healthSystem);
             
+            _healthSystem.Initialize();
             _shootingSystem.Initialize();
             _ragdollHandler.Initialize(_hitBox);
             
             _spawnSystem.OnSpawned += Prepare;
             _healthSystem.OnEnded += Die;
-
-            Disable();
         }
         
         public override void Update()
@@ -62,13 +59,14 @@ namespace Gameplay.UnitLogic.PlayerLogic
             //_sharedGameplayCanvas.AddObjectAddObject(_info);
         }
         
-        public override void Prepare(SpawnPointInfo spawnPointInfo)
+        protected override void Prepare(SpawnPointInfo spawnPointInfo)
         {
             base.Prepare(spawnPointInfo);
-            _healthSystem.Setup(1000);
+            _healthSystem.Prepare(1000);
             _shootingSystem.Prepare();
             _playerAnimator.Prepare();
             _ragdollHandler.Prepare();
+            AddInfoBar();
         }
         
         protected override void Stop()

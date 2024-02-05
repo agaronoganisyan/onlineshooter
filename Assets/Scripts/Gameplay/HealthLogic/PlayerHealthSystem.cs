@@ -1,39 +1,44 @@
 using System;
 using ConfigsLogic;
 using Gameplay.ShootingSystemLogic.ReloadingSystemLogic;
+using Infrastructure.ServiceLogic;
 
 namespace Gameplay.HealthLogic
 {
-    public class HealthSystemWithCriticalThreshold : HealthSystem
+    public class PlayerHealthSystem : HealthSystem
     {
         public event Action OnBelowCriticalThreshold;
         public event Action OnAboveCriticalThreshold;
         
+        private HealthSystemConfig _config;
+        
         private readonly TimerService _timerForDelayBeforeRegeneration = new StandardTimerService();
         private readonly TimerService _regenerationTimer = new StandardTimerService();
         
-        private readonly float _criticalHealthThreshold;
-        private readonly float _delayBeforeRegeneration;
-        private readonly float _regenerationDegree;
-        private readonly float _regenerationFrequency;
+        private float _criticalHealthThreshold;
+        private float _delayBeforeRegeneration;
+        private float _regenerationDegree;
+        private float _regenerationFrequency;
         
         private bool _isBelowCriticalThreshold;
 
-        public HealthSystemWithCriticalThreshold(HealthSystemConfig config)
+        public void Initialize()
         {
-            _criticalHealthThreshold = config.CriticalHealthThreshold;
-            _delayBeforeRegeneration = config.DelayBeforeRegeneration;
-            _regenerationDegree = config.RegenerationDegree;
-            _regenerationFrequency = config.RegenerationFrequency;
+            _config = ServiceLocator.Get<HealthSystemConfig>();
+
+            _criticalHealthThreshold = _config.CriticalHealthThreshold;
+            _delayBeforeRegeneration = _config.DelayBeforeRegeneration;
+            _regenerationDegree = _config.RegenerationDegree;
+            _regenerationFrequency = _config.RegenerationFrequency;
             
             _timerForDelayBeforeRegeneration.OnFinished += StartRegeneration;
             _timerForDelayBeforeRegeneration.OnStopped += StopRegeneration;
             _regenerationTimer.OnFinished += StartRegeneration;
         }
 
-        public override void Setup(float maxCount)
+        public override void Prepare(float maxCount)
         {
-            base.Setup(maxCount);
+            base.Prepare(maxCount);
             _isBelowCriticalThreshold = false;
         }
 

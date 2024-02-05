@@ -15,7 +15,7 @@ MonoBehaviour:
   _detectionFrequency: 0.25
   _offsetForTargetShooting: {x: 0, y: 1.87, z: 0}
   _aimingSpeed: 10
-  minAngleToStartingShooting: 10
+  minAngleToStartingShooting: 5
   _grenadeLaunchingAngle: 35
   _cameraDetectionRadius: 40
   _maxDetectingCollidersAmount: 10
