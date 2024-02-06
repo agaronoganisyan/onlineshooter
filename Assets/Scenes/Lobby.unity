@@ -400,7 +400,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _forTests: {fileID: 593132535}
-  _playerConfig: {fileID: 11400000, guid: ff9228d80d6b64e9d9aef04f794a776f, type: 2}
+  _profileSettingsConfig: {fileID: 11400000, guid: bdbebcce9faa045aab568487c5d02359, type: 2}
   _playerInfoBlockConfig: {fileID: 11400000, guid: 25512db97e8c34a07a5415305a5e419a, type: 2}
   _healthSystemConfig: {fileID: 11400000, guid: 7ed5f4aededca4c8ab59d123dd13e2c4, type: 2}
   _loadingScreenSystemConfig: {fileID: 11400000, guid: fbb006d1b89fc4f7b87b346ab1d11258, type: 2}

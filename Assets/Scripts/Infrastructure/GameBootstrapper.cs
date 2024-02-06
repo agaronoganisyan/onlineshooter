@@ -31,6 +31,7 @@ using InputLogic.InputServiceLogic;
 using InputLogic.InputServiceLogic.PlayerInputLogic;
 using LobbyLogic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Infrastructure
 {
@@ -38,7 +39,7 @@ namespace Infrastructure
     {
         [SerializeField] private ForTests _forTests;
         
-        [SerializeField] private PlayerConfig _playerConfig;
+        [SerializeField] private ProfileSettingsConfig _profileSettingsConfig;
         [SerializeField] private PlayerInfoBlockConfig _playerInfoBlockConfig;
         [SerializeField] private HealthSystemConfig _healthSystemConfig;
         [SerializeField] private LoadingScreenSystemConfig _loadingScreenSystemConfig;
@@ -89,13 +90,14 @@ namespace Infrastructure
             ServiceLocator.Register<IGameStateMachine>(new GameStateMachine());
             ServiceLocator.Register<IGameInfrastructureFactory>(new GameInfrastructureFactory());
 
+            ServiceLocator.Register<PlayerInfoBlockFactoryConfig>(_playerInfoBlockFactoryConfig);
+            ServiceLocator.Register<ProfileSettingsConfig>(_profileSettingsConfig);
             ServiceLocator.Register<PlayerInfoBlockConfig>(_playerInfoBlockConfig);
             ServiceLocator.Register<LoadingScreenSystemConfig>(_loadingScreenSystemConfig);
             ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
             ServiceLocator.Register<ShootingSystemConfig>(_shootingSystemConfig);
             ServiceLocator.Register<BulletFactoryConfig>(_bulletFactoryConfig);
             ServiceLocator.Register<GrenadeFactoryConfig>(_grenadeFactoryConfig);
-            ServiceLocator.Register<PlayerInfoBlockFactoryConfig>(_playerInfoBlockFactoryConfig);
         }
 
         private async UniTask InitServices()
