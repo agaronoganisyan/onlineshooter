@@ -1,5 +1,8 @@
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
+using Gameplay.EffectsLogic;
+using Gameplay.EffectsLogic.GrenadeEffectLogic;
+using Gameplay.EffectsLogic.HitEffectLogic;
 using Gameplay.HealthLogic;
 using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.PointsLogic;
@@ -47,7 +50,8 @@ namespace Infrastructure
         [SerializeField] private BulletFactoryConfig _bulletFactoryConfig;
         [SerializeField] private GrenadeFactoryConfig _grenadeFactoryConfig;
         [SerializeField] private PlayerInfoBlockFactoryConfig _playerInfoBlockFactoryConfig;
-        
+        [SerializeField] private HitEffectFactoryConfig _hitEffectFactoryConfig;
+        [SerializeField] private GrenadeEffectFactoryConfig _grenadeEffectFactoryConfig;
         private async void Awake()
         {
             RegisterServices();
@@ -70,7 +74,10 @@ namespace Infrastructure
             ServiceLocator.Register<IGameplayInfoCanvasSystem>(new GameplayInfoCanvasSystem());
             ServiceLocator.Register<IDebriefingCanvasSystem>(new DebriefingCanvasSystem());
             ServiceLocator.Register<ISharedGameplayCanvasSystem>(new SharedGameplayCanvasSystem());
-            ServiceLocator.Register<ISharedGameplayCanvasObjectFactory>(new SharedGameplayCanvasObjectFactory());
+            
+            ServiceLocator.Register<IEffectsFactory>(new EffectsFactory());
+            ServiceLocator.Register<IHitEffectFactory>(new HitEffectFactory());
+            ServiceLocator.Register<IGrenadeEffectFactory>(new GrenadeEffectFactory());            ServiceLocator.Register<ISharedGameplayCanvasObjectFactory>(new SharedGameplayCanvasObjectFactory());
             ServiceLocator.Register<IPlayerInfoBlockFactory>(new PlayerInfoBlockFactory());
             ServiceLocator.Register<IBulletFactory>(new BulletFactory());
             ServiceLocator.Register<IGrenadeFactory>(new GrenadeFactory());
@@ -90,7 +97,6 @@ namespace Infrastructure
             ServiceLocator.Register<IGameStateMachine>(new GameStateMachine());
             ServiceLocator.Register<IGameInfrastructureFactory>(new GameInfrastructureFactory());
 
-            ServiceLocator.Register<PlayerInfoBlockFactoryConfig>(_playerInfoBlockFactoryConfig);
             ServiceLocator.Register<ProfileSettingsConfig>(_profileSettingsConfig);
             ServiceLocator.Register<PlayerInfoBlockConfig>(_playerInfoBlockConfig);
             ServiceLocator.Register<LoadingScreenSystemConfig>(_loadingScreenSystemConfig);
@@ -98,6 +104,9 @@ namespace Infrastructure
             ServiceLocator.Register<ShootingSystemConfig>(_shootingSystemConfig);
             ServiceLocator.Register<BulletFactoryConfig>(_bulletFactoryConfig);
             ServiceLocator.Register<GrenadeFactoryConfig>(_grenadeFactoryConfig);
+            ServiceLocator.Register<PlayerInfoBlockFactoryConfig>(_playerInfoBlockFactoryConfig);
+            ServiceLocator.Register<HitEffectFactoryConfig>(_hitEffectFactoryConfig);
+            ServiceLocator.Register<GrenadeEffectFactoryConfig>(_grenadeEffectFactoryConfig);
         }
 
         private async UniTask InitServices()
@@ -119,6 +128,9 @@ namespace Infrastructure
             ServiceLocator.Get<IInputCanvasSystem>().Initialize();
             ServiceLocator.Get<ISharedGameplayCanvasSystem>().Initialize();
             
+            ServiceLocator.Get<IHitEffectFactory>().Initialize();
+            ServiceLocator.Get<IGrenadeEffectFactory>().Initialize();
+            ServiceLocator.Get<IEffectsFactory>().Initialize();
             ServiceLocator.Get<IBulletFactory>().Initialize();
             ServiceLocator.Get<IGrenadeFactory>().Initialize();
             ServiceLocator.Get<IPlayerInfoBlockFactory>().Initialize();

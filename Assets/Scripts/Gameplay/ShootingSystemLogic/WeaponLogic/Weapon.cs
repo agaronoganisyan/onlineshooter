@@ -31,9 +31,10 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          [SerializeField] WeaponConfig _config;
 
          private IBulletFactory _bulletsFactory;
-
          private Bullet _currentBullet;
 
+         [SerializeField] private ParticleSystem _muzzleEffect;
+         
          [SerializeField] private Transform _shootPoint;
          [SerializeField] private Transform _transform;
          private Transform _activeContainer;
@@ -77,6 +78,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
 
              _nextShootTime = Time.time + 1 * _config.Frequency;
              _ammo--;
+             _muzzleEffect.Play();
              OnFired?.Invoke();
              SetAmmo(_ammo);
              

@@ -1,8 +1,10 @@
 using System;
+using Gameplay.EffectsLogic;
 using Gameplay.HealthLogic;
 using Gameplay.ShootingSystemLogic.GrenadeLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic;
 using HelpersLogic;
+using Infrastructure.ServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.UnitLogic
@@ -12,6 +14,8 @@ namespace Gameplay.UnitLogic
         public event Action<Vector3> OnHitTaken;
 
         private HealthSystem _healthSystem;
+        private IEffectsFactory _effectsFactory;
+        private Effect _hitEffect;
         
         private Transform _transform;
 
@@ -19,6 +23,8 @@ namespace Gameplay.UnitLogic
         
         public void Initialize(HealthSystem healthSystem)
         {
+            _effectsFactory = ServiceLocator.Get<IEffectsFactory>();
+            
             _transform = transform;
             
             _healthSystem = healthSystem;
@@ -32,6 +38,9 @@ namespace Gameplay.UnitLogic
         
         public void TakeDamage(Bullet bullet)
         {
+            _hitEffect = _effectsFactory.GetHitEffect();
+            _hitEffect.Play(bullet.Transform.position);
+            
             BaseHealthDecrease(bullet.Damage, bullet.Transform);
         }
 

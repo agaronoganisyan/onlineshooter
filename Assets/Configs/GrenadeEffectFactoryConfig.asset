@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32b6210a44cc4ae897bf24d4fcdad733, type: 3}
-  m_Name: BulletFactoryConfig
+  m_Script: {fileID: 11500000, guid: 2144eb56bf244ba4b714cfba3d5402b7, type: 3}
+  m_Name: GrenadeEffectFactoryConfig
   m_EditorClassIdentifier: 
-  initialPoolSize: 10
-  _prefab: {fileID: 2075215465926979177, guid: f89ffd2e014d04165bc1964d2930cb9c, type: 3}
+  initialPoolSize: 1
+  _prefab: {fileID: 8187359636988707026, guid: 8a50f9a89210f468a80a33d7fb44eee2, type: 3}

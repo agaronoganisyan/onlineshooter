@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32b6210a44cc4ae897bf24d4fcdad733, type: 3}
-  m_Name: BulletFactoryConfig
+  m_Script: {fileID: 11500000, guid: 691a7de24f244958807bb2aadf644786, type: 3}
+  m_Name: HitEffectFactoryConfig
   m_EditorClassIdentifier: 
-  initialPoolSize: 10
-  _prefab: {fileID: 2075215465926979177, guid: f89ffd2e014d04165bc1964d2930cb9c, type: 3}
+  initialPoolSize: 1
+  _prefab: {fileID: -6452013494209978474, guid: 20cb5d3a6af9a406ba86cd4c20476594, type: 3}

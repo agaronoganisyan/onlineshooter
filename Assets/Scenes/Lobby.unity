@@ -408,6 +408,8 @@ MonoBehaviour:
   _bulletFactoryConfig: {fileID: 11400000, guid: d85813028bf624775ab142f95f3b42c2, type: 2}
   _grenadeFactoryConfig: {fileID: 11400000, guid: 0c793fe1a4cd7458db2b3134a4cfae56, type: 2}
   _playerInfoBlockFactoryConfig: {fileID: 11400000, guid: 4d82cfed3d5ca426096693a1623276fe, type: 2}
+  _hitEffectFactoryConfig: {fileID: 11400000, guid: de4db4301335f4cc3a79d8cfc7cfc1ed, type: 2}
+  _grenadeEffectFactoryConfig: {fileID: 11400000, guid: ce667edda85fe4cdbba78c3e5702d904, type: 2}
 --- !u!4 &1978139895
 Transform:
   m_ObjectHideFlags: 0

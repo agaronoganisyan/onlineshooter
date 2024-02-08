@@ -1,5 +1,6 @@
 using System;
 using ConfigsLogic;
+using Gameplay.EffectsLogic;
 using Gameplay.UnitLogic;
 using HelpersLogic;
 using Infrastructure.ServiceLogic;
@@ -19,6 +20,8 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
         private Action<Grenade> _returnToPool;
 
         private ShootingSystemConfig _shootingSystemConfig;
+        private IEffectsFactory _effectsFactory;
+        private Effect _hitEffect;
         
         [SerializeField] private Rigidbody _rigidbody;
         
@@ -53,7 +56,12 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
 
         private void Explosion()
         {
-            int hitTargetAmount = Physics.OverlapSphereNonAlloc(_transform.position, _impactRadius, _detectedColliders,_shootingSystemConfig.TargetHitLayer);
+            Vector3 position = _transform.position;
+            
+            _hitEffect = _effectsFactory.GetGrenadeEffect();
+            _hitEffect.Play(position);
+            
+            int hitTargetAmount = Physics.OverlapSphereNonAlloc(position, _impactRadius, _detectedColliders,_shootingSystemConfig.TargetHitLayer);
             
             for (int i = 0; i < hitTargetAmount; i++)
             {
@@ -62,14 +70,16 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
                 target.TakeDamage(this);
             }
             
-            int camerasAmount = Physics.OverlapSphereNonAlloc(_transform.position, _shootingSystemConfig.CameraDetectionRadius, _detectedColliders,_shootingSystemConfig.CameraLayer);
+            int camerasAmount = Physics.OverlapSphereNonAlloc(position, _shootingSystemConfig.CameraDetectionRadius, _detectedColliders,_shootingSystemConfig.CameraLayer);
             
             for (int i = 0; i < camerasAmount; i++)
             {
                 if (!_detectedColliders[i].TryGetComponent(out IShakable target)) return;
                 target.Shake();
+             target.Shake();
             }
         }
+        
         private Vector3 GetLaunchingDirection(Vector3 startPosition, Vector3 targetPosition, float angle)
         {
             Vector3 directionWithoutY = Vector3Helper.GetDirectionWithoutY(startPosition, targetPosition);
@@ -95,6 +105,7 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
             _returnToPool = returnAction;
 
             _shootingSystemConfig = ServiceLocator.Get<ShootingSystemConfig>();
+            _effectsFactory = ServiceLocator.Get<IEffectsFactory>();
             _detectedColliders = new Collider[_shootingSystemConfig.MaxDetectingCollidersAmount];
         }
 
