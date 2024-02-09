@@ -74,7 +74,7 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
              if (Time.time < _nextShootTime) return; //ДОБАВИТЬ БЫ РАЗБРОССССССС
              
              _currentBullet = _bulletsFactory.Get();
-             _currentBullet.Activate(_shootPoint.position, _shootPoint.forward, _config.BulletSpeed, _config.Damage);
+             _currentBullet.Activate(_shootPoint.position, _shootPoint.forward, _config.BulletSpeed, _config.Damage, _config.BulletLifetime);
 
              _nextShootTime = Time.time + 1 * _config.Frequency;
              _ammo--;

@@ -20,6 +20,8 @@ namespace ConfigsLogic
         [SerializeField] private float _damage;
         public float BulletSpeed => _bulletSpeed;
         [SerializeField] private float _bulletSpeed;
+        public float BulletLifetime => _bulletLifetime;
+        [SerializeField] private float _bulletLifetime;
         public int MaxAmmoCount => _maxAmmoCount;
         [SerializeField] private int _maxAmmoCount;
         public float Frequency => _frequency;

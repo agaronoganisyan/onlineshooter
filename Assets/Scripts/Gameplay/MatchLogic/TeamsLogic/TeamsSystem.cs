@@ -35,10 +35,12 @@ namespace Gameplay.MatchLogic.TeamsLogic
 
         public async UniTask WaitPlayers()
         {
-            while (_firstTeamMembers.Count == 0 || _secondTeamMembers.Count == 0)
+            while (!IsTeamsReady())
             {
                 await UniTask.Delay(_playersWaitingFrequency);
             }
+            
+            //await UniTask.WaitUntil(IsTeamsReady);
             
             _playerMatchInfo.Setup(GetPlayerTeamType());
         }
@@ -61,6 +63,11 @@ namespace Gameplay.MatchLogic.TeamsLogic
             _secondTeamMembers.Clear();
         }
 
+        private bool IsTeamsReady()
+        {
+            return _firstTeamMembers.Count > 0 && _secondTeamMembers.Count > 0;
+        }
+        
         private TeamType GetPlayerTeamType()
         {
             if (_firstTeamMembers.Contains(_player)) return TeamType.First;

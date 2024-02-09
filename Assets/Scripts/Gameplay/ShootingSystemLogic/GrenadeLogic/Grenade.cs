@@ -76,7 +76,6 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
             {
                 if (!_detectedColliders[i].TryGetComponent(out IShakable target)) return;
                 target.Shake();
-             target.Shake();
             }
         }
         
@@ -111,6 +110,7 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
 
         public void ReturnToPool()
         {
+            gameObject.SetActive(false);
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity  = Vector3.zero;
             _returnToPool?.Invoke(this);

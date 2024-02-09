@@ -17,7 +17,8 @@ MonoBehaviour:
   _detectionZoneAngle: 50
   _detectionZoneRadius: 14
   _damage: 150
-  _bulletSpeed: 50
+  _bulletSpeed: 82.5
+  _bulletLifetime: 2
   _maxAmmoCount: 12
   _frequency: 0.333
   _positionInHand: {x: 0, y: 0, z: 0}

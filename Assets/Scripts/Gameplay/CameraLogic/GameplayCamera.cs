@@ -25,6 +25,8 @@ namespace Gameplay.CameraLogic
             _cameraController.Initialize();
             
             _spawnSystem.OnSpawned += Prepare;
+            
+            Disable();
         }
 
         private void Prepare(SpawnPointInfo spawnPointInfo)

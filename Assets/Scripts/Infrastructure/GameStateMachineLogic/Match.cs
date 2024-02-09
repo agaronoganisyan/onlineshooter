@@ -1,5 +1,6 @@
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
+using Gameplay.EffectsLogic;
 using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.PointsLogic;
 using Gameplay.MatchLogic.SpawnLogic;
@@ -45,6 +46,7 @@ namespace Infrastructure.GameStateMachineLogic
         private IBulletFactory _bulletFactory;
         private IGrenadeFactory _grenadeFactory;
         private ISharedGameplayCanvasObjectFactory _sharedGameplayCanvasObjectFactory;
+        private IEffectsFactory _effectsFactory;
         
         public Match(IStateMachine<GameState> stateMachine) : base(stateMachine)
         {
@@ -65,6 +67,7 @@ namespace Infrastructure.GameStateMachineLogic
             _bulletFactory = ServiceLocator.Get<IBulletFactory>();
             _grenadeFactory = ServiceLocator.Get<IGrenadeFactory>();
             _sharedGameplayCanvasObjectFactory = ServiceLocator.Get<ISharedGameplayCanvasObjectFactory>();
+            _effectsFactory = ServiceLocator.Get<IEffectsFactory>();
         }
         
         public override async UniTask Enter()
@@ -105,7 +108,8 @@ namespace Infrastructure.GameStateMachineLogic
             _bulletFactory.ReturnAllObjectToPool();
             _grenadeFactory.ReturnAllObjectToPool();
             _sharedGameplayCanvasObjectFactory.ReturnAllObjectToPool();
-            
+            _effectsFactory.ReturnAllObjectToPool();
+
             _sharedGameplayCanvas.StopUpdating(); 
             _sharedGameplayCanvas.Hide();
             _inputCanvas.Hide();
