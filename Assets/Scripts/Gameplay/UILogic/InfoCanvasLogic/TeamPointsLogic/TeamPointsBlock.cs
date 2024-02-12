@@ -27,7 +27,8 @@ namespace Gameplay.UILogic.InfoCanvasLogic.TeamPointsLogic
         private void Initialize()
         {
             _pointsSystem = ServiceLocator.Get<IPointsSystem>();
-            
+            _pointsSystem.OnPointsAreReset += () => SetValue(0);
+
             switch (_team)
             {
                 case BlockTeamType.Player:

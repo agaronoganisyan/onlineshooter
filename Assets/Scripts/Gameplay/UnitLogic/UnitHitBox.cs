@@ -60,7 +60,7 @@ namespace Gameplay.UnitLogic
 
         private void TakeHit(Transform hittingTransform)
         {
-            OnHitTaken?.Invoke(Vector3Helper.GetDirectionWithoutYNormalized(_transform.position,hittingTransform.position));
+            OnHitTaken?.Invoke(hittingTransform.forward);
         }
 
         private void Stop()

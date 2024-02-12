@@ -11,7 +11,8 @@ namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
         void PlayIdle();
         void PlayAim();
         void PlayReload();
-        void PlayDraw();
+        void PlayDrawFirstPart();
+        void PlayDrawSecondPart();
         void PlayThrow();
         void SetRuntimeAnimatorController(RuntimeAnimatorController newController);
     }

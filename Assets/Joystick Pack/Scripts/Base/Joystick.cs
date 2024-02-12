@@ -97,7 +97,7 @@ namespace Joystick_Pack.Scripts.Base
             else
                 input = Vector2.zero;
 
-            SendValueToControl(input);
+            SendValueToControl(input.normalized);
         }
 
         private void FormatInput()

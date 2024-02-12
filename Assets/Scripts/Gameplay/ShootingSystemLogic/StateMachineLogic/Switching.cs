@@ -23,7 +23,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         {
             base.Enter();
             
-            _playerAnimator.PlayDraw();
+            _playerAnimator.PlayDrawFirstPart();
             _equipment.StartWeaponSwitching();
         }
 
@@ -39,6 +39,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
             _equipment.SwitchWeapon();
             
             _playerAnimator.SetRuntimeAnimatorController(_equipment.CurrentWeaponInfo.AnimatorOverride);
+            _playerAnimator.PlayDrawSecondPart();
         }
 
         protected override void ToShooting()

@@ -9,7 +9,8 @@ namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
         private readonly int _idleHash = Animator.StringToHash("Idle");
         private readonly int _aimHash = Animator.StringToHash("Aim");
         private readonly int _reloadHash = Animator.StringToHash("Reload");
-        private readonly int _drawHash = Animator.StringToHash("Draw");
+        private readonly int _drawFirstPartHash = Animator.StringToHash("DrawFirstPart");
+        private readonly int _drawSecondPartHash = Animator.StringToHash("DrawSecondPart");
         private readonly int _throwHash = Animator.StringToHash("Throw");
 
         private readonly int _movementVerticalHash = Animator.StringToHash("MovementVertical");
@@ -66,10 +67,16 @@ namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
             _animator.CrossFade(_reloadHash, _transitionDuration,1);
         }
 
-        public void PlayDraw()
+        public void PlayDrawFirstPart()
         {
             DOTween.To(() => _rig.weight, x => _rig.weight = x, 0, _transitionDuration/2); //А НУЖНО ЛИ ВООБЩЕ ЭТО УМЕНЬГЕНИЕ /2???
-            _animator.CrossFade(_drawHash, _transitionDuration/2,1);
+            _animator.CrossFade(_drawFirstPartHash, _transitionDuration/2,1);
+        }
+
+        public void PlayDrawSecondPart()
+        {
+            _rig.weight = 0;
+            _animator.Play(_drawSecondPartHash);
         }
 
         public void PlayThrow()

@@ -57,14 +57,6 @@ MonoBehaviour:
     m_Address: GameplayCamera
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: fd417a3415b1141bc8b16a2d2e891acc
-    m_Address: OperationConfig_Deathmatch
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 40ef6e60490d68541971945758777f58
-    m_Address: Demo_Scene_1
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: bee9e50912b714585b3ec147a1758e90
     m_Address: DebriefingCanvas
     m_ReadOnly: 0

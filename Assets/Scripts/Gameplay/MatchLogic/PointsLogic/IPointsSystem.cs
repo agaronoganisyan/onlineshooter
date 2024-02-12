@@ -9,6 +9,7 @@ namespace Gameplay.MatchLogic.PointsLogic
         event Action<MatchResultType> OnMatchResultDetermined;
         event Action<int> OnPlayerTeamPointsIncreased;
         event Action<int> OnEnemyTeamPointsIncreased;
+        event Action OnPointsAreReset;
         void Initialize();
         UniTask Prepare();
         void Cleanup();

@@ -13,6 +13,7 @@ namespace Gameplay.MatchLogic.PointsLogic
         public event Action<MatchResultType> OnMatchResultDetermined;
         public event Action<int> OnPlayerTeamPointsIncreased;
         public event Action<int> OnEnemyTeamPointsIncreased;
+        public event Action OnPointsAreReset;
 
         private IPointsRuleSystem _pointsRuleSystem;
         private IMatchSystem _matchSystem;
@@ -63,6 +64,8 @@ namespace Gameplay.MatchLogic.PointsLogic
                 _pointsRuleSystem.Prepare();
                 _pointsRuleSystem.OnTeamPointsIncreased += InvokePointsAction;
             }
+            
+            OnPointsAreReset?.Invoke();
         }
 
         private bool IsPlayerTeam(TeamType teamType)
