@@ -10,7 +10,7 @@ namespace Gameplay.CameraLogic.ControllerLogic
 {
     public class CameraController : MonoBehaviour , ICameraController
     {
-        private IPlayerGameplayInputHandler gameplayInputService;
+        private IPlayerGameplayInputHandler _gameplayInputService;
         
         [SerializeField] private Transform _cameraObjectTransform;
         [SerializeField] private Transform _transform;
@@ -19,11 +19,13 @@ namespace Gameplay.CameraLogic.ControllerLogic
         [SerializeField] private float _shakeDuration;
         [SerializeField] private float _shakeStrenght;
         private float _startYRotation;
-
+        private float _smoothTime = 0.1f; 
+        private float _currentRotationVelocity;
+        
         public void Initialize()
         {
             _targetTransform = ServiceLocator.Get<Player>().Transform;
-            gameplayInputService = ServiceLocator.Get<IPlayerGameplayInputHandler>();
+            _gameplayInputService = ServiceLocator.Get<IPlayerGameplayInputHandler>();
         }
 
         public void Prepare(Vector3 position, Quaternion rotation)
@@ -49,7 +51,7 @@ namespace Gameplay.CameraLogic.ControllerLogic
             enabled = false;
         }
         
-        private void LateUpdate()
+        private void Update()
         {
             HandleMovement();
             HandleRotation();
@@ -64,7 +66,8 @@ namespace Gameplay.CameraLogic.ControllerLogic
 
         private void HandleRotation()
         {
-            _transform.localEulerAngles = new Vector3(0,  _startYRotation + gameplayInputService.RotationDirection.x, 0);
+            float smoothedRotation = Mathf.SmoothDampAngle(transform.rotation.eulerAngles.y, _startYRotation + _gameplayInputService.RotationDirection.x, ref _currentRotationVelocity, _smoothTime);
+            _transform.rotation = Quaternion.Euler(0, smoothedRotation, 0);
         }
 
         private void HandleMovement()

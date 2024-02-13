@@ -18,6 +18,7 @@ namespace InputLogic.InputServiceLogic
         public event Action OnSwitchingInputReceived;
         public event Action OnThrowingInputReceived;
         public event Action OnReloadingInputReceived;
+        
         private InputMap _inputMap;
         
         public void Initialize()
@@ -27,7 +28,7 @@ namespace InputLogic.InputServiceLogic
             _inputMap.Gameplay.MovementDelta.performed +=
                 (context) => OnMovementDeltaReceived?.Invoke(context.ReadValue<Vector2>());
             _inputMap.Gameplay.RotationDelta.performed += 
-                (context) => OnRotationDeltaReceived?.Invoke(context.ReadValue<Vector2>());
+                (context) => SetRotationDelta(context.ReadValue<Vector2>());
             _inputMap.Gameplay.Switching.performed += (context) => OnSwitchingInputReceived?.Invoke();
             _inputMap.Gameplay.Throw.performed += (context) => OnThrowingInputReceived?.Invoke();
             _inputMap.Gameplay.Reloading.performed += (context) => OnReloadingInputReceived?.Invoke();
@@ -57,6 +58,11 @@ namespace InputLogic.InputServiceLogic
                         _inputMap.Gameplay.Disable();
                     break;
             }
+        }
+        
+        public void SetRotationDelta(Vector2 delta)
+        {
+            OnRotationDeltaReceived?.Invoke(delta);
         }
     }
 }

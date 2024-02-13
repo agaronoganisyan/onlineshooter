@@ -1,3 +1,5 @@
+using Infrastructure.ServiceLogic;
+using InputLogic.InputServiceLogic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.Layouts;
@@ -5,49 +7,53 @@ using UnityEngine.InputSystem.OnScreen;
 
 namespace InputLogic.InputCanvasLogic.DragAreaLogic
 {
-    public class DragArea : OnScreenControl, IPointerDownHandler, IDragHandler, IPointerUpHandler
+    public class DragArea : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
-        [InputControl(layout = "Vector2")]
-        [SerializeField] private string m_ControlPath;
+        private IInputService _inputService;
         
         private Canvas _canvas;
         private RectTransform _baseRect;
 
-        public float _sensitivity = 1.0f;
         private Vector2 lastTouchPosition;
-        
-        protected override string controlPathInternal
-        {
-            get => m_ControlPath;
-            set => m_ControlPath = value;
-        }
+        private bool dragging;
         
         private void Start()
         {
+            _inputService = ServiceLocator.Get<IInputService>();
+            
             _canvas = GetComponentInParent<Canvas>();
             _baseRect = GetComponent<RectTransform>();
-
             
             _baseRect.sizeDelta = new Vector2((float)Screen.width/2, Screen.height) /_canvas.scaleFactor;
             _baseRect.anchoredPosition = Vector2.zero;
         }
 
-        public void OnPointerDown(PointerEventData eventData)
+        public void OnBeginDrag(PointerEventData eventData)
         {
+            dragging = true;
+            lastTouchPosition = eventData.position;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            Vector2 delta = eventData.position - lastTouchPosition;
+            if (dragging)
+            {
+                Vector2 touchDelta = eventData.position - lastTouchPosition;
 
-            SendValueToControl(delta*_sensitivity);
-            
-            lastTouchPosition = eventData.position;
+                SendValueToControl(touchDelta);
+                
+                lastTouchPosition = eventData.position;
+            }
         }
 
-        public void OnPointerUp(PointerEventData eventData)
-        { 
-            
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            dragging = false;
+        }
+
+        private void SendValueToControl(Vector2 touchDelta)
+        {
+            _inputService.SetRotationDelta(touchDelta);
         }
     }
 }

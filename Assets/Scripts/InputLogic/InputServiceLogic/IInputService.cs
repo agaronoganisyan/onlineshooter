@@ -14,5 +14,6 @@ namespace InputLogic.InputServiceLogic
         void Initialize();
         void SetInputMode(InputMode mode);
         void SetActionMapEnableStatus(InputMode mode, bool status);
+        void SetRotationDelta(Vector2 delta);
     }
 }

@@ -43,6 +43,7 @@ namespace Infrastructure
         [SerializeField] private ForTests _forTests;
         
         [SerializeField] private ProfileSettingsConfig _profileSettingsConfig;
+        [SerializeField] private ControlsSettingsConfig _controlsSettingsConfig;
         [SerializeField] private PlayerInfoBlockConfig _playerInfoBlockConfig;
         [SerializeField] private HealthSystemConfig _healthSystemConfig;
         [SerializeField] private LoadingScreenSystemConfig _loadingScreenSystemConfig;
@@ -98,6 +99,7 @@ namespace Infrastructure
             ServiceLocator.Register<IGameInfrastructureFactory>(new GameInfrastructureFactory());
 
             ServiceLocator.Register<ProfileSettingsConfig>(_profileSettingsConfig);
+            ServiceLocator.Register<ControlsSettingsConfig>(_controlsSettingsConfig);
             ServiceLocator.Register<PlayerInfoBlockConfig>(_playerInfoBlockConfig);
             ServiceLocator.Register<LoadingScreenSystemConfig>(_loadingScreenSystemConfig);
             ServiceLocator.Register<HealthSystemConfig>(_healthSystemConfig);
