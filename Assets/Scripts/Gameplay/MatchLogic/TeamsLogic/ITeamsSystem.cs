@@ -12,6 +12,7 @@ namespace Gameplay.MatchLogic.TeamsLogic
         void Initialize();
         UniTask WaitPlayers();
         void AddUnitToTeam(Unit unit);
+        void AddUnitToTeam(Unit unit, TeamType teamType);
         void Cleanup();
     }
 }

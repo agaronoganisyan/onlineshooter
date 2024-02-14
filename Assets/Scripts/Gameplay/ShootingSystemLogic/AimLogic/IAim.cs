@@ -1,5 +1,6 @@
 using System;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
+using Gameplay.ShootingSystemLogic.EquipmentLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.AimLogic
@@ -8,7 +9,7 @@ namespace Gameplay.ShootingSystemLogic.AimLogic
     {
         event Action<Vector3> OnAimPositionChanged;
         Transform Transform { get; }
-        void Initialize(IEnemiesDetector enemiesDetector);
+        void Initialize(IEnemiesDetector enemiesDetector, IEquipment equipment);
         void Tick();
     }
 }

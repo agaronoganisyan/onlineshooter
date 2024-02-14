@@ -61,6 +61,8 @@ namespace Infrastructure
 
         private void RegisterServices()
         {
+            ServiceLocator.Register<ForTests>(_forTests);
+            
             ServiceLocator.Register<IInputService>(new InputService());
             ServiceLocator.Register<IPlayerGameplayInputHandler>(new PlayerGameplayInputHandler());
 
@@ -113,7 +115,7 @@ namespace Infrastructure
 
         private async UniTask InitServices()
         {
-            _forTests.Initialize();
+            ServiceLocator.Get<ForTests>().Initialize();
             
             ServiceLocator.Get<IGameInfrastructureFactory>().Initialize();
             await ServiceLocator.Get<IGameInfrastructureFactory>().CreateAndRegisterInfrastructure();

@@ -32,11 +32,11 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
         private Transform _previousEnemy;
         private Transform _finalEnemy;
         
-        public EnemiesDetector(Transform unit)
+        public EnemiesDetector(Transform unit, IEquipment equipment)
         {
             _shootingSystemConfig = ServiceLocator.Get<ShootingSystemConfig>();
-            
-            _equipment = ServiceLocator.Get<IEquipment>();
+
+            _equipment = equipment;
             _equipment.OnCurrentWeaponChanged += WeaponChanged;
             
             _detectedColliders = new Collider[_shootingSystemConfig.MaxDetectingCollidersAmount];

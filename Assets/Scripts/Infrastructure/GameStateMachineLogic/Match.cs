@@ -76,8 +76,13 @@ namespace Infrastructure.GameStateMachineLogic
             await _sceneSystem.LoadScene(_currentOperation.Scene);
             await _equipmentSystem.Prepare();
             await _matchSystem.Prepare();
-            _teamsSystem.AddUnitToTeam(_player);
-            await _teamsSystem.WaitPlayers();
+            _teamsSystem.AddUnitToTeam(_player, TeamType.Second);
+            ServiceLocator.Get<IPlayerMatchInfo>().Setup(TeamType.Second);
+            ServiceLocator.Get<ForTests>().INJECT();
+            ServiceLocator.Get<ForTests>().RESPAWN_1();
+            ServiceLocator.Get<ForTests>().RESPAWN_2();
+            ServiceLocator.Get<ForTests>().RESPAWN_3();      
+            // await _teamsSystem.WaitPlayers();
             await _pointsSystem.Prepare();
             await _spawnSystem.WaitSpawnPoints();
 

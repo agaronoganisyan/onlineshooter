@@ -1,6 +1,8 @@
 using Gameplay.HealthLogic;
 using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
 using Gameplay.MatchLogic.TeamsLogic;
+using Gameplay.ShootingSystemLogic;
+using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
 using Gameplay.UnitLogic.RagdollLogic;
 using Gameplay.UnitLogic.ZombieLogic.AnimationLogic;
 
@@ -8,18 +10,21 @@ namespace Gameplay.UnitLogic.ZombieLogic
 {
     public class Zombie : Unit
     {
+        private IShootingSystem _shootingSystem;
         private SimpleHealthSystem _healthSystem;
-        private IZombieAnimator _animator;
+        private IPlayerAnimator _animator;
         private IRagdollHandler _ragdollHandler;
         
         public override void Initialize()
         {
             base.Initialize();
             _healthSystem = new SimpleHealthSystem();
-            _animator = GetComponentInChildren<IZombieAnimator>();
+            _shootingSystem = GetComponent<IShootingSystem>();
+            _animator = GetComponentInChildren<IPlayerAnimator>();
             _ragdollHandler = GetComponentInChildren<IRagdollHandler>();
 
             _hitBox.Initialize(_healthSystem);
+            _shootingSystem.Initialize();
             _ragdollHandler.Initialize(_hitBox);
             
             _healthSystem.OnEnded += Die;
@@ -28,7 +33,6 @@ namespace Gameplay.UnitLogic.ZombieLogic
         public override void SetInfo(string unitName, TeamType teamType)
         {
             _info.Set(unitName,teamType,_healthSystem, _transform, _headTransform);
-            AddInfoBar();
         }
 
         public override void AddInfoBar()
@@ -40,6 +44,7 @@ namespace Gameplay.UnitLogic.ZombieLogic
         {
             base.Prepare(spawnPointInfo);
             _healthSystem.Prepare(1000);
+            _shootingSystem.Prepare();
             _animator.Prepare();
             _ragdollHandler.Prepare();
             AddInfoBar();
@@ -48,6 +53,7 @@ namespace Gameplay.UnitLogic.ZombieLogic
         protected override void Stop()
         {
             base.Stop();
+            _shootingSystem.Stop();
             _animator.Stop();
         }
         
@@ -56,6 +62,12 @@ namespace Gameplay.UnitLogic.ZombieLogic
             Stop();
             _ragdollHandler.Hit();
             base.Die();
+        }
+        
+        public override void Update()
+        {
+            base.Update();
+            _shootingSystem.Tick();
         }
     }
 }

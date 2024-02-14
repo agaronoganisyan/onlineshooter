@@ -27,11 +27,11 @@ namespace Gameplay.ShootingSystemLogic.AimLogic
 
         private float _aimingSpeed;
 
-        public void Initialize(IEnemiesDetector enemiesDetector)
+        public void Initialize(IEnemiesDetector enemiesDetector, IEquipment equipment)
         {
             _enemiesDetector = enemiesDetector;
             _shootingSystemConfig = ServiceLocator.Get<ShootingSystemConfig>();
-            _equipment = ServiceLocator.Get<IEquipment>();
+            _equipment = equipment;
             
             _offsetForTargetShooting = _shootingSystemConfig.OffsetForTargetShooting;
             _aimingSpeed = _shootingSystemConfig.AimingSpeed;
@@ -45,7 +45,6 @@ namespace Gameplay.ShootingSystemLogic.AimLogic
 
         public void Tick()
         {
-            
             _transform.position = Vector3.Lerp(_transform.position, _target.position + _offsetForTargetShooting,
                 _aimingSpeed * Time.deltaTime);
             

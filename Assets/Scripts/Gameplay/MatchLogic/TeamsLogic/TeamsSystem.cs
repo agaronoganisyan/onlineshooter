@@ -57,6 +57,12 @@ namespace Gameplay.MatchLogic.TeamsLogic
             }
         }
 
+        public void AddUnitToTeam(Unit unit, TeamType teamType)
+        {
+            if (teamType == TeamType.First) _firstTeamMembers.Add(unit);
+            else if (teamType == TeamType.Second) _secondTeamMembers.Add(unit);
+        }
+        
         public void Cleanup()
         {
             _firstTeamMembers.Clear();
