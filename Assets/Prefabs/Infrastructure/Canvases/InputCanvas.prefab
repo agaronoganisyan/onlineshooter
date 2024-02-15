@@ -400,7 +400,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!114 &8014551048353114403
 MonoBehaviour:
@@ -771,8 +771,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 563c368d722be4ff8a1b1f492ba54643, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ControlPath: <Gamepad>/rightStick
-  _sensitivity: 3
 --- !u!1 &8917515003791703847
 GameObject:
   m_ObjectHideFlags: 0

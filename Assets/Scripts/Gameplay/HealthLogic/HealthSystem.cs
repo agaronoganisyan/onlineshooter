@@ -15,6 +15,8 @@ namespace Gameplay.HealthLogic
         {
             _maxCount = maxCount;
             _currentCount = _maxCount;
+            
+            OnChanged?.Invoke(_currentCount, _maxCount);
         }
 
         public virtual void Decrease(float count)
@@ -37,11 +39,12 @@ namespace Gameplay.HealthLogic
         {
             OnChanged?.Invoke(currentCount, _maxCount);
 
-            if (currentCount == 0)
-            {
-                OnEnded?.Invoke();
-                return;
-            }
+            if (currentCount == 0)  EndUp();
+        }
+        
+        protected virtual void EndUp()
+        {
+            OnEnded?.Invoke();
         }
     }
 }

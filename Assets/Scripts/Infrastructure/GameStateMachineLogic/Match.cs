@@ -4,6 +4,7 @@ using Gameplay.EffectsLogic;
 using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.PointsLogic;
 using Gameplay.MatchLogic.SpawnLogic;
+using Gameplay.MatchLogic.TaskLogic;
 using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
@@ -29,6 +30,7 @@ namespace Infrastructure.GameStateMachineLogic
         private IOperationSystem _operationSystem;
         private ITeamsSystem _teamsSystem;
         private IPointsSystem _pointsSystem;
+        private IMatchTaskSystem _matchTaskSystem;
         private IMatchSystem _matchSystem;
         private IEquipmentSystem _equipmentSystem;
         private ISpawnSystem _spawnSystem;
@@ -54,6 +56,7 @@ namespace Infrastructure.GameStateMachineLogic
             _operationSystem = ServiceLocator.Get<IOperationSystem>();
             _teamsSystem = ServiceLocator.Get<ITeamsSystem>();
             _pointsSystem = ServiceLocator.Get<IPointsSystem>();
+            _matchTaskSystem = ServiceLocator.Get<IMatchTaskSystem>();
             _equipmentSystem = ServiceLocator.Get<IEquipmentSystem>();
             _matchSystem = ServiceLocator.Get<IMatchSystem>();
             _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
@@ -84,6 +87,7 @@ namespace Infrastructure.GameStateMachineLogic
             ServiceLocator.Get<ForTests>().RESPAWN_3();      
             // await _teamsSystem.WaitPlayers();
             await _pointsSystem.Prepare();
+            _matchTaskSystem.Prepare();
             await _spawnSystem.WaitSpawnPoints();
 
             _spawnSystem.Spawn();
@@ -106,6 +110,7 @@ namespace Infrastructure.GameStateMachineLogic
             _equipmentSystem.ResetEquipment();
             _matchSystem.Cleanup();
             _pointsSystem.Cleanup();
+            _matchTaskSystem.Cleanup();
             _teamsSystem.Cleanup();
             _spawnSystem.Cleanup();
             _operationSystem.UnloadOperation();

@@ -2549,7 +2549,7 @@ MonoBehaviour:
   playerAnimator: {fileID: 7431348719017926522}
   _characterController: {fileID: 9122536344791681620}
   _transform: {fileID: 9122536344791681622}
-  _moveSpeed: 5
+  _moveSpeed: 6
   _rotationSpeed: 10
 --- !u!143 &9122536344791681620
 CharacterController:

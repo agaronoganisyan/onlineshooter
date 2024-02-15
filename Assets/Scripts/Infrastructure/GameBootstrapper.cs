@@ -9,6 +9,7 @@ using Gameplay.MatchLogic.PointsLogic;
 using Gameplay.MatchLogic.PointsLogic.PointsRuleLogic;
 using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.MatchLogic.SpawnLogic.RespawnLogic;
+using Gameplay.MatchLogic.TaskLogic;
 using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.OperationLogic;
 using Gameplay.ShootingSystemLogic.AimLogic;
@@ -55,6 +56,8 @@ namespace Infrastructure
         [SerializeField] private GrenadeEffectFactoryConfig _grenadeEffectFactoryConfig;
         private async void Awake()
         {
+            Application.targetFrameRate = 60;
+            
             RegisterServices();
             await InitServices();
         }
@@ -80,7 +83,8 @@ namespace Infrastructure
             
             ServiceLocator.Register<IEffectsFactory>(new EffectsFactory());
             ServiceLocator.Register<IHitEffectFactory>(new HitEffectFactory());
-            ServiceLocator.Register<IGrenadeEffectFactory>(new GrenadeEffectFactory());            ServiceLocator.Register<ISharedGameplayCanvasObjectFactory>(new SharedGameplayCanvasObjectFactory());
+            ServiceLocator.Register<IGrenadeEffectFactory>(new GrenadeEffectFactory());   
+            ServiceLocator.Register<ISharedGameplayCanvasObjectFactory>(new SharedGameplayCanvasObjectFactory());
             ServiceLocator.Register<IPlayerInfoBlockFactory>(new PlayerInfoBlockFactory());
             ServiceLocator.Register<IBulletFactory>(new BulletFactory());
             ServiceLocator.Register<IGrenadeFactory>(new GrenadeFactory());
@@ -92,6 +96,7 @@ namespace Infrastructure
             ServiceLocator.Register<IRespawnSystem>(new RespawnSystem());
             ServiceLocator.Register<DeathmatchPointsRuleSystem>(new DeathmatchPointsRuleSystem());
             ServiceLocator.Register<IPointsSystem>(new PointsSystem());
+            ServiceLocator.Register<IMatchTaskSystem>(new MatchTaskSystem());
             ServiceLocator.Register<IOperationSystem>(new OperationSystem());
             ServiceLocator.Register<ITeamsSystem>(new TeamsSystem());
             ServiceLocator.Register<IMatchSystem>(new MatchSystem());
@@ -147,6 +152,7 @@ namespace Infrastructure
             ServiceLocator.Get<IMatchSystem>().Initialize();
             ServiceLocator.Get<DeathmatchPointsRuleSystem>().Initialize();
             ServiceLocator.Get<IPointsSystem>().Initialize();
+            ServiceLocator.Get<IMatchTaskSystem>().Initialize();
             ServiceLocator.Get<IAssetsProvider>().Initialize();
             ServiceLocator.Get<ISceneSystem>().Initialize();
             ServiceLocator.Get<IGameStateMachine>().Initialize();

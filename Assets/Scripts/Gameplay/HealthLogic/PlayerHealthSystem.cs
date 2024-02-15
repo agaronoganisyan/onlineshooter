@@ -44,9 +44,8 @@ namespace Gameplay.HealthLogic
 
         public override void Decrease(float count)
         {
-            base.Decrease(count);
-
             StartRegenerationTimer();
+            base.Decrease(count);
         }
 
         public override void Increase(float count)
@@ -76,6 +75,8 @@ namespace Gameplay.HealthLogic
         {
             base.HandleCurrentCount(currentCount);
             
+            if (currentCount == 0) return;
+            
             if (_isBelowCriticalThreshold)
             {
                 if (IsBelowCriticalThreshold(currentCount)) return;
@@ -92,6 +93,13 @@ namespace Gameplay.HealthLogic
             }
         }
 
+        protected override void EndUp()
+        {
+            _timerForDelayBeforeRegeneration.Stop();
+            _regenerationTimer.Stop();
+            base.EndUp();
+        }
+        
         private bool IsBelowCriticalThreshold(float currentCount)
         {
             return currentCount / _maxCount <= _criticalHealthThreshold;
