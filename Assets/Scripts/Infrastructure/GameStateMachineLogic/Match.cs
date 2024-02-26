@@ -21,11 +21,13 @@ using Infrastructure.ServiceLogic;
 using Infrastructure.StateMachineLogic;
 using InputLogic.InputCanvasLogic;
 using InputLogic.InputServiceLogic;
+using NetworkLogic;
 
 namespace Infrastructure.GameStateMachineLogic
 {
     public class Match : GameBaseState<GameState>
     {
+        private INetworkManager _networkManager;
         private ISceneSystem _sceneSystem;
         private IOperationSystem _operationSystem;
         private ITeamsSystem _teamsSystem;
@@ -52,6 +54,7 @@ namespace Infrastructure.GameStateMachineLogic
         
         public Match(IStateMachine<GameState> stateMachine) : base(stateMachine)
         {
+            _networkManager = ServiceLocator.Get<INetworkManager>();
             _sceneSystem = ServiceLocator.Get<ISceneSystem>();
             _operationSystem = ServiceLocator.Get<IOperationSystem>();
             _teamsSystem = ServiceLocator.Get<ITeamsSystem>();
@@ -75,16 +78,17 @@ namespace Infrastructure.GameStateMachineLogic
         
         public override async UniTask Enter()
         {
+            await _networkManager.ConnectToGameRoom();
             _currentOperation = await _operationSystem.GetOperation();
             await _sceneSystem.LoadScene(_currentOperation.Scene);
             await _equipmentSystem.Prepare();
             await _matchSystem.Prepare();
             _teamsSystem.AddUnitToTeam(_player, TeamType.Second);
-            ServiceLocator.Get<IPlayerMatchInfo>().Setup(TeamType.Second);
-            ServiceLocator.Get<ForTests>().INJECT();
-            ServiceLocator.Get<ForTests>().RESPAWN_1();
-            ServiceLocator.Get<ForTests>().RESPAWN_2();
-            ServiceLocator.Get<ForTests>().RESPAWN_3();      
+            // ServiceLocator.Get<IPlayerMatchInfo>().Setup(TeamType.Second);
+            // ServiceLocator.Get<ForTests>().INJECT();
+            // ServiceLocator.Get<ForTests>().RESPAWN_1();
+            // ServiceLocator.Get<ForTests>().RESPAWN_2();
+            // ServiceLocator.Get<ForTests>().RESPAWN_3();      
             // await _teamsSystem.WaitPlayers();
             await _pointsSystem.Prepare();
             _matchTaskSystem.Prepare();

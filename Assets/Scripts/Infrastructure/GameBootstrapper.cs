@@ -34,6 +34,7 @@ using InputLogic.InputCanvasLogic;
 using InputLogic.InputServiceLogic;
 using InputLogic.InputServiceLogic.PlayerInputLogic;
 using LobbyLogic;
+using NetworkLogic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -41,7 +42,9 @@ namespace Infrastructure
 {
     public class GameBootstrapper : MonoBehaviour
     {
-        [SerializeField] private ForTests _forTests;
+        //[SerializeField] private ForTests _forTests;
+        
+        [SerializeField] private NetworkManager _networkManager;
         
         [SerializeField] private ProfileSettingsConfig _profileSettingsConfig;
         [SerializeField] private ControlsSettingsConfig _controlsSettingsConfig;
@@ -64,7 +67,9 @@ namespace Infrastructure
 
         private void RegisterServices()
         {
-            ServiceLocator.Register<ForTests>(_forTests);
+            //ServiceLocator.Register<ForTests>(_forTests);
+            
+            ServiceLocator.Register<INetworkManager>(_networkManager);
             
             ServiceLocator.Register<IInputService>(new InputService());
             ServiceLocator.Register<IPlayerGameplayInputHandler>(new PlayerGameplayInputHandler());
@@ -120,10 +125,12 @@ namespace Infrastructure
 
         private async UniTask InitServices()
         {
-            ServiceLocator.Get<ForTests>().Initialize();
+            //ServiceLocator.Get<ForTests>().Initialize();
             
             ServiceLocator.Get<IGameInfrastructureFactory>().Initialize();
             await ServiceLocator.Get<IGameInfrastructureFactory>().CreateAndRegisterInfrastructure();
+            
+            ServiceLocator.Get<INetworkManager>().Initialize();
             
             ServiceLocator.Get<IInputService>().Initialize();
             ServiceLocator.Get<IPlayerGameplayInputHandler>().Initialize();
