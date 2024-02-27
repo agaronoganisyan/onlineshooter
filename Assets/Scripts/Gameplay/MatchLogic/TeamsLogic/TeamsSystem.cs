@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Gameplay.UnitLogic;
 using Gameplay.UnitLogic.PlayerLogic;
+using Infrastructure.PlayerSystemLogic;
 using Infrastructure.ServiceLogic;
 
 namespace Gameplay.MatchLogic.TeamsLogic
@@ -16,7 +17,7 @@ namespace Gameplay.MatchLogic.TeamsLogic
     
     public class TeamsSystem : ITeamsSystem
     {
-        private Player _player;
+        private IPlayerSystem _playerSystem;
         private IPlayerMatchInfo _playerMatchInfo;
 
         private readonly TimeSpan _playersWaitingFrequency = TimeSpan.FromSeconds(1);
@@ -29,7 +30,7 @@ namespace Gameplay.MatchLogic.TeamsLogic
 
         public void Initialize()
         {
-            _player = ServiceLocator.Get<Player>();
+            _playerSystem = ServiceLocator.Get<IPlayerSystem>();
             _playerMatchInfo = ServiceLocator.Get<IPlayerMatchInfo>();
         }
 
@@ -42,7 +43,7 @@ namespace Gameplay.MatchLogic.TeamsLogic
             
             //await UniTask.WaitUntil(IsTeamsReady);
             
-            _playerMatchInfo.Setup(GetPlayerTeamType());
+            //_playerMatchInfo.Setup(GetPlayerTeamType());
         }
 
         public void AddUnitToTeam(Unit unit)
@@ -76,7 +77,7 @@ namespace Gameplay.MatchLogic.TeamsLogic
         
         private TeamType GetPlayerTeamType()
         {
-            if (_firstTeamMembers.Contains(_player)) return TeamType.First;
+            if (_firstTeamMembers.Contains(_playerSystem.Player)) return TeamType.First;
             else return TeamType.Second;
         }
     }

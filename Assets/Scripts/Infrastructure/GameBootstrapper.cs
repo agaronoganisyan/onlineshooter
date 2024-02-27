@@ -28,6 +28,7 @@ using Infrastructure.AssetManagementLogic;
 using Infrastructure.GameFactoryLogic;
 using Infrastructure.GameStateMachineLogic;
 using Infrastructure.LoadingCanvasLogic;
+using Infrastructure.PlayerSystemLogic;
 using Infrastructure.SceneManagementLogic;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputCanvasLogic;
@@ -35,6 +36,7 @@ using InputLogic.InputServiceLogic;
 using InputLogic.InputServiceLogic.PlayerInputLogic;
 using LobbyLogic;
 using NetworkLogic;
+using NetworkLogic.PlayerFactory;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -71,6 +73,7 @@ namespace Infrastructure
             
             ServiceLocator.Register<INetworkManager>(_networkManager);
             
+            ServiceLocator.Register<IPlayerSystem>(new PlayerSystem());
             ServiceLocator.Register<IInputService>(new InputService());
             ServiceLocator.Register<IPlayerGameplayInputHandler>(new PlayerGameplayInputHandler());
 
@@ -109,7 +112,9 @@ namespace Infrastructure
             ServiceLocator.Register<ISceneSystem>(new SceneSystem());
             ServiceLocator.Register<IGameStateMachine>(new GameStateMachine());
             ServiceLocator.Register<IGameInfrastructureFactory>(new GameInfrastructureFactory());
+            ServiceLocator.Register<IPlayerFactory>(new PlayerFactory());
 
+            
             ServiceLocator.Register<ProfileSettingsConfig>(_profileSettingsConfig);
             ServiceLocator.Register<ControlsSettingsConfig>(_controlsSettingsConfig);
             ServiceLocator.Register<PlayerInfoBlockConfig>(_playerInfoBlockConfig);
@@ -131,6 +136,9 @@ namespace Infrastructure
             await ServiceLocator.Get<IGameInfrastructureFactory>().CreateAndRegisterInfrastructure();
             
             ServiceLocator.Get<INetworkManager>().Initialize();
+            
+            ServiceLocator.Get<IPlayerFactory>().Initialize();
+            ServiceLocator.Get<IPlayerSystem>().Initialize();
             
             ServiceLocator.Get<IInputService>().Initialize();
             ServiceLocator.Get<IPlayerGameplayInputHandler>().Initialize();

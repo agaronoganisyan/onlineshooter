@@ -19,9 +19,11 @@ namespace NetworkLogic
     
     public class NetworkManager : MonoBehaviour, INetworkManager, INetworkRunnerCallbacks
     {
+        public NetworkRunner NetworkRunner => _runner;
         private NetworkRunner _runner;
 
         private ConnectionStatus _status;
+
 
         public void Initialize()
         {

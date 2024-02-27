@@ -2,6 +2,7 @@ using DG.Tweening;
 using Gameplay.MatchLogic.SpawnLogic;
 using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
 using Gameplay.UnitLogic.PlayerLogic;
+using Infrastructure.PlayerSystemLogic;
 using Infrastructure.ServiceLogic;
 using InputLogic.InputServiceLogic.PlayerInputLogic;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Gameplay.CameraLogic.ControllerLogic
 {
     public class CameraController : MonoBehaviour , ICameraController
     {
+        private IPlayerSystem _playerSystem;
         private IPlayerGameplayInputHandler _gameplayInputService;
         
         [SerializeField] private Transform _cameraObjectTransform;
@@ -18,14 +20,18 @@ namespace Gameplay.CameraLogic.ControllerLogic
         
         [SerializeField] private float _shakeDuration;
         [SerializeField] private float _shakeStrenght;
+        
         private float _startYRotation;
         private float _smoothTime = 0.1f; 
         private float _currentRotationVelocity;
         
         public void Initialize()
         {
-            _targetTransform = ServiceLocator.Get<Player>().Transform;
+            _playerSystem = ServiceLocator.Get<IPlayerSystem>();
             _gameplayInputService = ServiceLocator.Get<IPlayerGameplayInputHandler>();
+            
+            _playerSystem.OnSpawned += Spawned;
+            _playerSystem.OnDespawned += Despawned;
         }
 
         public void Prepare(Vector3 position, Quaternion rotation)
@@ -50,18 +56,18 @@ namespace Gameplay.CameraLogic.ControllerLogic
         {
             enabled = false;
         }
-        
-        private void Update()
-        {
-            HandleMovement();
-            HandleRotation();
-        }
 
         public void Shake()
         {
             _cameraObjectTransform.DOComplete();
             _cameraObjectTransform.DOShakePosition(_shakeDuration, _shakeStrenght);
             _cameraObjectTransform.DOShakeRotation(_shakeDuration, _shakeStrenght);
+        }
+
+        private void Update()
+        {
+            HandleMovement();
+            HandleRotation();
         }
 
         private void HandleRotation()
@@ -73,6 +79,17 @@ namespace Gameplay.CameraLogic.ControllerLogic
         private void HandleMovement()
         {
             _transform.position = _targetTransform.position;
+        }
+        
+        private void Spawned(Player player)
+        {
+            _targetTransform = player.Transform;
+            Enable();
+        }
+        
+        private void Despawned()
+        {
+            Disable();
         }
     }
 }

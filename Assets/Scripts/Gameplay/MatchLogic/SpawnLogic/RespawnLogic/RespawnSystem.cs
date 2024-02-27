@@ -1,6 +1,7 @@
 using System;
 using Gameplay.ShootingSystemLogic.ReloadingSystemLogic;
 using Gameplay.UnitLogic.PlayerLogic;
+using Infrastructure.PlayerSystemLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace Gameplay.MatchLogic.SpawnLogic.RespawnLogic
         public event Action OnFinished;
         public event Action OnStopped;
 
-        private Player _player;
+        private IPlayerSystem _playerSystem;
         private IMatchSystem _matchSystem;
         private TimerServiceForDisplay _timerService;
 
@@ -25,8 +26,8 @@ namespace Gameplay.MatchLogic.SpawnLogic.RespawnLogic
             _matchSystem = ServiceLocator.Get<IMatchSystem>();
             _matchSystem.OnFinished += Stop;
             
-            _player = ServiceLocator.Get<Player>();
-            _player.OnDied += Start;
+            _playerSystem = ServiceLocator.Get<IPlayerSystem>();
+            _playerSystem.OnDied += Start;
             
             _timerService = new TimerServiceForDisplay(ResultFormat.Seconds);
             _timerService.OnValueGiven += (value) => OnRespawnTimeGiven?.Invoke(value);
@@ -38,7 +39,6 @@ namespace Gameplay.MatchLogic.SpawnLogic.RespawnLogic
 
         private void Start()
         {
-            Debug.Log("00000");
             _timerService.Start(_duration);
         }
         

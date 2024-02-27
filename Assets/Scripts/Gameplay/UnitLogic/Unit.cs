@@ -73,7 +73,7 @@ namespace Gameplay.UnitLogic
 
         public virtual void Update()
         {
-            _controller.Tick();
+            //_controller.Tick();
         }
         
         protected virtual void Die()

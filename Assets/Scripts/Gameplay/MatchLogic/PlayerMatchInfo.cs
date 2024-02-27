@@ -6,10 +6,13 @@ namespace Gameplay.MatchLogic
     {
         public TeamType TeamType => _teamType;
         private TeamType _teamType;
+        public string Name => _name;
+        private string _name;
 
-        public void Setup(TeamType teamType)
+        public void Setup(TeamType teamType, string name)
         {
             _teamType = teamType;
+            _name = name;
         }
     }
 }

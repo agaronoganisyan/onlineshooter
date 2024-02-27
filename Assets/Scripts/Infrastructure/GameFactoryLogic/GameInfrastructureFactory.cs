@@ -18,7 +18,7 @@ namespace Infrastructure.GameFactoryLogic
     {
         private IAssetsProvider _assetsProvider;
 
-        private string _playerAddress = "Player";
+        // private string _playerAddress = "Player";
         private string _gameplayCameraAddress = "GameplayCamera";
         
         //Canvases
@@ -39,7 +39,7 @@ namespace Infrastructure.GameFactoryLogic
         public async UniTask CreateAndRegisterInfrastructure()
         {
             await CreateLoadingCanvas();
-            await CreatePlayer();
+            //await CreatePlayer();
             await CreateCameraController();
             await CreateLobbyCanvas();
             await CreateInputCanvas();
@@ -49,13 +49,13 @@ namespace Infrastructure.GameFactoryLogic
 
         }
 
-        private async UniTask CreatePlayer()
-        {
-            GameObject prefab = await _assetsProvider.Load<GameObject>(_playerAddress);
-            Player obj = Object.Instantiate(prefab).GetComponent<Player>();
-            ServiceLocator.Register<Player>(obj);
-            obj.Initialize();
-        }
+        // private async UniTask CreatePlayer()
+        // {
+        //     GameObject prefab = await _assetsProvider.Load<GameObject>(_playerAddress);
+        //     Player obj = Object.Instantiate(prefab).GetComponent<Player>();
+        //     ServiceLocator.Register<Player>(obj);
+        //     obj.Initialize();
+        // }
         private async UniTask CreateCameraController()
         {
             GameObject prefab = await _assetsProvider.Load<GameObject>(_gameplayCameraAddress);

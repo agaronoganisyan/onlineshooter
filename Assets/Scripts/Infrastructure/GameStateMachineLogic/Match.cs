@@ -16,18 +16,21 @@ using Gameplay.UILogic.InfoCanvasLogic.WeaponLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
 using Gameplay.UnitLogic.PlayerLogic;
+using Infrastructure.PlayerSystemLogic;
 using Infrastructure.SceneManagementLogic;
 using Infrastructure.ServiceLogic;
 using Infrastructure.StateMachineLogic;
 using InputLogic.InputCanvasLogic;
 using InputLogic.InputServiceLogic;
 using NetworkLogic;
+using NetworkLogic.PlayerFactory;
 
 namespace Infrastructure.GameStateMachineLogic
 {
     public class Match : GameBaseState<GameState>
     {
         private INetworkManager _networkManager;
+        private IPlayerFactory _playerFactory;
         private ISceneSystem _sceneSystem;
         private IOperationSystem _operationSystem;
         private ITeamsSystem _teamsSystem;
@@ -36,7 +39,7 @@ namespace Infrastructure.GameStateMachineLogic
         private IMatchSystem _matchSystem;
         private IEquipmentSystem _equipmentSystem;
         private ISpawnSystem _spawnSystem;
-        private Player _player;
+        private IPlayerSystem _playerSystem;
         
         private OperationConfig _currentOperation;
 
@@ -55,6 +58,8 @@ namespace Infrastructure.GameStateMachineLogic
         public Match(IStateMachine<GameState> stateMachine) : base(stateMachine)
         {
             _networkManager = ServiceLocator.Get<INetworkManager>();
+            
+            _playerFactory = ServiceLocator.Get<IPlayerFactory>();
             _sceneSystem = ServiceLocator.Get<ISceneSystem>();
             _operationSystem = ServiceLocator.Get<IOperationSystem>();
             _teamsSystem = ServiceLocator.Get<ITeamsSystem>();
@@ -63,7 +68,7 @@ namespace Infrastructure.GameStateMachineLogic
             _equipmentSystem = ServiceLocator.Get<IEquipmentSystem>();
             _matchSystem = ServiceLocator.Get<IMatchSystem>();
             _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
-            _player = ServiceLocator.Get<Player>();
+            _playerSystem = ServiceLocator.Get<IPlayerSystem>();
             
             _inputCanvas = ServiceLocator.Get<IInputCanvasSystem>();
             _gameplayInfoCanvas = ServiceLocator.Get<IGameplayInfoCanvasSystem>();
@@ -82,8 +87,9 @@ namespace Infrastructure.GameStateMachineLogic
             _currentOperation = await _operationSystem.GetOperation();
             await _sceneSystem.LoadScene(_currentOperation.Scene);
             await _equipmentSystem.Prepare();
+            await _playerFactory.Create();
             await _matchSystem.Prepare();
-            _teamsSystem.AddUnitToTeam(_player, TeamType.Second);
+            //_teamsSystem.AddUnitToTeam(_player, TeamType.Second);
             // ServiceLocator.Get<IPlayerMatchInfo>().Setup(TeamType.Second);
             // ServiceLocator.Get<ForTests>().INJECT();
             // ServiceLocator.Get<ForTests>().RESPAWN_1();
