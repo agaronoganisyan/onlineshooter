@@ -1,4 +1,5 @@
 using System;
+using Fusion;
 using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
 using Gameplay.MatchLogic.TeamsLogic;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 namespace Gameplay.UnitLogic
 {
-    public abstract class Unit : MonoBehaviour, IUnit
+    public abstract class Unit : NetworkBehaviour, IUnit
     {
         public event Action OnDied;
         
@@ -22,27 +23,25 @@ namespace Gameplay.UnitLogic
         public Transform Transform => _transform;
         [SerializeField] protected Transform _transform;
         [SerializeField] protected Transform _headTransform;
-
-        public void Respawn(SpawnPointInfo info)
-        {
-            Prepare(info);
-        }
         
-        public virtual void Initialize()
+        public virtual void Awake()
         {
             _matchSystem = ServiceLocator.Get<IMatchSystem>();
             _sharedGameplayCanvas = ServiceLocator.Get<ISharedGameplayCanvasSystem>();
             
             _hitBox = GetComponent<IUnitHitBox>();
             _controller = GetComponent<IUnitController>();
-            
+        }
+
+        public override void Spawned()
+        {
+            if (!HasStateAuthority) return;
+
             _controller.Initialize();
 
             _matchSystem.OnFinished += Stop;
-            
-            Disable();
         }
-
+        
         public abstract void SetInfo(string unitName, TeamType teamType);
 
         public abstract void AddInfoBar();
@@ -68,6 +67,9 @@ namespace Gameplay.UnitLogic
         protected virtual void Stop()
         {
             enabled = false;
+            
+            if (!HasStateAuthority) return;
+            
             _controller.Stop();
         }
 

@@ -1,15 +1,16 @@
 using System;
+using Fusion;
 using Infrastructure.ServiceLogic;
 
 namespace Gameplay.HealthLogic
 {
-    public abstract class HealthSystem : IService
+    public abstract class HealthSystem : NetworkBehaviour
     {
         public event Action<float, float> OnChanged;
         public event Action OnEnded;
 
-        protected float _maxCount;
-        protected float _currentCount;
+        [Networked] protected float _maxCount { get; private set; }
+        [Networked] protected float _currentCount { get; private set; }
 
         public virtual void Prepare(float maxCount)
         {

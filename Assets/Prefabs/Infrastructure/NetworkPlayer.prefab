@@ -2519,7 +2519,6 @@ GameObject:
   m_Component:
   - component: {fileID: 9122536344791681622}
   - component: {fileID: 9122536344791681610}
-  - component: {fileID: 9122536344791681623}
   - component: {fileID: 9122536344791681620}
   - component: {fileID: 9122536344791681609}
   - component: {fileID: 9122536344791681608}
@@ -2527,6 +2526,8 @@ GameObject:
   - component: {fileID: 4809541202866726450}
   - component: {fileID: 6339531131021575035}
   - component: {fileID: 1458198716076773366}
+  - component: {fileID: 7800484272391811154}
+  - component: {fileID: 3836706590280744483}
   m_Layer: 10
   m_Name: NetworkPlayer
   m_TagString: Untagged
@@ -2566,25 +2567,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee13c8b65b4b4e638268e9043cd169d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   _transform: {fileID: 9122536344791681622}
   _headTransform: {fileID: 9122536343957558309}
---- !u!114 &9122536344791681623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9122536344791681621}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3875e6a3caf40d1bfd3ac0cb498a580, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerAnimator: {fileID: 7431348719017926522}
-  _characterController: {fileID: 9122536344791681620}
-  _transform: {fileID: 9122536344791681622}
-  _moveSpeed: 6
-  _rotationSpeed: 10
 --- !u!143 &9122536344791681620
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2679,7 +2664,10 @@ MonoBehaviour:
     RawGuidValue: 522499222e7cb4221be36aefa6e344b2
   NestedObjects: []
   NetworkedBehaviours:
+  - {fileID: 9122536344791681610}
   - {fileID: 1458198716076773366}
+  - {fileID: 7800484272391811154}
+  - {fileID: 3836706590280744483}
   SimulationBehaviours: []
 --- !u!114 &1458198716076773366
 MonoBehaviour:
@@ -2709,3 +2697,31 @@ MonoBehaviour:
     RotTeleportRadians: 1.5
   UseLegacySharedModeInterpolation: 0
   TargetInterpolationDelay: 0.03
+--- !u!114 &7800484272391811154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9122536344791681621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8241d37070a244ad830cf57e0e6ad512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  _moveSpeed: 6
+  _rotationSpeed: 10
+--- !u!114 &3836706590280744483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9122536344791681621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ede155e8cd8745318d63424d6e9cf265, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0

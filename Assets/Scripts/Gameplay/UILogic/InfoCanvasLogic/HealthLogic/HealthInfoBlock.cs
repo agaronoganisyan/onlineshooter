@@ -15,8 +15,8 @@ namespace Gameplay.UILogic.InfoCanvasLogic.HealthLogic
 
         private void Initialize()
         {
-            _healthSystem = ServiceLocator.Get<PlayerHealthSystem>();
-            _healthSystem.OnChanged += UpdateHealthInfo;
+            // _healthSystem = ServiceLocator.Get<PlayerHealthSystem>();
+            // _healthSystem.OnChanged += UpdateHealthInfo;
             SetIconFill(1);
         }
         

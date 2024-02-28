@@ -19,27 +19,37 @@ namespace Gameplay.UnitLogic.PlayerLogic
         private IPlayerAnimator _playerAnimator;
         private IRagdollHandler _ragdollHandler;
         
-        public override void Initialize()
+        public override void Awake()
         {
-            base.Initialize();
+            base.Awake();
             _shootingSystem = GetComponent<IShootingSystem>();
             _playerAnimator = GetComponentInChildren<IPlayerAnimator>();
             _ragdollHandler = GetComponentInChildren<IRagdollHandler>();
+            _healthSystem = GetComponent<PlayerHealthSystem>();
             _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
-            _healthSystem = ServiceLocator.Get<PlayerHealthSystem>();
-
-            _hitBox.Initialize(_healthSystem);
+        }
+        
+        public override void Spawned()
+        {
+            if (!HasStateAuthority) return;
             
+            Debug.LogError("PLAYER_SPAWNED_METHOD");
+            
+            base.Spawned();
+            
+            _hitBox.Initialize(_healthSystem);
             _healthSystem.Initialize();
             _shootingSystem.Initialize();
             _ragdollHandler.Initialize(_hitBox);
-            
+                
             _spawnSystem.OnSpawned += Prepare;
             _healthSystem.OnEnded += Die;
         }
         
         public override void Update()
         {
+            if (!HasStateAuthority) return;
+            
             base.Update();
             _shootingSystem.Tick();
             

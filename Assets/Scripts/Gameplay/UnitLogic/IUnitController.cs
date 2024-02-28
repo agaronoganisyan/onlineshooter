@@ -7,7 +7,7 @@ namespace Gameplay.UnitLogic
         Transform Transform { get; }
         void Initialize();
         void Prepare(Vector3 position, Quaternion rotation);
-        void Tick();
+        //void Tick();
         void Stop();
     }
 }

@@ -15,9 +15,9 @@ namespace Gameplay.UnitLogic.ZombieLogic
         private IPlayerAnimator _animator;
         private IRagdollHandler _ragdollHandler;
         
-        public override void Initialize()
+        public override void Awake()
         {
-            base.Initialize();
+            base.Awake();
             _healthSystem = new SimpleHealthSystem();
             _shootingSystem = GetComponent<IShootingSystem>();
             _animator = GetComponentInChildren<IPlayerAnimator>();

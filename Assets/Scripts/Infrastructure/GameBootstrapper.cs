@@ -96,8 +96,6 @@ namespace Infrastructure
             ServiceLocator.Register<IPlayerInfoBlockFactory>(new PlayerInfoBlockFactory());
             ServiceLocator.Register<IBulletFactory>(new BulletFactory());
             ServiceLocator.Register<IGrenadeFactory>(new GrenadeFactory());
-
-            ServiceLocator.Register<PlayerHealthSystem>(new PlayerHealthSystem());
             
             ServiceLocator.Register<IPlayerMatchInfo>(new PlayerMatchInfo());
             ServiceLocator.Register<ISpawnSystem>(new SpawnSystem());

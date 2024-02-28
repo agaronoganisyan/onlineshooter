@@ -22,10 +22,10 @@ namespace Gameplay.UILogic.InfoCanvasLogic.DamageScreenLogic
 
         private void Initialize()
         {
-            _playerHealthSystem = ServiceLocator.Get<PlayerHealthSystem>();
-            _playerHealthSystem.OnBelowCriticalThreshold += StartEffect;
-            _playerHealthSystem.OnAboveCriticalThreshold += () => StopEffect(true);
-            _playerHealthSystem.OnEnded += () => StopEffect(false);
+            // _playerHealthSystem = ServiceLocator.Get<PlayerHealthSystem>();
+            // _playerHealthSystem.OnBelowCriticalThreshold += StartEffect;
+            // _playerHealthSystem.OnAboveCriticalThreshold += () => StopEffect(true);
+            // _playerHealthSystem.OnEnded += () => StopEffect(false);
 
             _screen.alpha = 0;
         }
