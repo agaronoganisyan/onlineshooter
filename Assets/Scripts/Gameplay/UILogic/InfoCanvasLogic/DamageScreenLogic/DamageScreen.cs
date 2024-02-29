@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Gameplay.HealthLogic;
+using Infrastructure.PlayerSystemLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace Gameplay.UILogic.InfoCanvasLogic.DamageScreenLogic
 {
     public class DamageScreen : MonoBehaviour, IDamageScreen
     {
-        private PlayerHealthSystem _playerHealthSystem;
+        private IPlayerSystem _playerSystem;
         
         [SerializeField] private CanvasGroup _screen;
 
@@ -22,18 +23,18 @@ namespace Gameplay.UILogic.InfoCanvasLogic.DamageScreenLogic
 
         private void Initialize()
         {
-            // _playerHealthSystem = ServiceLocator.Get<PlayerHealthSystem>();
-            // _playerHealthSystem.OnBelowCriticalThreshold += StartEffect;
-            // _playerHealthSystem.OnAboveCriticalThreshold += () => StopEffect(true);
-            // _playerHealthSystem.OnEnded += () => StopEffect(false);
+            _playerSystem = ServiceLocator.Get<IPlayerSystem>();
+            _playerSystem.OnHealthBelowCriticalThreshold += StartEffect;
+            _playerSystem.OnHealthAboveCriticalThreshold += () => StopEffect(true);
+            _playerSystem.OnHealthEnded += () => StopEffect(false);
 
             _screen.alpha = 0;
         }
 
         private void StartEffect()
         {
-            _rippleAnimation.Pause();
-            _screen.DOComplete();
+            _screen.DOKill();
+            _screen.alpha = 0;
             _screen.DOFade(1, _effectAppearanceDuration).OnComplete(StartRippleAnimation);
         }
 

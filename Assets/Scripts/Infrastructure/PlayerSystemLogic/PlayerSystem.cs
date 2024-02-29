@@ -8,6 +8,10 @@ namespace Infrastructure.PlayerSystemLogic
         public event Action<Player> OnSpawned;
         public event Action OnDespawned;
         public event Action OnDied;
+        public event Action<float, float> OnHealthChanged;
+        public event Action OnHealthBelowCriticalThreshold;
+        public event Action OnHealthAboveCriticalThreshold;
+        public event Action OnHealthEnded;
         public Player Player => _player;
         private Player _player;
         
@@ -30,13 +34,28 @@ namespace Infrastructure.PlayerSystemLogic
         private void SubscribeToThisPlayer(Player player)
         {
             player.OnDied += Died;
+            player.HealthSystem.OnChanged += HealthChanged;
+            player.HealthSystem.OnBelowCriticalThreshold += HealthBelowCriticalThreshold;
+            player.HealthSystem.OnAboveCriticalThreshold += HealthAboveCriticalThreshold;
+            player.HealthSystem.OnEnded += HealthEnded;
         }
         
         private void UnsubscribeFromThisPlayer(Player player)
         {
             player.OnDied -= Died;
+            player.HealthSystem.OnChanged -= HealthChanged;
+            player.HealthSystem.OnBelowCriticalThreshold -= HealthBelowCriticalThreshold;
+            player.HealthSystem.OnAboveCriticalThreshold -= HealthAboveCriticalThreshold;
+            player.HealthSystem.OnEnded -= HealthEnded;
         }
 
         private void Died() => OnDied?.Invoke();
+        private void HealthChanged(float currentAmount, float maxAmount) => OnHealthChanged?.Invoke(currentAmount, maxAmount);
+
+        private void HealthBelowCriticalThreshold() => OnHealthBelowCriticalThreshold?.Invoke();
+
+        private void HealthAboveCriticalThreshold() => OnHealthAboveCriticalThreshold?.Invoke();
+
+        private void HealthEnded() => OnHealthEnded?.Invoke();
     }
 }

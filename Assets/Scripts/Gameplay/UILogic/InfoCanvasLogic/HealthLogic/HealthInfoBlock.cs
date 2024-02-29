@@ -1,12 +1,13 @@
 using Gameplay.HealthLogic;
 using Gameplay.UnitLogic.PlayerLogic;
+using Infrastructure.PlayerSystemLogic;
 using Infrastructure.ServiceLogic;
 
 namespace Gameplay.UILogic.InfoCanvasLogic.HealthLogic
 {
     public class HealthInfoBlock : FillableImage, IHealthInfoBlock
     {
-        private HealthSystem _healthSystem;
+        private IPlayerSystem _playerSystem;
         
         private void Start()
         {
@@ -15,8 +16,8 @@ namespace Gameplay.UILogic.InfoCanvasLogic.HealthLogic
 
         private void Initialize()
         {
-            // _healthSystem = ServiceLocator.Get<PlayerHealthSystem>();
-            // _healthSystem.OnChanged += UpdateHealthInfo;
+            _playerSystem = ServiceLocator.Get<IPlayerSystem>();
+            _playerSystem.OnHealthChanged += UpdateHealthInfo;
             SetIconFill(1);
         }
         

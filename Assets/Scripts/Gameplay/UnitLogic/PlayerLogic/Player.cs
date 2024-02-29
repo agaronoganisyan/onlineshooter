@@ -13,9 +13,11 @@ namespace Gameplay.UnitLogic.PlayerLogic
 {
     public class Player : Unit
     {
+        public PlayerHealthSystem HealthSystem => _healthSystem;
+        private PlayerHealthSystem _healthSystem;
+        
         private IShootingSystem _shootingSystem;
         private ISpawnSystem _spawnSystem;
-        private PlayerHealthSystem _healthSystem;
         private IPlayerAnimator _playerAnimator;
         private IRagdollHandler _ragdollHandler;
         
@@ -55,7 +57,7 @@ namespace Gameplay.UnitLogic.PlayerLogic
             
             if (Input.GetKeyDown(KeyCode.I))
             {
-                Die();
+                _healthSystem.Decrease(200);
             }
         }
         

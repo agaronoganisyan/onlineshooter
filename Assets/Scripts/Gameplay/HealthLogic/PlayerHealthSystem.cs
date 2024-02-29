@@ -1,5 +1,6 @@
 using System;
 using ConfigsLogic;
+using Fusion;
 using Gameplay.ShootingSystemLogic.ReloadingSystemLogic;
 using Infrastructure.ServiceLogic;
 
@@ -38,19 +39,23 @@ namespace Gameplay.HealthLogic
 
         public override void Prepare(float maxCount)
         {
-            base.Prepare(maxCount);
-            _isBelowCriticalThreshold = false;
+            if (!HasStateAuthority) return;
+
+            RPC_Prepare(maxCount);
         }
 
         public override void Decrease(float count)
         {
-            StartRegenerationTimer();
-            base.Decrease(count);
+            if (!HasStateAuthority) return;
+
+            RPC_Decrease(count);
         }
 
         public override void Increase(float count)
         {
-            base.Increase(count);
+            if (!HasStateAuthority) return;
+
+            RPC_Increase(count);
         }
 
         private void StartRegenerationTimer()
@@ -108,6 +113,26 @@ namespace Gameplay.HealthLogic
         private bool IsHealthFull()
         {
             return _currentCount == _maxCount;
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_Prepare(float maxCount)
+        {
+            _isBelowCriticalThreshold = false;
+            base.Prepare(maxCount);
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_Decrease(float count)
+        {
+            StartRegenerationTimer();
+            base.Decrease(count);
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_Increase(float count)
+        {
+            base.Increase(count);
         }
     }
 }

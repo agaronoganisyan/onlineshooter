@@ -10,6 +10,10 @@ namespace Infrastructure.PlayerSystemLogic
         event Action<Player> OnSpawned;
         event Action OnDespawned;
         event Action OnDied;
+        event Action<float, float> OnHealthChanged;
+        event Action OnHealthBelowCriticalThreshold;
+        event Action OnHealthAboveCriticalThreshold;
+        event Action OnHealthEnded;
         Player Player { get; }
         void Initialize();
         void SetPlayer(Player player);
