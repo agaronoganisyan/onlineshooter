@@ -61,6 +61,10 @@ MonoBehaviour:
     m_Address: DebriefingCanvas
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 14445b701e8ef445f9dc0f177853b048
+    m_Address: NetworkMatchHandler
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: adabe532a22de40518b40b2be3cc3380, type: 2}
   m_SchemaSet:

@@ -19,6 +19,8 @@ namespace NetworkLogic
     
     public class NetworkManager : MonoBehaviour, INetworkManager, INetworkRunnerCallbacks
     {
+        public event Action<PlayerRef> OnPlayerJoinedRoom;
+
         public NetworkRunner NetworkRunner => _runner;
         private NetworkRunner _runner;
 
@@ -46,10 +48,16 @@ namespace NetworkLogic
                 Debug.LogError($"Failed to Start: {result.ShutdownReason}");
             }
         }
-        
+
+        public bool IsServerOrMasterClient()
+        {
+            return _runner.IsServer || _runner.IsSharedModeMasterClient;
+        }
+
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
             Debug.Log("OnPlayerJoined");
+            OnPlayerJoinedRoom?.Invoke(player);
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)

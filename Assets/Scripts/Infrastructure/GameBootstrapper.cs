@@ -36,6 +36,7 @@ using InputLogic.InputServiceLogic;
 using InputLogic.InputServiceLogic.PlayerInputLogic;
 using LobbyLogic;
 using NetworkLogic;
+using NetworkLogic.MatchLogic;
 using NetworkLogic.PlayerFactory;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -72,7 +73,8 @@ namespace Infrastructure
             //ServiceLocator.Register<ForTests>(_forTests);
             
             ServiceLocator.Register<INetworkManager>(_networkManager);
-            
+            ServiceLocator.Register<INetworkMatchHandlerFactory>(new NetworkMatchHandlerFactory());
+
             ServiceLocator.Register<IPlayerSystem>(new PlayerSystem());
             ServiceLocator.Register<IInputService>(new InputService());
             ServiceLocator.Register<IPlayerGameplayInputHandler>(new PlayerGameplayInputHandler());
@@ -134,7 +136,8 @@ namespace Infrastructure
             await ServiceLocator.Get<IGameInfrastructureFactory>().CreateAndRegisterInfrastructure();
             
             ServiceLocator.Get<INetworkManager>().Initialize();
-            
+            ServiceLocator.Get<INetworkMatchHandlerFactory>().Initialize();
+
             ServiceLocator.Get<IPlayerFactory>().Initialize();
             ServiceLocator.Get<IPlayerSystem>().Initialize();
             

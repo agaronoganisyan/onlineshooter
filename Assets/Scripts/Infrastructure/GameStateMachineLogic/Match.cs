@@ -23,6 +23,7 @@ using Infrastructure.StateMachineLogic;
 using InputLogic.InputCanvasLogic;
 using InputLogic.InputServiceLogic;
 using NetworkLogic;
+using NetworkLogic.MatchLogic;
 using NetworkLogic.PlayerFactory;
 
 namespace Infrastructure.GameStateMachineLogic
@@ -30,6 +31,8 @@ namespace Infrastructure.GameStateMachineLogic
     public class Match : GameBaseState<GameState>
     {
         private INetworkManager _networkManager;
+        private INetworkMatchHandlerFactory _networkMatchHandlerFactory;
+        private INetworkMatchHandler _networkMatchHandler;
         private IPlayerFactory _playerFactory;
         private ISceneSystem _sceneSystem;
         private IOperationSystem _operationSystem;
@@ -58,7 +61,8 @@ namespace Infrastructure.GameStateMachineLogic
         public Match(IStateMachine<GameState> stateMachine) : base(stateMachine)
         {
             _networkManager = ServiceLocator.Get<INetworkManager>();
-            
+            _networkMatchHandlerFactory = ServiceLocator.Get<INetworkMatchHandlerFactory>();
+
             _playerFactory = ServiceLocator.Get<IPlayerFactory>();
             _sceneSystem = ServiceLocator.Get<ISceneSystem>();
             _operationSystem = ServiceLocator.Get<IOperationSystem>();
@@ -84,6 +88,9 @@ namespace Infrastructure.GameStateMachineLogic
         public override async UniTask Enter()
         {
             await _networkManager.ConnectToGameRoom();
+            await _networkMatchHandlerFactory.Register();
+            _networkMatchHandler = ServiceLocator.Get<INetworkMatchHandler>();
+
             _currentOperation = await _operationSystem.GetOperation();
             await _sceneSystem.LoadScene(_currentOperation.Scene);
             await _equipmentSystem.Prepare();
