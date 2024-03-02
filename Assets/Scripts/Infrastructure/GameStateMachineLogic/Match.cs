@@ -92,10 +92,13 @@ namespace Infrastructure.GameStateMachineLogic
             _networkMatchHandler = ServiceLocator.Get<INetworkMatchHandler>();
 
             _currentOperation = await _operationSystem.GetOperation();
+            _matchSystem.Prepare();
+            await _matchSystem.WaitingPlayers();
+            
             await _sceneSystem.LoadScene(_currentOperation.Scene);
             await _equipmentSystem.Prepare();
             await _playerFactory.Create();
-            await _matchSystem.Prepare();
+            
             //_teamsSystem.AddUnitToTeam(_player, TeamType.Second);
             // ServiceLocator.Get<IPlayerMatchInfo>().Setup(TeamType.Second);
             // ServiceLocator.Get<ForTests>().INJECT();
@@ -110,7 +113,7 @@ namespace Infrastructure.GameStateMachineLogic
             _spawnSystem.Spawn();
             _inputService.SetInputMode(InputMode.Gameplay);
 
-            _matchSystem.Start();
+            _matchSystem.Start(_currentOperation.Duration);
             
             _sharedGameplayCanvas.Show();
             _sharedGameplayCanvas.StartUpdating();

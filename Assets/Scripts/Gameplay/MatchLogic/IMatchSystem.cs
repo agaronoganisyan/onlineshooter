@@ -11,7 +11,9 @@ namespace Gameplay.MatchLogic
         event Action<string> OnMatchTimeGiven;
         event Action<string> OnRestOfMatchTimeChanged;
         void Initialize();
-        UniTask Prepare();
-        void Start();
-        void Cleanup();    }
+        UniTask WaitingPlayers();
+        void Prepare();
+        void Start(float duration);
+        void Cleanup();
+    }
 }

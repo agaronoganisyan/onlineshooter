@@ -1,9 +1,8 @@
 using System;
-using ConfigsLogic;
 using Cysharp.Threading.Tasks;
-using Gameplay.OperationLogic;
-using Gameplay.ShootingSystemLogic.ReloadingSystemLogic;
 using Infrastructure.ServiceLogic;
+using NetworkLogic;
+using NetworkLogic.MatchLogic;
 
 namespace Gameplay.MatchLogic
 {
@@ -22,38 +21,40 @@ namespace Gameplay.MatchLogic
         public event Action<string> OnMatchTimeGiven;
         public event Action<string> OnRestOfMatchTimeChanged;
         
-        private IOperationSystem _operationSystem;
-        private TimerServiceForDisplay _timerService;
-        private OperationConfig _operationConfig;
+        private INetworkManager _networkManager;
+        private INetworkMatchHandler _networkMatchHandler;
         
         public void Initialize()
         {
-            _operationSystem = ServiceLocator.Get<IOperationSystem>();
-            _timerService = new TimerServiceForDisplay(ResultFormat.MinutesAndSeconds);
-            _timerService.OnValueGiven += (value) => OnMatchTimeGiven?.Invoke(value);
-            _timerService.OnValueChanged += (value) => OnRestOfMatchTimeChanged?.Invoke(value);
-            _timerService.OnFinished += Finish;
+            _networkManager = ServiceLocator.Get<INetworkManager>();
         }
 
-        public async UniTask Prepare()
+        public void Prepare()
         {
-            _operationConfig = await _operationSystem.GetOperation();
+            _networkMatchHandler = ServiceLocator.Get<INetworkMatchHandler>();
+            _networkMatchHandler.OnMatchTimeGiven += (value) => OnMatchTimeGiven?.Invoke(value);
+            _networkMatchHandler.OnRestOfMatchTimeChanged += (value) => OnRestOfMatchTimeChanged?.Invoke(value);
+            _networkMatchHandler.OnStarted += () => OnStarted?.Invoke();
+            _networkMatchHandler.OnFinished += () => OnFinished?.Invoke();
         }
         
-        public void Start()
+        public async UniTask WaitingPlayers()
         {
-            _timerService.Start(_operationConfig.Duration);
-            OnStarted?.Invoke();;
+            while (!_networkMatchHandler.IsReady)
+            {
+                await UniTask.Delay(1);
+            }
+        }
+        
+        public void Start(float duration)
+        {
+            if (!_networkManager.IsServerOrMasterClient()) return;
+            
+            _networkMatchHandler.StartMatch(duration);
         }
 
-        private void Finish()
-        {
-            OnFinished?.Invoke();
-        }
-        
         public void Cleanup()
         {
-
         }
     }
 }
