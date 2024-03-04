@@ -1,7 +1,9 @@
 using System;
 using Fusion;
+using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.ShootingSystemLogic.ReloadingSystemLogic;
 using Infrastructure.ServiceLogic;
+using NetworkLogic.MatchPointsLogic;
 
 namespace NetworkLogic.MatchLogic
 {
@@ -12,8 +14,10 @@ namespace NetworkLogic.MatchLogic
         public event Action<string> OnMatchTimeGiven;
         public event Action<string> OnRestOfMatchTimeChanged;
         
-        public static NetworkMatchHandler Instance;
+        public event Action<NetworkTeamsPointsData> OnTeamPointsChanged;
         
+        public static NetworkMatchHandler Instance;
+        [Networked] private ref NetworkTeamsPointsData NetworkTeamsPointsData => ref MakeRef<NetworkTeamsPointsData>();
         [Networked] public NetworkBool IsReady { get; private set; } = false;
         
         private INetworkManager _networkManager;
@@ -44,6 +48,11 @@ namespace NetworkLogic.MatchLogic
             _timerService.Start(duration);
         }
         
+        public TeamType GetWinningTeam()
+        {
+            return NetworkTeamsPointsData.GetWinningTeam();
+        }
+        
         private void PlayerJoinedRoom(PlayerRef playerRef)
         {
              IsReady = true;
@@ -71,6 +80,14 @@ namespace NetworkLogic.MatchLogic
         private void RPC_Finished()
         {
             OnFinished?.Invoke();
+        }
+        
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        private void RPC_IncreaseTeamPoints(TeamType teamType, int value)
+        {
+            NetworkTeamsPointsData.IncreaseTeamPoints(teamType, value);
+
+            OnTeamPointsChanged?.Invoke(NetworkTeamsPointsData);
         }
     }
 }
