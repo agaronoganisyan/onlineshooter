@@ -8,5 +8,6 @@ namespace Gameplay.MatchLogic
         TeamType TeamType { get; }
         string Name { get; }
         void Setup(TeamType teamType, string name);
+        TeamType GetOppositeTeamType();
     }
 }

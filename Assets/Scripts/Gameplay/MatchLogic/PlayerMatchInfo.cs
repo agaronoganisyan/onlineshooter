@@ -14,5 +14,10 @@ namespace Gameplay.MatchLogic
             _teamType = teamType;
             _name = name;
         }
+        
+        public TeamType GetOppositeTeamType()
+        {
+            return _teamType == TeamType.First ? TeamType.Second : TeamType.First;
+        }
     }
 }

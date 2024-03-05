@@ -13,7 +13,6 @@ namespace NetworkLogic.MatchLogic
         public event Action OnFinished;
         public event Action<string> OnMatchTimeGiven;
         public event Action<string> OnRestOfMatchTimeChanged;
-        
         public event Action<NetworkTeamsPointsData> OnTeamPointsChanged;
         
         public static NetworkMatchHandler Instance;
@@ -42,7 +41,12 @@ namespace NetworkLogic.MatchLogic
                 PlayerJoinedRoom(_networkManager.NetworkRunner.LocalPlayer);
             }
         }
-        
+
+        public void IncreaseTeamPoints(TeamType teamType, int value)
+        {
+            RPC_IncreaseTeamPoints(teamType, value);
+        }
+
         public void StartMatch(float duration)
         {
             _timerService.Start(duration);

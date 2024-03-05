@@ -1,5 +1,6 @@
 using System;
 using Gameplay.MatchLogic.TeamsLogic;
+using Infrastructure.PlayerSystemLogic;
 using Infrastructure.ServiceLogic;
 
 namespace Gameplay.MatchLogic.PointsLogic.PointsRuleLogic
@@ -8,62 +9,30 @@ namespace Gameplay.MatchLogic.PointsLogic.PointsRuleLogic
     {
         public event Action<TeamType, int> OnTeamPointsIncreased;
         
-        private ITeamsSystem _teamsSystem;
-
-        private int _firstTeamPointsCount;
-        private int _secondTeamPointsCount;
+        private IPlayerSystem _playerSystem;
+        private IPlayerMatchInfo _playerMatchInfo;
         
         public void Initialize()
         {
-            _teamsSystem = ServiceLocator.Get<ITeamsSystem>();
+            _playerSystem = ServiceLocator.Get<IPlayerSystem>();
+            _playerMatchInfo = ServiceLocator.Get<IPlayerMatchInfo>();
         }
 
         public void Prepare()
         {
-            for (int i = 0; i < _teamsSystem.FirstTeamMembers.Count; i++)
-            {
-                _teamsSystem.FirstTeamMembers[i].OnDied += IncreaseSecondTeamPoints;
-            }
-            
-            for (int i = 0; i < _teamsSystem.SecondTeamMembers.Count; i++)
-            {
-                _teamsSystem.SecondTeamMembers[i].OnDied += IncreaseFirstTeamPoints;
-            }
+            _playerSystem.Player.OnDied += IncreaseTeamPoints;
         }
 
         public void Cleanup()
         {
-            _firstTeamPointsCount = 0;
-            _secondTeamPointsCount = 0;
-            
-            for (int i = 0; i < _teamsSystem.FirstTeamMembers.Count; i++)
-            {
-                _teamsSystem.FirstTeamMembers[i].OnDied -= IncreaseSecondTeamPoints;
-            }
-            
-            for (int i = 0; i < _teamsSystem.SecondTeamMembers.Count; i++)
-            {
-                _teamsSystem.SecondTeamMembers[i].OnDied -= IncreaseFirstTeamPoints;
-            }
+            _playerSystem.Player.OnDied -= IncreaseTeamPoints;
         }
 
-        public TeamType GetWinningTeam()
+        private void IncreaseTeamPoints()
         {
-            if (_firstTeamPointsCount > _secondTeamPointsCount) return TeamType.First;
-            else if (_firstTeamPointsCount < _secondTeamPointsCount) return TeamType.Second;
-            else return TeamType.None; 
-        }
-
-        private void IncreaseFirstTeamPoints()
-        {
-            _firstTeamPointsCount++;
-            OnTeamPointsIncreased?.Invoke(TeamType.First, _firstTeamPointsCount);
-        }
-
-        private void IncreaseSecondTeamPoints()
-        {
-            _secondTeamPointsCount++;
-            OnTeamPointsIncreased?.Invoke(TeamType.Second, _secondTeamPointsCount);
+            OnTeamPointsIncreased?.Invoke(
+                _playerMatchInfo.TeamType == TeamType.First ? TeamType.Second : TeamType.First,
+                1);
         }
     }
 }

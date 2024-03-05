@@ -32,10 +32,10 @@ namespace Gameplay.UILogic.InfoCanvasLogic.TeamPointsLogic
             switch (_team)
             {
                 case BlockTeamType.Player:
-                    _pointsSystem.OnPlayerTeamPointsIncreased += SetValue;
+                    _pointsSystem.OnPlayerTeamPointsChanged += SetValue;
                     break;
                 case BlockTeamType.Enemy:
-                    _pointsSystem.OnEnemyTeamPointsIncreased += SetValue;
+                    _pointsSystem.OnEnemyTeamPointsChanged += SetValue;
                     break;
             }   
             
