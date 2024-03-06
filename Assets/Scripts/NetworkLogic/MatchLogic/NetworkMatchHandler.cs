@@ -4,6 +4,7 @@ using Gameplay.MatchLogic.TeamsLogic;
 using Gameplay.ShootingSystemLogic.ReloadingSystemLogic;
 using Infrastructure.ServiceLogic;
 using NetworkLogic.MatchPointsLogic;
+using NetworkLogic.TeamsSystemLogic;
 
 namespace NetworkLogic.MatchLogic
 {
@@ -16,6 +17,7 @@ namespace NetworkLogic.MatchLogic
         public event Action<NetworkTeamsPointsData> OnTeamPointsChanged;
         
         public static NetworkMatchHandler Instance;
+        [Networked] public ref NetworkTeamsData NetworkTeamsData => ref MakeRef<NetworkTeamsData>();
         [Networked] private ref NetworkTeamsPointsData NetworkTeamsPointsData => ref MakeRef<NetworkTeamsPointsData>();
         [Networked] public NetworkBool IsReady { get; private set; } = false;
         
@@ -44,6 +46,8 @@ namespace NetworkLogic.MatchLogic
 
         public void IncreaseTeamPoints(TeamType teamType, int value)
         {
+            NetworkTeamsPointsData.IncreaseTeamPoints(teamType, value);
+            
             RPC_IncreaseTeamPoints(teamType, value);
         }
 
@@ -59,7 +63,16 @@ namespace NetworkLogic.MatchLogic
         
         private void PlayerJoinedRoom(PlayerRef playerRef)
         {
-             IsReady = true;
+            NetworkTeamsData.AddUnitToTeam(playerRef, new PlayerData());
+            if (NetworkTeamsData.IsTeamsReady()) IsReady = true;
+        }
+
+        //[Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void SetPlayerInfo(PlayerRef playerRef, string name)
+        {
+            PlayerData playerData = NetworkTeamsData.GetPlayerData(playerRef);
+            playerData.SetBaseInfo(name);
+            NetworkTeamsData.SetPlayerData(playerRef, playerData);
         }
         
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -89,8 +102,6 @@ namespace NetworkLogic.MatchLogic
         [Rpc(RpcSources.All, RpcTargets.All)]
         private void RPC_IncreaseTeamPoints(TeamType teamType, int value)
         {
-            NetworkTeamsPointsData.IncreaseTeamPoints(teamType, value);
-
             OnTeamPointsChanged?.Invoke(NetworkTeamsPointsData);
         }
     }

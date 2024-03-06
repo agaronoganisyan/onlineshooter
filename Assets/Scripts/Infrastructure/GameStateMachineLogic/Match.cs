@@ -43,7 +43,9 @@ namespace Infrastructure.GameStateMachineLogic
         private IEquipmentSystem _equipmentSystem;
         private ISpawnSystem _spawnSystem;
         private IPlayerSystem _playerSystem;
-        
+        private IPlayerMatchInfo _playerMatchInfo;
+
+        private ProfileSettingsConfig _profileSettingsConfig;
         private OperationConfig _currentOperation;
 
         //Canvases
@@ -74,6 +76,8 @@ namespace Infrastructure.GameStateMachineLogic
             _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
             _playerSystem = ServiceLocator.Get<IPlayerSystem>();
             
+            _profileSettingsConfig = ServiceLocator.Get<ProfileSettingsConfig>();
+            
             _inputCanvas = ServiceLocator.Get<IInputCanvasSystem>();
             _gameplayInfoCanvas = ServiceLocator.Get<IGameplayInfoCanvasSystem>();
             _sharedGameplayCanvas = ServiceLocator.Get<ISharedGameplayCanvasSystem>();
@@ -91,6 +95,8 @@ namespace Infrastructure.GameStateMachineLogic
             await _networkMatchHandlerFactory.Register();
             _networkMatchHandler = ServiceLocator.Get<INetworkMatchHandler>();
 
+            _networkMatchHandler.SetPlayerInfo(_networkManager.NetworkRunner.LocalPlayer, _profileSettingsConfig.GetNickname());
+            _playerMatchInfo.Setup(_networkMatchHandler.NetworkTeamsData.GetPlayerTeam(_networkManager.NetworkRunner.LocalPlayer),_profileSettingsConfig.GetNickname());
             _currentOperation = await _operationSystem.GetOperation();
             _matchSystem.Prepare();
             await _matchSystem.WaitingPlayers();
