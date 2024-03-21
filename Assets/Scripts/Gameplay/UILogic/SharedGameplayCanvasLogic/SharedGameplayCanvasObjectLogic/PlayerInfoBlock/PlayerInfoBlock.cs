@@ -1,7 +1,6 @@
 using System;
 using ConfigsLogic;
 using Gameplay.CameraLogic;
-using Gameplay.HealthLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.HealthBarLogic;
 using Gameplay.UnitLogic;
 using Infrastructure.ServiceLogic;
@@ -14,7 +13,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
     public class PlayerInfoBlock : SharedGameplayCanvasObject, IPlayerInfoBlock, IPoolable<PlayerInfoBlock>
     {
         private Action<PlayerInfoBlock> _returnToPool;
-                
+        
         private ISharedGameplayCanvasSystem _canvasSystem;
         private PlayerInfoBlockConfig _config;
         private Camera _worldCamera;
@@ -23,12 +22,12 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
         
         [SerializeField] private TextMeshProUGUI _nameText;
 
-        public Transform TargetHead => _unit.Info.HeadTransform;
-        
-       public void Prepare(Unit unit , bool isTeammate)
+        public Transform TargetHead => _unit.HeadTransform;
+
+        public void Prepare(Unit unit , bool isTeammate)
         {
             base.Prepare(unit, _config.OffsetToTarget, _worldCamera);
-            _healthBar.Prepare(unit.Info.HealthSystem,
+            _healthBar.Prepare(unit.GetHealthSystem(),
                 isTeammate
                     ? _config.TeammateFirstColor
                     : _config.EnemyFirstColor,

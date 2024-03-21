@@ -1,14 +1,17 @@
 using System;
 using ConfigsLogic;
+using Fusion;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic;
+using Gameplay.UnitLogic;
+using Gameplay.UnitLogic.DamageLogic;
 using HelpersLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.WeaponLogic
 {
-   public enum WeaponType
+    public enum WeaponType
     {
         None,
         First,
@@ -21,12 +24,14 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
         Pistol
     }
     
-    public abstract class Weapon : MonoBehaviour
+    public abstract class Weapon : NetworkBehaviour
     {
-        public event Action OnFired;
-        public event Action<int, int> OnAmmoChanged;
-        public event Action OnReloadingRequired;
+         public event Action OnFired;
+         public event Action<int, int> OnAmmoChanged;
+         public event Action OnReloadingRequired;
 
+         private Unit _unit;
+         
          public WeaponConfig Config => _config;
          [SerializeField] WeaponConfig _config;
 
@@ -35,30 +40,32 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
 
          [SerializeField] private ParticleSystem _muzzleEffect;
          
-         [SerializeField] private Transform _shootPoint;
+         [SerializeField] private Transform _shootPoint; 
          [SerializeField] private Transform _transform;
          private Transform _activeContainer;
          private Transform _reserveContainer;
 
          private int _ammo;
          private int _maxAmmoCount;
-
+         
          private float _nextShootTime;
-        
+
          private bool _isReloading;
-        
-         public void Initialize(IEquipmentContainer equipmentContainer)
+         
+         public void Initialize(Unit unit, IEquipmentContainer equipmentContainer)
          {
+             _unit = unit;
+             
              _activeContainer = equipmentContainer.RightHandContainer;
              _reserveContainer = Config.WeaponType == WeaponType.First ?
                  equipmentContainer.FirstWeaponContainer :
                  equipmentContainer.SecondWeaponContainer;
-             
+
              _bulletsFactory = ServiceLocator.Get<IBulletFactory>();
 
              _maxAmmoCount = _config.MaxAmmoCount;
              _ammo = _maxAmmoCount;
-             
+
              _isReloading = false;
          }
 
@@ -70,15 +77,15 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
 
          public void Fire()
          {
-             if (_isReloading) return; 
+             if (_isReloading) return;
              if (Time.time < _nextShootTime) return; //ДОБАВИТЬ БЫ РАЗБРОССССССС
              
-             _currentBullet = _bulletsFactory.Get();
-             _currentBullet.Activate(_shootPoint.position, _shootPoint.forward, _config.BulletSpeed, _config.Damage, _config.BulletLifetime);
+             _currentBullet = _bulletsFactory.Get(new HitInfo(_unit.Info.TeamType, _config.Damage),
+                 _shootPoint.position, _shootPoint.forward, _config.BulletSpeed, _config.BulletLifetime);
 
              _nextShootTime = Time.time + 1 * _config.Frequency;
              _ammo--;
-             _muzzleEffect.Play();
+             RPC_PlayEffect();
              OnFired?.Invoke();
              SetAmmo(_ammo);
              
@@ -125,6 +132,12 @@ namespace Gameplay.ShootingSystemLogic.WeaponLogic
          {
              _isReloading = false;
              SetAmmo(_maxAmmoCount);
+         }
+
+         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+         private void RPC_PlayEffect()
+         {
+             _muzzleEffect.Play();
          }
     }
 }

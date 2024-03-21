@@ -3,7 +3,6 @@ using System.Threading;
 using ConfigsLogic;
 using Cysharp.Threading.Tasks;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
-using Gameplay.ShootingSystemLogic.WeaponLogic;
 using HelpersLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
@@ -15,10 +14,11 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
         public event Action<Transform> OnEnemyDetected;
         public event Action OnNoEnemyDetected;
 
+        private CancellationTokenSource _cancellationTokenSource ;
+
         private readonly IEquipment _equipment;
         private readonly ShootingSystemConfig _shootingSystemConfig;
 
-        private CancellationTokenSource _cancellationTokenSource;
         private readonly TimeSpan _detectionRate;
 
         private readonly Collider[] _detectedColliders;
@@ -26,10 +26,11 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
         private float _detectionZoneAngle;
         private float _detectionZoneRadius;
         float _minimalDistance = float.MaxValue;
-        
+
+        public Transform Target => _previousEnemy;
+        private Transform _previousEnemy;
         private readonly Transform _unit;
         private Transform _detectedEnemy;
-        private Transform _previousEnemy;
         private Transform _finalEnemy;
         
         public EnemiesDetector(Transform unit, IEquipment equipment)
@@ -37,18 +38,20 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
             _shootingSystemConfig = ServiceLocator.Get<ShootingSystemConfig>();
 
             _equipment = equipment;
-            _equipment.OnCurrentWeaponChanged += WeaponChanged;
-            
+            _equipment.OnCurrentWeaponChanged += SetDetectionSettings;
+
             _detectedColliders = new Collider[_shootingSystemConfig.MaxDetectingCollidersAmount];
             _detectionRate = TimeSpan.FromSeconds(_shootingSystemConfig.DetectionFrequency);
             
             _unit = unit;
+
+            SetDetectionSettings(_equipment.CurrentWeaponInfo);
         }
 
-        private void WeaponChanged(WeaponConfig weaponInfo)
+        private void SetDetectionSettings(WeaponConfig weaponInfo)
         {
             _detectionZoneAngle = weaponInfo.DetectionZoneAngle;
-            _detectionZoneRadius = weaponInfo.DetectionZoneRadius;
+            _detectionZoneRadius = weaponInfo.DetectionZoneRadius; 
         }
         
         public void Start()
@@ -76,27 +79,26 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
                 _finalEnemy = null;
                 _detectedEnemy = null;
                 _minimalDistance = float.MaxValue;
-                    
+                
                 for (int i = 0; i < collidersAmount; i++)
                 {
                     _detectedEnemy = _detectedColliders[i].transform;
                     if (!IsUnitItself(_detectedEnemy) 
                         && DetectionFunctions.IsWithinAngle(_unit.position, _unit.forward, _detectedEnemy.position, _detectionZoneAngle)
-                        && !IsThereObstacle(_detectedEnemy.position))                    
+                        && !IsThereObstacle(_detectedEnemy.position))
                     {
                         float distance = GetDistanceToTarget(_detectedEnemy.position);
-                        
+                            
                         if (distance <= _minimalDistance)
                         {
                             PrepareFinalEnemy(_detectedEnemy, distance);
                         }
-                    }
+                    } 
                 }
                 
                 SetFinalTarget(_finalEnemy);
                 
                 await UniTask.Delay(_detectionRate, cancellationToken: _cancellationTokenSource.Token);
-                
             }
         }
         
@@ -104,12 +106,12 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
         {
             return _unit == detectedUnit;
         }
-        
+
         private bool IsThereObstacle(Vector3 targetPos)
         {
             return Physics.Linecast(_unit.position + _shootingSystemConfig.OffsetForTargetShooting, targetPos + _shootingSystemConfig.OffsetForTargetShooting,_shootingSystemConfig.ObstacleLayer);
         }
-
+        
         private float GetDistanceToTarget(Vector3 targetPos)
         {
             return (targetPos - _unit.position).sqrMagnitude;
@@ -120,13 +122,13 @@ namespace Gameplay.ShootingSystemLogic.EnemiesDetectorLogic
             _finalEnemy = finalEnemy;
             _minimalDistance = distance;
         }
-
+        
         private void SetFinalTarget(Transform newTarget)
         {
             if (_previousEnemy == newTarget) return;
 
             _previousEnemy = newTarget;
-            
+               
             if (newTarget == null) OnNoEnemyDetected?.Invoke();
             else OnEnemyDetected?.Invoke(newTarget);
         }

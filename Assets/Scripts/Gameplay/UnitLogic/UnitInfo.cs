@@ -1,28 +1,19 @@
+using Fusion;
 using Gameplay.HealthLogic;
 using Gameplay.MatchLogic.TeamsLogic;
 using UnityEngine;
 
 namespace Gameplay.UnitLogic
 {
-    public struct UnitInfo
+    public struct UnitInfo : INetworkStruct
     {
-        public string Name { get; private set; }
+        [Networked, Capacity(24)] public string Name { get => default; set {} }
         public TeamType TeamType{ get; private set; }
-        public HealthSystem HealthSystem { get; private set; }
-        public Transform Transform { get; private set; }
-        public Transform HeadTransform { get; private set; }
-        public void Set(
-            string unitName,
-            TeamType teamType,
-            HealthSystem healthSystem,
-            Transform target,
-            Transform targetHead)
+
+        public void Set(string unitName, TeamType teamType)
         {
             Name = unitName;
             TeamType = teamType;
-            HealthSystem = healthSystem;
-            Transform = target;
-            HeadTransform = targetHead;
         }
     }
 }

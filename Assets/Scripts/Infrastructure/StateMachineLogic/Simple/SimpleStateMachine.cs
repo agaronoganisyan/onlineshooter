@@ -6,7 +6,7 @@ namespace Infrastructure.StateMachineLogic.Simple
     {
         private ISimpleState<State> _currentTypedState;
         
-        public override void Start(State initialState)
+        public override void Initialize(State initialState)
         {
             _currentTypedState = GetState<ISimpleState<State>>(initialState);
             _currentTypedState.Enter();

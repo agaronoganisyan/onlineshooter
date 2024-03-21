@@ -14,7 +14,7 @@ namespace Infrastructure.GameStateMachineLogic
             _stateMachine.Add(GameState.Lobby, new Lobby(_stateMachine));
             _stateMachine.Add(GameState.Match, new Match(_stateMachine));
 
-            _stateMachine.Start(GameState.Lobby);
+            _stateMachine.Initialize(GameState.Lobby);
         }
 
         public void SwitchState(GameState gameState)

@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: GrenadeConfig_Classic
   m_EditorClassIdentifier: 
   _grenadeType: 1
-  _damage: 100
-  _impactRadius: 10
+  _damage: 3000
+  _impactRadius: 2.5
   _reloadingDuration: 5
-  initialPoolSize: 1
-  _prefab: {fileID: -2680112332209802328, guid: e161b7f0e94df4d998410220f1d0ab39, type: 3}

@@ -4,6 +4,7 @@ using Gameplay.ShootingSystemLogic.AimLogic;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
+using Gameplay.UnitLogic;
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
 using Infrastructure.StateMachineLogic;
 using Infrastructure.StateMachineLogic.Simple;
@@ -31,6 +32,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         
         protected readonly IStateMachine<ShootingState> _stateMachine;
         
+        protected readonly Unit _unit;
         protected readonly IPlayerGameplayInputHandler _gameplayInputHandler;
         protected readonly IPlayerAnimator _playerAnimator;
         protected readonly IEquipment _equipment;
@@ -42,13 +44,14 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
         
         protected readonly float _minAngleToStartingShooting;
         
-        protected ShootingBaseState(State key, IStateMachine<ShootingState> stateMachine, IPlayerGameplayInputHandler gameplayInputHandler, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer,
+        protected ShootingBaseState(State key, IStateMachine<ShootingState> stateMachine, IPlayerGameplayInputHandler gameplayInputHandler, Unit unit, IPlayerAnimator playerAnimator, IEquipment equipment, IEquipmentContainer equipmentContainer,
             IEnemiesDetector enemiesDetector, IAim aim, ShootingSystemConfig shootingSystemConfig)
         {
             _stateKey = key;
 
             _stateMachine = stateMachine;
 
+            _unit = unit;
             _gameplayInputHandler = gameplayInputHandler;
             _playerAnimator = playerAnimator;
             _enemiesDetector = enemiesDetector;
@@ -72,7 +75,7 @@ namespace Gameplay.ShootingSystemLogic.StateMachineLogic
 
         public virtual void Update()
         {
-            _aim.Tick();
+            _aim.FixedTick();
         }
         
         protected virtual void TryToEnterThisShootingState()

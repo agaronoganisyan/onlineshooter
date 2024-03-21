@@ -1,94 +1,220 @@
-using System;
-using System.Threading;
-using Cysharp.Threading.Tasks;
-using Gameplay.UnitLogic;
-using PoolLogic;
+using ConfigsLogic;
+using Fusion;
+using Gameplay.ShootingSystemLogic.ReloadingSystemLogic;
+using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic.TrailLogic;
+using Gameplay.UnitLogic.DamageLogic;
+using Infrastructure.ServiceLogic;
+using NetworkLogic.HitLogic;
+using NetworkLogic.PoolLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic
 {
-    public class Bullet : MonoBehaviour, IPoolable<Bullet>
+    public class Bullet : NetworkBehaviour, INetworkPoolable, IPredictedSpawnBehaviour
     {
-        private Action<Bullet> _returnToPool;
+        private ShootingSystemConfig _shootingSystemConfig;
 
-        private CancellationTokenSource _cancellationTokenSource;
-        private TimeSpan _lifeTime;
-        
-        [SerializeField] private TrailRenderer _trailRenderer;
-        
-        [SerializeField] private Rigidbody _rigidbody;
+        private TimerService _lifeTimer;
+
+        private ITrail _sparkTrail;
+        private ITrail _smokeTrail;
 
         public Transform Transform => _transform;
-        [SerializeField] private Transform _transform;
+        private Transform _transform;
 
-        public float Damage => _damage;
-        private float _damage;
         private float _speed;
+        [SerializeField] private float _length;
         
-        public void Activate(Vector3 startPosition, Vector3 direction, float speed, float damage, float lifeTime)
+        public HitInfo Info => _info;
+        [Networked] private HitInfo _info { get; set; }
+        [Networked(OnChanged = nameof(OnFinished))] private NetworkBool _finished { get; set; }
+        [Networked] private float _lifeTime { get; set; }
+        [Networked] private int _fireTick { get; set; }
+        [Networked] private Vector3 _firePosition { get; set; }
+        [Networked] private Vector3 _fireVelocity { get; set; }
+        [Networked] private Vector3 _movingDirection { get; set; }
+        [Networked] private Vector3 _hitPosition { get; set; }
+        
+        public void InitNetworkState(HitInfo hitInfo, Vector3 startPosition, Vector3 direction, float speed, float lifeTime)
         {
+            _info = hitInfo;
             _speed = speed;
-            _damage = damage;
-            
-            _transform.SetPositionAndRotation(startPosition, Quaternion.LookRotation(direction));
-            gameObject.SetActive(true);
-            _trailRenderer.Clear();
-            _trailRenderer.enabled = true;
-            
-            _rigidbody.velocity = _transform.forward * _speed;
-            
-            StartLifeTimer(lifeTime);
+
+            _finished = false;
+            _fireTick = Runner.Tick;
+            _firePosition = startPosition;
+            _fireVelocity = direction * _speed;
+            _movingDirection = direction;
+            _lifeTime = lifeTime;
         }
 
-        protected void OnTriggerEnter(Collider other)
+        public override void Spawned()
         {
-            if (other.TryGetComponent(out IDamageable target))
+            StartLifeTimer(_lifeTime);
+            
+            if (IsProxy)
             {
-                target.TakeDamage(this);
-                gameObject.SetActive(false);
+                transform.position = _firePosition;
+                transform.rotation = Quaternion.LookRotation(_fireVelocity);
+                
+                _smokeTrail.Show();
             }
+            else _sparkTrail.Show();
+            
+            _finished = false; 
+        }
+
+        public override void FixedUpdateNetwork()
+        {
+            if (IsProxy) return;
+            
+            if (_finished) return;
+            
+            Vector3 previousPosition = GetMovePosition(Runner.Tick - 1);
+            Vector3 nextPosition = GetMovePosition(Runner.Tick);
+            Vector3 direction = (nextPosition - previousPosition).normalized;
+            float distance = direction.magnitude;
+            
+            if (_length > 0f)
+            {
+                float elapsedDistanceSqr = (previousPosition - _firePosition).sqrMagnitude;
+                float projectileLength = elapsedDistanceSqr > _length * _length ? _length : Mathf.Sqrt(elapsedDistanceSqr);
+
+                previousPosition -= direction * projectileLength;
+                distance += projectileLength;
+            }
+            
+            HitOptions hitOptions = HitOptions.IncludePhysX | HitOptions.IgnoreInputAuthority;
+            if (Runner.LagCompensation.Raycast(previousPosition, _movingDirection, distance,
+                    Object.InputAuthority, out LagCompensatedHit hit, _shootingSystemConfig.ProjectileLayer, hitOptions))
+            {
+                IDamageable target = HitUtility.GetHitTarget(hit.Hitbox, hit.Collider);
+
+                if (target == null)
+                {
+                    FinishMovement(hit.Point);
+                    return;
+                }
+
+                if (!target.IsCanTakeHit(_info)) return;
+                
+                target.TakeDamage(this);
+                FinishMovement(hit.Point);
+            }
+        }
+
+        public override void Render()
+        {
+            if (_finished) return;
+            
+            float renderTime = IsProxy ? Runner.InterpolationRenderTime : Runner.SimulationRenderTime;
+            float floatTick = renderTime / Runner.DeltaTime;
+
+            _transform.position = GetMovePosition(floatTick);
         }
         
         private void StartLifeTimer(float duration)
         {
-            _lifeTime = TimeSpan.FromSeconds(duration);
-            _cancellationTokenSource = new CancellationTokenSource();
-            LifeTimer();
+            _lifeTimer.Start(duration);
         }
         
         private void StopLifeTimer()
         {
-            _cancellationTokenSource?.Cancel();
+            _lifeTimer.Stop();
         }
-        
-        private async UniTask LifeTimer()
+
+        private Vector3 GetMovePosition(float currentTick)
         {
-            await UniTask.Delay(_lifeTime, cancellationToken: _cancellationTokenSource.Token);
-            gameObject.SetActive(false);
+            float time = (currentTick - _fireTick) * Runner.DeltaTime;
+
+            if (time <= 0f)
+                return _firePosition;
+
+            return _firePosition + _fireVelocity * time;
         }
-        
-        private void OnDisable()
+
+        private void FinishMovement(Vector3 position)
         {
-            ReturnToPool();
+            StopLifeTimer();
+            _hitPosition = position;
+            _finished = true;
         }
-        
+
         #region POOL_LOGIC
 
-        public void PoolInitialize(Action<Bullet> returnAction)
+        public void PoolInitialize()
         {
-            _returnToPool = returnAction;
+            _transform = transform;
+
+            _shootingSystemConfig = ServiceLocator.Get<ShootingSystemConfig>();
+            _lifeTimer = new StandardTimerService();
+
+            _sparkTrail = _transform.GetChild(0).GetComponent<ITrail>();
+            _smokeTrail = _transform.GetChild(1).GetComponent<ITrail>();
+            
+            _sparkTrail.Initialize();
+            _smokeTrail.Initialize();
+            
+            _smokeTrail.OnFinished += ReturnToPool;
+            _lifeTimer.OnFinished += () => FinishMovement(_transform.position);
         }
 
         public void ReturnToPool()
         {
+            RPC_ReturnToPool();
+        }
+
+        #endregion
+
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        private void RPC_ReturnToPool()
+        {
             StopLifeTimer();
-            gameObject.SetActive(false);
-            _trailRenderer.enabled = false;
-            _rigidbody.velocity = Vector3.zero;
-            _rigidbody.angularVelocity = Vector3.zero;
-            _returnToPool?.Invoke(this);
+            _sparkTrail.Hide();
+            _smokeTrail.Hide();
+            Runner.Despawn(Object);
         }
         
-        #endregion
+        public static void OnFinished(Changed<Bullet> changed)
+        {
+            changed.Behaviour.Finish();
+        }
+
+        private void Finish()
+        {
+            _transform.position = _hitPosition;
+        }
+
+        private Vector3 _interpolateFrom;
+        private Vector3 _interpolateTo;
+        
+        public void PredictedSpawnSpawned()
+        {
+            _interpolateTo = transform.position;
+            _interpolateFrom = _interpolateTo;
+            transform.position = _interpolateTo;
+            Spawned();
+        }
+
+        public void PredictedSpawnUpdate()
+        {
+            _interpolateFrom = _interpolateTo;
+            _interpolateTo = transform.position;
+            FixedUpdateNetwork();
+        }
+
+        void IPredictedSpawnBehaviour.PredictedSpawnRender() {
+            var a = Runner.Simulation.StateAlpha;
+            transform.position = Vector3.Lerp(_interpolateFrom, _interpolateTo, a);
+        }
+
+        public void PredictedSpawnFailed()
+        {
+            Runner.Despawn(Object, true);
+        }
+
+        public void PredictedSpawnSuccess()
+        {
+        }
     }
 }

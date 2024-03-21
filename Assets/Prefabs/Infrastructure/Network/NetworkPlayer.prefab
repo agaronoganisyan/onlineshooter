@@ -31,6 +31,56 @@ Transform:
   m_Father: {fileID: 9122536344791681622}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5844898316855567417
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3319606307319464614}
+  - component: {fileID: 1029759976337873250}
+  m_Layer: 10
+  m_Name: HitBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3319606307319464614
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5844898316855567417}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9122536344791681622}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1029759976337873250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5844898316855567417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1014831617, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 1
+  SphereRadius: 0
+  BoxExtents: {x: 0.45, y: 1.3, z: 0.45}
+  Offset: {x: 0, y: 1.3, z: 0}
+  Root: {fileID: 1815084720624119184}
+  GizmosColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &7431348719017624321
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,7 +724,7 @@ GameObject:
   - component: {fileID: 7431348719017926524}
   - component: {fileID: 3484821262189257496}
   m_Layer: 15
-  m_Name: Infantry
+  m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -731,6 +781,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bceba56d809438b8c545b1b09348ea5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   _animator: {fileID: 7431348719024926895}
   _rig: {fileID: 9122536344686135950}
   _rigBuilder: {fileID: 7431348719017926524}
@@ -747,6 +798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2c35441e3cd458a84862f20931d3c50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
 --- !u!114 &7431348719017926526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2131,6 +2183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c40b81b2621349a18c7e93cde8aa8ded, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   _transform: {fileID: 9122536343025520925}
   _aimBaseTransform: {fileID: 9122536344522577244}
 --- !u!1 &9122536343094179024
@@ -2522,12 +2575,13 @@ GameObject:
   - component: {fileID: 9122536344791681620}
   - component: {fileID: 9122536344791681609}
   - component: {fileID: 9122536344791681608}
-  - component: {fileID: 9122536344791681611}
   - component: {fileID: 4809541202866726450}
+  - component: {fileID: 9122536344791681611}
   - component: {fileID: 6339531131021575035}
   - component: {fileID: 1458198716076773366}
   - component: {fileID: 7800484272391811154}
   - component: {fileID: 3836706590280744483}
+  - component: {fileID: 1815084720624119184}
   m_Layer: 10
   m_Name: NetworkPlayer
   m_TagString: Untagged
@@ -2552,6 +2606,7 @@ Transform:
   - {fileID: 9122536344522577244}
   - {fileID: 9122536343957558309}
   - {fileID: 7264238077441372443}
+  - {fileID: 3319606307319464614}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2614,18 +2669,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ce8be6c59724df2b6209be7ef91cf69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &9122536344791681611
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9122536344791681621}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c1e5758eb644590a06974b681ece4f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4809541202866726450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2642,6 +2685,19 @@ MonoBehaviour:
   _leftHandContainer: {fileID: 9122536343188380258}
   _firstWeaponContainer: {fileID: 7431348719017926421}
   _secondWeaponContainer: {fileID: 9122536344476350638}
+--- !u!114 &9122536344791681611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9122536344791681621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c1e5758eb644590a06974b681ece4f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
 --- !u!114 &6339531131021575035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2665,9 +2721,14 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 9122536344791681610}
+  - {fileID: 9122536344791681611}
   - {fileID: 1458198716076773366}
   - {fileID: 7800484272391811154}
   - {fileID: 3836706590280744483}
+  - {fileID: 1815084720624119184}
+  - {fileID: 7431348719017926522}
+  - {fileID: 7431348719017926512}
+  - {fileID: 5226095737737405009}
   SimulationBehaviours: []
 --- !u!114 &1458198716076773366
 MonoBehaviour:
@@ -2725,3 +2786,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+--- !u!114 &1815084720624119184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9122536344791681621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1039544458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  Config: 1
+  BroadRadius: 2.7474113
+  Offset: {x: 0, y: 0, z: 0}
+  GizmosColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  Hitboxes:
+  - {fileID: 1029759976337873250}

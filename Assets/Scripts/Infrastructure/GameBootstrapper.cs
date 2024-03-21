@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using Gameplay.EffectsLogic;
 using Gameplay.EffectsLogic.GrenadeEffectLogic;
 using Gameplay.EffectsLogic.HitEffectLogic;
-using Gameplay.HealthLogic;
 using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.PointsLogic;
 using Gameplay.MatchLogic.PointsLogic.PointsRuleLogic;
@@ -37,9 +36,10 @@ using InputLogic.InputServiceLogic.PlayerInputLogic;
 using LobbyLogic;
 using NetworkLogic;
 using NetworkLogic.MatchLogic;
+using NetworkLogic.ObjectFactoryLogic;
 using NetworkLogic.PlayerFactory;
+using NetworkLogic.PoolLogic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Infrastructure
 {
@@ -74,6 +74,7 @@ namespace Infrastructure
             
             ServiceLocator.Register<INetworkManager>(_networkManager);
             ServiceLocator.Register<INetworkMatchHandlerFactory>(new NetworkMatchHandlerFactory());
+            ServiceLocator.Register<INetworkObjectPoolSystem>(new NetworkObjectPoolSystem());
 
             ServiceLocator.Register<IPlayerSystem>(new PlayerSystem());
             ServiceLocator.Register<IInputService>(new InputService());
@@ -91,6 +92,7 @@ namespace Infrastructure
             ServiceLocator.Register<IDebriefingCanvasSystem>(new DebriefingCanvasSystem());
             ServiceLocator.Register<ISharedGameplayCanvasSystem>(new SharedGameplayCanvasSystem());
             
+            ServiceLocator.Register<INetworkFactoriesSystem>(new NetworkFactoriesSystem());
             ServiceLocator.Register<IEffectsFactory>(new EffectsFactory());
             ServiceLocator.Register<IHitEffectFactory>(new HitEffectFactory());
             ServiceLocator.Register<IGrenadeEffectFactory>(new GrenadeEffectFactory());   
@@ -137,6 +139,7 @@ namespace Infrastructure
             
             ServiceLocator.Get<INetworkManager>().Initialize();
             ServiceLocator.Get<INetworkMatchHandlerFactory>().Initialize();
+            ServiceLocator.Get<INetworkObjectPoolSystem>().Initialize();
 
             ServiceLocator.Get<IPlayerFactory>().Initialize();
             ServiceLocator.Get<IPlayerSystem>().Initialize();
@@ -153,16 +156,13 @@ namespace Infrastructure
             ServiceLocator.Get<IInputCanvasSystem>().Initialize();
             ServiceLocator.Get<ISharedGameplayCanvasSystem>().Initialize();
             
-            ServiceLocator.Get<IHitEffectFactory>().Initialize();
-            ServiceLocator.Get<IGrenadeEffectFactory>().Initialize();
-            ServiceLocator.Get<IEffectsFactory>().Initialize();
-            ServiceLocator.Get<IBulletFactory>().Initialize();
-            ServiceLocator.Get<IGrenadeFactory>().Initialize();
             ServiceLocator.Get<IPlayerInfoBlockFactory>().Initialize();
             ServiceLocator.Get<ISharedGameplayCanvasObjectFactory>().Initialize();
+            ServiceLocator.Get<INetworkFactoriesSystem>().Initialize();
             
             ServiceLocator.Get<ISpawnSystem>().Initialize();
             ServiceLocator.Get<IRespawnSystem>().Initialize();
+            
             ServiceLocator.Get<IOperationSystem>().Initialize();
             ServiceLocator.Get<ITeamsSystem>().Initialize();
             ServiceLocator.Get<IMatchSystem>().Initialize();

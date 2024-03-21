@@ -1,10 +1,11 @@
 using DG.Tweening;
+using Fusion;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
 namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
 {
-    public class PlayerAnimator : MonoBehaviour, IPlayerAnimator
+    public class PlayerAnimator : NetworkBehaviour, IPlayerAnimator
     {
         private readonly int _idleHash = Animator.StringToHash("Idle");
         private readonly int _aimHash = Animator.StringToHash("Aim");
@@ -27,7 +28,7 @@ namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
         
         private float _movementEasingSpeed = 7.5f;
         private float _transitionDuration = .4f;
-        
+
         public void Prepare()
         {
             _rigBuilder.enabled = true;
@@ -42,53 +43,108 @@ namespace Gameplay.UnitLogic.PlayerLogic.AnimationLogic
         
         public void PlayMovement(Vector2 movementDirection)
         {
-            _movementDirection =
-                Vector2.Lerp(_movementDirection, movementDirection, _movementEasingSpeed * Time.deltaTime);
+            if (!HasStateAuthority) return;
             
-            _animator.SetFloat(_movementHorizontalHash, _movementDirection.x);
-            _animator.SetFloat(_movementVerticalHash, _movementDirection.y);
+            RPC_PlayMovement(movementDirection);
         }
         
         public void PlayIdle()
         {
-            DOTween.To(() => _rig.weight, x => _rig.weight = x, 0, _transitionDuration);
-            _animator.CrossFade(_idleHash, _transitionDuration,1);
+            if (!HasStateAuthority) return;
+            
+            RPC_PlayIdle();
         }
         
         public void PlayAim()
         {
-            DOTween.To(() => _rig.weight, x => _rig.weight = x, 1, _transitionDuration);
-            _animator.CrossFade(_aimHash, _transitionDuration,1);
+            if (!HasStateAuthority) return;
+            
+            RPC_PlayAim();
         }
         
         public void PlayReload()
         {
-            DOTween.To(() => _rig.weight, x => _rig.weight = x, 0, _transitionDuration);
-            _animator.CrossFade(_reloadHash, _transitionDuration,1);
+            if (!HasStateAuthority) return;
+            
+            RPC_PlayReload();
         }
 
         public void PlayDrawFirstPart()
         {
-            DOTween.To(() => _rig.weight, x => _rig.weight = x, 0, _transitionDuration/2); //А НУЖНО ЛИ ВООБЩЕ ЭТО УМЕНЬГЕНИЕ /2???
-            _animator.CrossFade(_drawFirstPartHash, _transitionDuration/2,1);
+            if (!HasStateAuthority) return;
+            
+            RPC_PlayDrawFirstPart();
         }
 
         public void PlayDrawSecondPart()
         {
-            _rig.weight = 0;
-            _animator.Play(_drawSecondPartHash);
+            if (!HasStateAuthority) return;
+            
+            RPC_PlayDrawSecondPart();
         }
-
+        
         public void PlayThrow()
         {
-            DOTween.To(() => _rig.weight, x => _rig.weight = x, 0, _transitionDuration/2); //А НУЖНО ЛИ ВООБЩЕ ЭТО УМЕНЬГЕНИЕ /2???
-            _animator.CrossFade(_throwHash, _transitionDuration/2,1);
+            if (!HasStateAuthority) return;
+            
+            RPC_PlayThrow();
         }
         
         public void SetRuntimeAnimatorController(RuntimeAnimatorController newController)
         {
             _animator.runtimeAnimatorController = newController;
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayMovement(Vector2 movementDirection)
+        {
+            _movementDirection =
+                Vector2.Lerp(_movementDirection, movementDirection, _movementEasingSpeed * Runner.DeltaTime);
+            
+            _animator.SetFloat(_movementHorizontalHash, _movementDirection.x);
+            _animator.SetFloat(_movementVerticalHash, _movementDirection.y);
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayIdle()
+        {
+            DOTween.To(() => _rig.weight, x => _rig.weight = x, 0, _transitionDuration);
+            _animator.CrossFade(_idleHash, _transitionDuration,1); 
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayAim()
+        {
+            DOTween.To(() => _rig.weight, x => _rig.weight = x, 1, _transitionDuration);
+            _animator.CrossFade(_aimHash, _transitionDuration,1);
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayReload()
+        {
+            DOTween.To(() => _rig.weight, x => _rig.weight = x, 0, _transitionDuration);
+            _animator.CrossFade(_reloadHash, _transitionDuration,1);
+        }
 
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayDrawFirstPart()
+        {
+            DOTween.To(() => _rig.weight, x => _rig.weight = x, 0, _transitionDuration/2); //А НУЖНО ЛИ ВООБЩЕ ЭТО УМЕНЬГЕНИЕ /2???
+            _animator.CrossFade(_drawFirstPartHash, _transitionDuration/2,1);
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayDrawSecondPart()
+        {
+            _rig.weight = 0;
+            _animator.Play(_drawSecondPartHash);
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayThrow()
+        {
+            DOTween.To(() => _rig.weight, x => _rig.weight = x, 0, _transitionDuration/2); //А НУЖНО ЛИ ВООБЩЕ ЭТО УМЕНЬГЕНИЕ /2???
+            _animator.CrossFade(_throwHash, _transitionDuration/2,1);
         }
     }
 }

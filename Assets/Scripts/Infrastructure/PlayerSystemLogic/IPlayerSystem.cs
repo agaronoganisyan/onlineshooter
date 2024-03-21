@@ -8,6 +8,7 @@ namespace Infrastructure.PlayerSystemLogic
     public interface IPlayerSystem : IService
     {
         event Action<Player> OnSpawned;
+        public event Action OnMoved;
         event Action OnDespawned;
         event Action OnDied;
         event Action<float, float> OnHealthChanged;

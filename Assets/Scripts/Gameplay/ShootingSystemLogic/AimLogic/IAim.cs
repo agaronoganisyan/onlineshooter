@@ -10,6 +10,6 @@ namespace Gameplay.ShootingSystemLogic.AimLogic
         event Action<Vector3> OnAimPositionChanged;
         Transform Transform { get; }
         void Initialize(IEnemiesDetector enemiesDetector, IEquipment equipment);
-        void Tick();
+        void FixedTick();
     }
 }

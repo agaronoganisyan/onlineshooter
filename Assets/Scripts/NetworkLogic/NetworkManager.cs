@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Fusion;
 using Fusion.Sockets;
+using Infrastructure.ServiceLogic;
+using NetworkLogic.PoolLogic;
 using UnityEngine;
 
 namespace NetworkLogic
@@ -24,11 +26,13 @@ namespace NetworkLogic
         public NetworkRunner NetworkRunner => _runner;
         private NetworkRunner _runner;
 
+        private INetworkObjectPoolSystem _networkObjectPool;
+        
         private ConnectionStatus _status;
-
 
         public void Initialize()
         {
+            _networkObjectPool = ServiceLocator.Get<INetworkObjectPoolSystem>();
         }
 
         public async UniTask ConnectToGameRoom()
@@ -40,6 +44,7 @@ namespace NetworkLogic
             var result = await _runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = "Roommm",
+                ObjectPool = _networkObjectPool
             });
 
             if (result.Ok) {
@@ -146,6 +151,8 @@ namespace NetworkLogic
                     break;
             }
             SetConnectionStatus(ConnectionStatus.Disconnected, message);
+            
+            _networkObjectPool.ClearPools();
             
             if(_runner!=null && _runner.gameObject)
                 Destroy(_runner.gameObject);

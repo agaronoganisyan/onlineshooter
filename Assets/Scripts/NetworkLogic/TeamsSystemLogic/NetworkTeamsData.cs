@@ -3,7 +3,7 @@ using Gameplay.MatchLogic.TeamsLogic;
 
 namespace NetworkLogic.TeamsSystemLogic
 {
-    public struct NetworkTeamsData
+    public struct NetworkTeamsData : INetworkStruct
     {
         [Networked][Capacity(5)] public NetworkDictionary<PlayerRef, PlayerData> _firstTeamMembers => default;
         [Networked][Capacity(5)] public NetworkDictionary<PlayerRef, PlayerData> _secondTeamMembers  => default;

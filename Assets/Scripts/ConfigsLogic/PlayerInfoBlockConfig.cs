@@ -22,8 +22,5 @@ namespace ConfigsLogic
         [SerializeField] private Color _enemyFirstColor;
         public Color EnemySecondColor => _enemySecondColor;
         [SerializeField] private Color _enemySecondColor;
-        
-        public SharedGameplayCanvasObject Prefab => _prefab;
-        [SerializeField] private SharedGameplayCanvasObject _prefab;
     }
 }

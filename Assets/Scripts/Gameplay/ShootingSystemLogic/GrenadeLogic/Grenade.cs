@@ -1,10 +1,13 @@
-using System;
+using System.Collections.Generic;
 using ConfigsLogic;
+using Fusion;
 using Gameplay.EffectsLogic;
-using Gameplay.UnitLogic;
+using Gameplay.ShootingSystemLogic.ReloadingSystemLogic;
+using Gameplay.UnitLogic.DamageLogic;
 using HelpersLogic;
 using Infrastructure.ServiceLogic;
-using PoolLogic;
+using NetworkLogic.HitLogic;
+using NetworkLogic.PoolLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.GrenadeLogic
@@ -14,63 +17,76 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
         None,
         Classic
     }
-    
-    public class Grenade : MonoBehaviour, IPoolable<Grenade>
-    {
-        private Action<Grenade> _returnToPool;
 
+    public class Grenade : NetworkBehaviour, INetworkPoolable
+    {
         private ShootingSystemConfig _shootingSystemConfig;
         private IEffectsFactory _effectsFactory;
         private Effect _hitEffect;
+
+        private TimerService _lifeTimer;
         
         [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private Collider _collider;
         
-        protected Collider[] _detectedColliders;
-        
+        private Collider[] _detectedColliders;
+        private List<LagCompensatedHit> _areaHits = new List<LagCompensatedHit>();
+
         public Transform Transform => _transform;
         [SerializeField] protected Transform _transform;
+        
+        [SerializeField] private GameObject _mesh;
 
-        public float Damage => _damage;
-        private float _damage;
-        protected float _impactRadius;
+        private float _impactRadius;
+        private float _delayAfterExplosion = 1;
+        
+        public HitInfo Info => _info;
+        [Networked] private HitInfo _info { get; set; }
+        [Networked(OnChanged = nameof(OnFinished))] private NetworkBool _finished { get; set; }
+        [Networked] private Vector3 _hitPosition { get; set; }
 
-        public void Activate(Vector3 startPosition, Vector3 targetPosition, float damage, float impactRadius)
+        public void InitNetworkState(HitInfo hitInfo, Vector3 startPosition, Vector3 targetPosition, float impactRadius)
         {
-            _damage = damage;
+            _info = hitInfo;
             _impactRadius = impactRadius;
-            
+
+            _finished = false;
+
             Vector3 direction = GetLaunchingDirection(startPosition,targetPosition, -_shootingSystemConfig.GrenadeLaunchingAngle).normalized;
             _transform.SetPositionAndRotation(startPosition, Quaternion.LookRotation(direction));
-            gameObject.SetActive(true);
+            _collider.enabled = true;
             
             _rigidbody.velocity = direction * BallisticFunctions.GetForce(startPosition,targetPosition, _shootingSystemConfig.GrenadeLaunchingAngle);
             Vector3 rotationDirection = new Vector3(10,20,0);
-            _rigidbody.angularVelocity = rotationDirection;// TEST
+            _rigidbody.angularVelocity = rotationDirection;
         }
-        
+
+        public override void Spawned()
+        {
+            _mesh.SetActive(true);
+        }
+
         private void OnCollisionEnter(Collision other)
         {
-            Explosion();
-            gameObject.SetActive(false);
+            if(other.gameObject.CompareTag(_shootingSystemConfig.ObstacleTag)) return;
+            
+            Explosion();             
         }
 
         private void Explosion()
         {
-            Vector3 position = _transform.position;
+            if (_finished) return;
             
-            _hitEffect = _effectsFactory.GetGrenadeEffect();
-            _hitEffect.Play(position);
+            if (IsProxy) return;
             
-            int hitTargetAmount = Physics.OverlapSphereNonAlloc(position, _impactRadius, _detectedColliders,_shootingSystemConfig.TargetHitLayer);
-            
-            for (int i = 0; i < hitTargetAmount; i++)
-            {
-                if (IsThereObstacle(_detectedColliders[i].transform.position)) return;
-                if (!_detectedColliders[i].TryGetComponent(out IDamageable target)) return;
-                target.TakeDamage(this);
-            }
-            
-            int camerasAmount = Physics.OverlapSphereNonAlloc(position, _shootingSystemConfig.CameraDetectionRadius, _detectedColliders,_shootingSystemConfig.CameraLayer);
+            FinishMovement();
+
+            ApplyAreaDamage();
+        }
+
+        private void ShakeCameras()
+        {
+            int camerasAmount = Physics.OverlapSphereNonAlloc(_hitPosition, _shootingSystemConfig.CameraDetectionRadius, _detectedColliders,_shootingSystemConfig.CameraLayer);
             
             for (int i = 0; i < camerasAmount; i++)
             {
@@ -78,7 +94,35 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
                 target.Shake();
             }
         }
-        
+
+        private void ApplyAreaDamage()
+        {
+            HitOptions hitOptions = HitOptions.IncludePhysX | HitOptions.IgnoreInputAuthority;
+            int hitTargetAmount = Runner.LagCompensation.OverlapSphere(_hitPosition, _impactRadius, Object.InputAuthority, _areaHits,
+                _shootingSystemConfig.TargetHitLayer, hitOptions);
+
+            if (hitTargetAmount <= 0) return;
+            
+            for (int i = 0; i < hitTargetAmount; i++)
+            {
+                if (IsThereObstacle(_areaHits[i].GameObject.transform.position)) return;
+                
+                IDamageable target = HitUtility.GetHitTarget(_areaHits[i].Hitbox, _areaHits[i].Collider);
+
+                if (target == null) return;
+                
+                target.TakeDamage(this);
+            }
+        }
+
+        private void PlayExplosionEffect()
+        {
+            _mesh.SetActive(false);
+
+            _hitEffect = _effectsFactory.GetGrenadeEffect();
+            _hitEffect.Play(_hitPosition);
+        }
+
         private Vector3 GetLaunchingDirection(Vector3 startPosition, Vector3 targetPosition, float angle)
         {
             Vector3 directionWithoutY = Vector3Helper.GetDirectionWithoutY(startPosition, targetPosition);
@@ -91,31 +135,66 @@ namespace Gameplay.ShootingSystemLogic.GrenadeLogic
         {
             return Physics.Linecast(_transform.position + _shootingSystemConfig.OffsetForTargetShooting, targetPos + _shootingSystemConfig.OffsetForTargetShooting,_shootingSystemConfig.ObstacleLayer);
         }
-        
-        private void OnDisable()
+
+        private void FinishMovement()
         {
-            ReturnToPool();
+            _hitPosition = _transform.position;
+            _finished = true;
+            
+            StartLifeTimer(_delayAfterExplosion);
         }
-
-        #region POOL_LOGIC
-
-        public void PoolInitialize(Action<Grenade> returnAction)
+        
+        public static void OnFinished(Changed<Grenade> changed)
         {
-            _returnToPool = returnAction;
-
+            changed.Behaviour.Finish();
+        }
+        
+        private void Finish()
+        {
+            _transform.position = _hitPosition;
+            PlayExplosionEffect();
+            ShakeCameras();
+        }
+        
+        #region POOL_LOGIC
+        
+        public void PoolInitialize()
+        {
+            //ВЫЗЫВАЕТСЯ НА ОБОИХ КЛИЕНТАХ
+            
             _shootingSystemConfig = ServiceLocator.Get<ShootingSystemConfig>();
             _effectsFactory = ServiceLocator.Get<IEffectsFactory>();
             _detectedColliders = new Collider[_shootingSystemConfig.MaxDetectingCollidersAmount];
+            _lifeTimer = new StandardTimerService();
+            
+            _lifeTimer.OnFinished += ReturnToPool;
         }
 
         public void ReturnToPool()
         {
-            gameObject.SetActive(false);
+            RPC_ReturnToPool();
+        }
+        
+        #endregion
+        
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        private void RPC_ReturnToPool()
+        {
+            StopLifeTimer();
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity  = Vector3.zero;
-            _returnToPool?.Invoke(this);
+            _collider.enabled = false;
+            Runner.Despawn(Object);
         }
-
-        #endregion
+        
+        private void StartLifeTimer(float duration)
+        {
+            _lifeTimer.Start(duration);
+        }
+        
+        private void StopLifeTimer()
+        {
+            _lifeTimer.Stop();
+        }
     }
 }

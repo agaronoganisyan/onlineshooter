@@ -1,16 +1,17 @@
 using System;
 using ConfigsLogic;
+using Fusion;
 using Gameplay.ShootingSystemLogic.EnemiesDetectorLogic;
 using Gameplay.ShootingSystemLogic.EquipmentLogic;
-using Gameplay.ShootingSystemLogic.WeaponLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
+using WeaponConfig = ConfigsLogic.WeaponConfig;
 
 namespace Gameplay.ShootingSystemLogic.AimLogic
 {
-    public class Aim : MonoBehaviour, IAim
+    public class Aim : NetworkBehaviour, IAim
     {
-       public event Action<Vector3> OnAimPositionChanged;
+        public event Action<Vector3> OnAimPositionChanged;
         
         private IEnemiesDetector _enemiesDetector;
         private IEquipment _equipment;
@@ -24,7 +25,7 @@ namespace Gameplay.ShootingSystemLogic.AimLogic
         private Vector3 _offsetForTargetShooting;
         private Vector3 _offsetFromBaseUnit;
         private Vector3 _offsetFromTarget;
-
+        
         private float _aimingSpeed;
 
         public void Initialize(IEnemiesDetector enemiesDetector, IEquipment equipment)
@@ -38,20 +39,21 @@ namespace Gameplay.ShootingSystemLogic.AimLogic
             
             _enemiesDetector.OnEnemyDetected += AimToTarget;
             _enemiesDetector.OnNoEnemyDetected += AimToBasePosition;
-            _equipment.OnCurrentWeaponChanged += WeaponChanged;
+            _equipment.OnCurrentWeaponChanged += SetBasePosition;
 
+            SetBasePosition(_equipment.CurrentWeaponInfo);
             AimToBasePosition();
         }
 
-        public void Tick()
+        public void FixedTick()
         {
             _transform.position = Vector3.Lerp(_transform.position, _target.position + _offsetForTargetShooting,
-                _aimingSpeed * Time.deltaTime);
+                _aimingSpeed * Runner.DeltaTime);
             
             OnAimPositionChanged?.Invoke(_transform.position);
         }
         
-        private void WeaponChanged(WeaponConfig weaponInfo)
+        private void SetBasePosition(WeaponConfig weaponInfo)
         {
             _offsetFromBaseUnit = new Vector3(0,0,weaponInfo.DetectionZoneRadius);
             _aimBaseTransform.localPosition = _offsetFromBaseUnit;

@@ -38,7 +38,7 @@ namespace Gameplay.CameraLogic
         public void Enable()
         {
             enabled = true;
-            _cameraController.Enable();
+            //_cameraController.Enable();
         }
         
         public void Disable()

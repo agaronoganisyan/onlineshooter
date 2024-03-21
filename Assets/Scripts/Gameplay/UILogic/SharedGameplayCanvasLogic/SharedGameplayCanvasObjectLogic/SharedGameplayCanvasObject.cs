@@ -1,17 +1,15 @@
-using System;
 using DG.Tweening;
 using Gameplay.UnitLogic;
 using HelpersLogic;
-using PoolLogic;
 using UnityEngine;
 
 namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic
 {
-    public abstract class SharedGameplayCanvasObject: MonoBehaviour
+    public abstract class SharedGameplayCanvasObject : MonoBehaviour
     {
         private Camera _camera;
         [SerializeField] private CanvasGroup _canvasGroup;
-        
+
         protected Unit _unit;
         
         [SerializeField] private RectTransform _transform;
@@ -21,7 +19,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
         private float _fadingDuration = 0.5f;
         
         private bool _isShown;
-
+        
         public virtual void Show()
         {
             if (_isShown) return;
@@ -61,7 +59,7 @@ namespace Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectL
         public virtual void Tick()
         {
             if (_canvasGroup.alpha == 0) return;
-            _transform.position = DetectionOnScreenFunctions.GetScreenPosition(_camera,_unit.Info.HeadTransform.position + _offsetToTarget);
+            _transform.position = DetectionOnScreenFunctions.GetScreenPosition(_camera,_unit.HeadTransform.position + _offsetToTarget);
         }
 
         protected void Prepare(Unit unit, Vector3 offsetToTarget, Camera worldCamera)

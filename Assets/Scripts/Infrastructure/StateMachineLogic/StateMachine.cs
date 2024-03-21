@@ -14,7 +14,7 @@ namespace Infrastructure.StateMachineLogic
             _states.Add(stateKey, state);
         }
 
-        public abstract void Start(State initialState);
+        public abstract void Initialize(State initialState);
 
         public void Tick()
         {

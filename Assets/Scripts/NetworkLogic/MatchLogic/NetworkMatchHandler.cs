@@ -48,7 +48,7 @@ namespace NetworkLogic.MatchLogic
         {
             NetworkTeamsPointsData.IncreaseTeamPoints(teamType, value);
             
-            RPC_IncreaseTeamPoints(teamType, value);
+            RPC_IncreaseTeamPoints(NetworkTeamsPointsData);
         }
 
         public void StartMatch(float duration)
@@ -100,9 +100,9 @@ namespace NetworkLogic.MatchLogic
         }
         
         [Rpc(RpcSources.All, RpcTargets.All)]
-        private void RPC_IncreaseTeamPoints(TeamType teamType, int value)
+        private void RPC_IncreaseTeamPoints(NetworkTeamsPointsData networkTeamsPointsData)
         {
-            OnTeamPointsChanged?.Invoke(NetworkTeamsPointsData);
+            OnTeamPointsChanged?.Invoke(networkTeamsPointsData);
         }
     }
 }

@@ -24,7 +24,11 @@ namespace ConfigsLogic
         [SerializeField] private LayerMask _targetHitLayer;
         public LayerMask ObstacleLayer => _obstacleLayer;
         [SerializeField] private LayerMask _obstacleLayer;
+        public LayerMask ProjectileLayer => _projectileLayer;
+        [SerializeField] private LayerMask _projectileLayer;
         public LayerMask CameraLayer => _cameraLayer;
         [SerializeField] private LayerMask _cameraLayer;
+        public string ObstacleTag => _obstacleTag;
+        [SerializeField] private string _obstacleTag;
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using Fusion;
+using Gameplay.HealthLogic;
 using Gameplay.MatchLogic;
 using Gameplay.MatchLogic.SpawnLogic.SpawnPointLogic;
 using Gameplay.MatchLogic.TeamsLogic;
@@ -13,15 +14,16 @@ namespace Gameplay.UnitLogic
     {
         public event Action OnDied;
         
-        public UnitInfo Info => _info;
-        protected UnitInfo _info;
+        [Networked] public ref UnitInfo Info => ref MakeRef<UnitInfo>();
+        
         protected IUnitHitBox _hitBox;
         protected ISharedGameplayCanvasSystem _sharedGameplayCanvas;
         private IMatchSystem _matchSystem;
         private IUnitController _controller;
-
+        
         public Transform Transform => _transform;
         [SerializeField] protected Transform _transform;
+        public Transform HeadTransform => _headTransform;
         [SerializeField] protected Transform _headTransform;
         
         public virtual void Awake()
@@ -35,22 +37,29 @@ namespace Gameplay.UnitLogic
 
         public override void Spawned()
         {
-            if (!HasStateAuthority) return;
-
             _controller.Initialize();
+            
+            if (!HasStateAuthority) return;
 
             _matchSystem.OnFinished += Stop;
         }
-        
-        public abstract void SetInfo(string unitName, TeamType teamType);
 
-        public abstract void AddInfoBar();
+        // private void Start()
+        // {
+        //     Disable();
+        // }
+
+        public abstract void SetInfo(TeamType teamType, string unitName);
+
+        public abstract HealthSystem GetHealthSystem();
+        
+        protected abstract void AddInfoBar();
 
         private void Enable()
         {
             gameObject.SetActive(true);
         }
-        
+
         public void Disable()
         {
             gameObject.SetActive(false);
@@ -59,7 +68,7 @@ namespace Gameplay.UnitLogic
         protected virtual void Prepare(SpawnPointInfo spawnPointInfo)
         {
             enabled = true;
-            _controller.Prepare(spawnPointInfo.Position,spawnPointInfo.Rotation);
+            _controller.Prepare(spawnPointInfo.Position, spawnPointInfo.Rotation);
             _hitBox.Prepare();
             Enable();
         }
@@ -68,16 +77,21 @@ namespace Gameplay.UnitLogic
         {
             enabled = false;
             
-            if (!HasStateAuthority) return;
+            //if (!HasStateAuthority) return;
             
             _controller.Stop();
         }
 
-        public virtual void Update()
+        protected virtual void Update()
         {
             //_controller.Tick();
         }
-        
+
+        public override void Render()
+        {
+            base.Render();
+        }
+
         protected virtual void Die()
         {
             OnDied?.Invoke();

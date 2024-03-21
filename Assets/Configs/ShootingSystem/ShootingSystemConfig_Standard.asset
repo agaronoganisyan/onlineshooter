@@ -25,6 +25,10 @@ MonoBehaviour:
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 2048
+  _projectileLayer:
+    serializedVersion: 2
+    m_Bits: 3072
   _cameraLayer:
     serializedVersion: 2
     m_Bits: 16384
+  _obstacleTag: Obstacle

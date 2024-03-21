@@ -3,6 +3,7 @@ using ConfigsLogic;
 using Gameplay.ShootingSystemLogic.EquipmentContainerLogic;
 using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
+using Gameplay.UnitLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
 
@@ -24,9 +25,8 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         WeaponConfig CurrentWeaponInfo { get; }
         WeaponConfig NextWeaponInfo { get; }
         WeaponConfig GetWeaponInfoByType(WeaponType type);
-        GrenadeLauncher CurrentGrenadeLauncher { get; }
         void Initialize(Weapon firstWeapon, Weapon secondWeapon, GrenadeLauncher grenade);
-        void Prepare(IEquipmentContainer equipmentContainer);
+        void Prepare(Unit unit, IEquipmentContainer equipmentContainer);
         void ReloadWeapon();
         void SwitchWeapon();
         void WeaponFire();

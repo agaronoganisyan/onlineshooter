@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Gameplay.UnitLogic.PlayerLogic;
 using Infrastructure.ServiceLogic;
 
 namespace NetworkLogic.PlayerFactory
@@ -6,6 +7,7 @@ namespace NetworkLogic.PlayerFactory
     public interface IPlayerFactory : IService
     {
         void Initialize();
-        UniTask Create();
+        UniTask<Player> Create();
+        
     }
 }

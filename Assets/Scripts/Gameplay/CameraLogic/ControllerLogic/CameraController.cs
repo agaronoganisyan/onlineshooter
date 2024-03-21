@@ -32,6 +32,8 @@ namespace Gameplay.CameraLogic.ControllerLogic
             
             _playerSystem.OnSpawned += Spawned;
             _playerSystem.OnDespawned += Despawned;
+            _playerSystem.OnMoved += Tick;
+
         }
 
         public void Prepare(Vector3 position, Quaternion rotation)
@@ -64,7 +66,7 @@ namespace Gameplay.CameraLogic.ControllerLogic
             _cameraObjectTransform.DOShakeRotation(_shakeDuration, _shakeStrenght);
         }
 
-        private void Update()
+        private void Tick()
         {
             HandleMovement();
             HandleRotation();

@@ -36,10 +36,8 @@ namespace ConfigsLogic
         [SerializeField] private Vector3 _positionInContainer;
         public Vector3 RotationInContainer => _rotationInContainer;
         [SerializeField] private Vector3 _rotationInContainer;
-        public Bullet BulletPrefab => _bulletPrefab;
-        [Space(25)]
-        [SerializeField] private Bullet _bulletPrefab;
         public AnimatorOverrideController AnimatorOverride => _animatorOverride;
+        [Space(25)]
         [SerializeField] private AnimatorOverrideController _animatorOverride;
         public Sprite WeaponIconSprite => weaponIconSprite;
         [SerializeField] private Sprite weaponIconSprite;

@@ -16,8 +16,8 @@ MonoBehaviour:
   _modelType: 2
   _detectionZoneAngle: 50
   _detectionZoneRadius: 14
-  _damage: 150
-  _bulletSpeed: 82.5
+  _damage: 175
+  _bulletSpeed: 80
   _bulletLifetime: 2
   _maxAmmoCount: 12
   _frequency: 0.333
@@ -25,7 +25,6 @@ MonoBehaviour:
   _rotationInHand: {x: 0.269, y: 6.142, z: 3.159}
   _positionInContainer: {x: 0.33, y: 0.055, z: 0.026}
   _rotationInContainer: {x: 153.41, y: 0, z: 0}
-  _bulletPrefab: {fileID: 7289835956803318236, guid: 6d5d3f7ff279d4a1d889bedfbc287f0e, type: 3}
   _animatorOverride: {fileID: 22100000, guid: 6e254bfa0d4154ddca8fc8dbec6e9826, type: 2}
   weaponIconSprite: {fileID: 21300000, guid: 3412fc134d58a475cb36e544907998f0, type: 3}
   _bulletIconSprite: {fileID: 21300000, guid: df2634034b7e7470c821f058b82e79e0, type: 3}

@@ -6,7 +6,7 @@ namespace Infrastructure.StateMachineLogic.Async
     {
         private IAsyncState<State> _currentTypedState;
         
-        public override async void Start(State initialState)
+        public override async void Initialize(State initialState)
         {
             _currentTypedState = GetState<IAsyncState<State>>(initialState);
             await _currentTypedState.Enter();

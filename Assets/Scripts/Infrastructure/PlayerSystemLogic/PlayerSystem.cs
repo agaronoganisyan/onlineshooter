@@ -6,6 +6,7 @@ namespace Infrastructure.PlayerSystemLogic
     public class PlayerSystem : IPlayerSystem
     {
         public event Action<Player> OnSpawned;
+        public event Action OnMoved;
         public event Action OnDespawned;
         public event Action OnDied;
         public event Action<float, float> OnHealthChanged;
@@ -34,6 +35,7 @@ namespace Infrastructure.PlayerSystemLogic
         private void SubscribeToThisPlayer(Player player)
         {
             player.OnDied += Died;
+            player.OnMoved += Moved;
             player.HealthSystem.OnChanged += HealthChanged;
             player.HealthSystem.OnBelowCriticalThreshold += HealthBelowCriticalThreshold;
             player.HealthSystem.OnAboveCriticalThreshold += HealthAboveCriticalThreshold;
@@ -43,6 +45,7 @@ namespace Infrastructure.PlayerSystemLogic
         private void UnsubscribeFromThisPlayer(Player player)
         {
             player.OnDied -= Died;
+            player.OnMoved -= Moved;
             player.HealthSystem.OnChanged -= HealthChanged;
             player.HealthSystem.OnBelowCriticalThreshold -= HealthBelowCriticalThreshold;
             player.HealthSystem.OnAboveCriticalThreshold -= HealthAboveCriticalThreshold;
@@ -50,6 +53,8 @@ namespace Infrastructure.PlayerSystemLogic
         }
 
         private void Died() => OnDied?.Invoke();
+        private void Moved() => OnMoved?.Invoke();
+
         private void HealthChanged(float currentAmount, float maxAmount) => OnHealthChanged?.Invoke(currentAmount, maxAmount);
 
         private void HealthBelowCriticalThreshold() => OnHealthBelowCriticalThreshold?.Invoke();
