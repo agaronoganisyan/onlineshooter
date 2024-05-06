@@ -68,6 +68,8 @@ namespace Gameplay.ShootingSystemLogic
         public void Prepare()
         {
             _enemiesDetector.Start(); 
+            _equipment.Reset();
+            _stateMachine.TransitToState(ShootingState.Searching);
         }
 
         public void Stop()

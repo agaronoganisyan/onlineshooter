@@ -113,7 +113,7 @@ namespace Gameplay.UnitLogic.PlayerLogic
             base.Prepare(spawnPointInfo);
             _healthSystem.Prepare(1500);
             _shootingSystem.Prepare();
-
+            
             RPC_Prepare();
         }
 

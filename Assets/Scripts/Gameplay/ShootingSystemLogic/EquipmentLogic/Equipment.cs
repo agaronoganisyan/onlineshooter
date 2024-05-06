@@ -62,6 +62,20 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
             _nextWeapon.LayDown();
         }
 
+        public void Reset()
+        {
+            UnsubscribeFromThisWeapon(_currentWeapon);
+            
+            _currentWeaponID = 0;
+            SetWeapon(_currentWeaponID);
+            SubscribeToThisWeapon(_currentWeapon);
+            
+            _currentWeapon.Draw();
+            _nextWeapon.LayDown();
+            
+            OnEquipmentChanged?.Invoke();
+        }
+
         public void ReloadWeapon()
         {
             _currentWeapon.FinishReloading();

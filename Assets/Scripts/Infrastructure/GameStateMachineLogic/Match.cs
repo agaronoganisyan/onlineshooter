@@ -105,7 +105,7 @@ namespace Infrastructure.GameStateMachineLogic
             _playerMatchInfo.Setup(_networkMatchHandler.NetworkTeamsData.GetPlayerTeam(_networkManager.NetworkRunner.LocalPlayer),_profileSettingsConfig.GetNickname());
             _currentOperation = await _operationSystem.GetOperation();
             _matchSystem.Prepare();
-            await _matchSystem.WaitingPlayers(); 
+            //await _matchSystem.WaitingPlayers(); 
             
             await _sceneSystem.LoadScene(_currentOperation.Scene);
             _networkFactoriesSystem.Prepare();

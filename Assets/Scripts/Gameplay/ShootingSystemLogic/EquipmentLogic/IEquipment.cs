@@ -27,6 +27,7 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic
         WeaponConfig GetWeaponInfoByType(WeaponType type);
         void Initialize(Weapon firstWeapon, Weapon secondWeapon, GrenadeLauncher grenade);
         void Prepare(Unit unit, IEquipmentContainer equipmentContainer);
+        void Reset();
         void ReloadWeapon();
         void SwitchWeapon();
         void WeaponFire();
