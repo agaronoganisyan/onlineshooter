@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Fusion;
+using Fusion.Photon.Realtime;
 using Fusion.Sockets;
 using Infrastructure.ServiceLogic;
 using NetworkLogic.PoolLogic;
@@ -30,6 +31,9 @@ namespace NetworkLogic
         
         private ConnectionStatus _status;
 
+        private const string TEST_ROOMNAME = "ROOM";
+        private const string TEST_REGION = "eu";
+
         public void Initialize()
         {
             _networkObjectPool = ServiceLocator.Get<INetworkObjectPoolSystem>();
@@ -41,14 +45,17 @@ namespace NetworkLogic
 
             PrepareNetworkRunner();
             
-            var result = await _runner.StartGame(new StartGameArgs() {
+            AppSettings appSettings = BuildCustomAppSetting(TEST_REGION);
+            
+            StartGameResult result = await _runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
-                SessionName = "Roommm",
-                ObjectPool = _networkObjectPool
+                SessionName = TEST_ROOMNAME,
+                ObjectPool = _networkObjectPool,
+                CustomPhotonAppSettings = appSettings
             });
 
             if (result.Ok) {
-                Debug.Log("УРА");
+                Debug.Log("Success");
             } else {
                 Debug.LogError($"Failed to Start: {result.ShutdownReason}");
             }
@@ -80,7 +87,7 @@ namespace NetworkLogic
         public void OnConnectedToServer(NetworkRunner runner)
         {
             Debug.Log("Connected to server");
-
+            
             SetConnectionStatus(ConnectionStatus.Connected, "");
         }
 
@@ -167,6 +174,19 @@ namespace NetworkLogic
         {
             if(_runner == null) _runner = gameObject.AddComponent<NetworkRunner>();
             _runner.ProvideInput = true;
+        }
+        
+        private AppSettings BuildCustomAppSetting(string region) 
+        {
+            AppSettings appSettings = PhotonAppSettings.Instance.AppSettings.GetCopy();
+
+            appSettings.UseNameServer = true;
+
+            if (string.IsNullOrEmpty(region) == false) {
+                appSettings.FixedRegion = region.ToLower();
+            }
+
+            return appSettings;
         }
     }
 }
