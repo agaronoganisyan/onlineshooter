@@ -54,6 +54,8 @@ namespace NetworkLogic.MatchLogic
 
         public override void FixedUpdateNetwork()
         {
+            if (!HasStateAuthority) return;
+            
             if (IsFinished) return;
             
             if (_timerServiceNew.Expired(Runner)) RPC_Finished();
