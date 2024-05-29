@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using Fusion;
 using Gameplay.HealthLogic;
 using Gameplay.MatchLogic.SpawnLogic;
@@ -9,6 +8,7 @@ using Gameplay.ShootingSystemLogic;
 using Gameplay.UnitLogic.PlayerLogic.AnimationLogic;
 using Gameplay.UnitLogic.RagdollLogic;
 using Infrastructure.ServiceLogic;
+using NetworkLogic;
 using UnityEngine;
 
 namespace Gameplay.UnitLogic.PlayerLogic
@@ -19,12 +19,13 @@ namespace Gameplay.UnitLogic.PlayerLogic
         
         public PlayerHealthSystem HealthSystem => _healthSystem;
         private PlayerHealthSystem _healthSystem;
-        
+
+        private INetworkManager _networkManager;
         private IShootingSystem _shootingSystem;
         private ISpawnSystem _spawnSystem;
         private IPlayerAnimator _playerAnimator;
         private IRagdollHandler _ragdollHandler;
-
+        
         public override void Awake()
         {
             base.Awake();
@@ -33,6 +34,7 @@ namespace Gameplay.UnitLogic.PlayerLogic
             _playerAnimator = GetComponentInChildren<IPlayerAnimator>();
             _ragdollHandler = GetComponentInChildren<IRagdollHandler>();
             _healthSystem = GetComponent<PlayerHealthSystem>();
+            _networkManager = ServiceLocator.Get<INetworkManager>();
             _spawnSystem = ServiceLocator.Get<ISpawnSystem>();
         }
 
@@ -49,7 +51,8 @@ namespace Gameplay.UnitLogic.PlayerLogic
 
             _shootingSystem.Initialize();
 
-            _spawnSystem.OnSpawned += Prepare; 
+            // _networkManager.OnShutdowned += Despawn;
+            _spawnSystem.OnSpawned += Prepare;
         }
 
         protected override void Update()

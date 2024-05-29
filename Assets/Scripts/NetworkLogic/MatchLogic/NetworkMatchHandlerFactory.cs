@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Fusion;
 using Infrastructure.AssetManagementLogic;
 using Infrastructure.ServiceLogic;
 using UnityEngine;
@@ -43,8 +44,9 @@ namespace NetworkLogic.MatchLogic
             {
                 GameObject prefab = await _assetsProvider.Load<GameObject>(_handlerAddress);
                 INetworkMatchHandler obj = _networkManager.NetworkRunner.Spawn(prefab).GetComponent<INetworkMatchHandler>();
+                obj.AddMasterClient(_networkManager.NetworkRunner.LocalPlayer);
                 Register(obj);
-                
+
                 Debug.LogError("CREATE");
             }
             else

@@ -23,6 +23,7 @@ using Gameplay.UILogic.InfoCanvasLogic.WeaponLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic.PlayerInfoBlock;
+using Infrastructure.ApplicationLogic;
 using Infrastructure.AssetManagementLogic;
 using Infrastructure.GameFactoryLogic;
 using Infrastructure.GameStateMachineLogic;
@@ -40,6 +41,7 @@ using NetworkLogic.ObjectFactoryLogic;
 using NetworkLogic.PlayerFactory;
 using NetworkLogic.PoolLogic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Infrastructure
 {
@@ -48,7 +50,8 @@ namespace Infrastructure
         //[SerializeField] private ForTests _forTests;
         
         [SerializeField] private NetworkManager _networkManager;
-        
+        [FormerlySerializedAs("_applicationHandler")] [SerializeField] private ApplicationStateHandler applicationStateHandler;
+
         [SerializeField] private ProfileSettingsConfig _profileSettingsConfig;
         [SerializeField] private ControlsSettingsConfig _controlsSettingsConfig;
         [SerializeField] private PlayerInfoBlockConfig _playerInfoBlockConfig;
@@ -73,6 +76,7 @@ namespace Infrastructure
             //ServiceLocator.Register<ForTests>(_forTests);
             
             ServiceLocator.Register<INetworkManager>(_networkManager);
+            ServiceLocator.Register<IApplicationStateHandler>(applicationStateHandler);
             ServiceLocator.Register<INetworkMatchHandlerFactory>(new NetworkMatchHandlerFactory());
             ServiceLocator.Register<INetworkObjectPoolSystem>(new NetworkObjectPoolSystem());
 
@@ -133,6 +137,8 @@ namespace Infrastructure
         private async UniTask InitServices()
         {
             //ServiceLocator.Get<ForTests>().Initialize();
+            
+            ServiceLocator.Get<IApplicationStateHandler>().Initialize();
             
             ServiceLocator.Get<IGameInfrastructureFactory>().Initialize();
             await ServiceLocator.Get<IGameInfrastructureFactory>().CreateAndRegisterInfrastructure();

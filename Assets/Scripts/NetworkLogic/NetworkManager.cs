@@ -23,7 +23,10 @@ namespace NetworkLogic
     public class NetworkManager : MonoBehaviour, INetworkManager, INetworkRunnerCallbacks
     {
         public event Action<PlayerRef> OnPlayerJoinedRoom;
-
+        public event Action<PlayerRef> OnPlayerLeftRoom;
+        public event Action OnLocalPlayerLeftRoom;
+        public event Action OnShutdowned;
+        
         public NetworkRunner NetworkRunner => _runner;
         private NetworkRunner _runner;
 
@@ -61,6 +64,11 @@ namespace NetworkLogic
             }
         }
 
+        public async UniTask DisconnectFromRoom()
+        {
+            await _runner.Shutdown();
+        }
+
         public bool IsServerOrMasterClient()
         {
             return _runner.IsServer || _runner.IsSharedModeMasterClient;
@@ -74,6 +82,9 @@ namespace NetworkLogic
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
+            Debug.Log("OnPlayerLeft");
+            OnPlayerLeftRoom?.Invoke(player);
+            if (player == _runner.LocalPlayer) OnLocalPlayerLeftRoom?.Invoke();
         }
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -133,7 +144,7 @@ namespace NetworkLogic
 
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
-            Debug.Log("OnShutdown");
+            Debug.Log("OnShutdown START");
             
             string message = "";
             switch (shutdownReason)
@@ -163,6 +174,9 @@ namespace NetworkLogic
             
             if(_runner!=null && _runner.gameObject)
                 Destroy(_runner.gameObject);
+            
+            OnShutdowned?.Invoke();
+            Debug.Log("OnShutdown FINISH");
         }
         
         private void SetConnectionStatus(ConnectionStatus status, string message)

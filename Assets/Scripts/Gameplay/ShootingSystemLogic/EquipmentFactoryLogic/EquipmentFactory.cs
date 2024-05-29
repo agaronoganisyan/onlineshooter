@@ -4,6 +4,7 @@ using Gameplay.ShootingSystemLogic.WeaponLogic;
 using Infrastructure.AssetManagementLogic;
 using Infrastructure.ServiceLogic;
 using NetworkLogic;
+using NetworkLogic.MatchLogic;
 using UnityEngine;
 
 namespace Gameplay.ShootingSystemLogic.EquipmentFactoryLogic
@@ -19,10 +20,12 @@ namespace Gameplay.ShootingSystemLogic.EquipmentFactoryLogic
             _assetsProvider = ServiceLocator.Get<IAssetsProvider>();
         }
 
-        public async UniTask<Weapon> GetWeapon(string address)
+        public async UniTask<Weapon> GetWeapon(string address, INetworkMatchHandler networkMatchHandler)
         {
             GameObject prefab = await _assetsProvider.Load<GameObject>(address);
             Weapon obj = _networkManager.NetworkRunner.Spawn(prefab).GetComponent<Weapon>();
+            networkMatchHandler.RPC_AddPlayerObject(_networkManager.NetworkRunner.LocalPlayer, obj.Object);
+
             return obj;
         }
 

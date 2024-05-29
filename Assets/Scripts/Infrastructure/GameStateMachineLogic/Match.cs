@@ -11,11 +11,11 @@ using Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic;
 using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic.BulletLogic;
 using Gameplay.UILogic.DebriefingCanvasLogic;
-using Gameplay.UILogic.InfoCanvasLogic;
 using Gameplay.UILogic.InfoCanvasLogic.WeaponLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic;
 using Gameplay.UILogic.SharedGameplayCanvasLogic.SharedGameplayCanvasObjectLogic;
-using Infrastructure.GameFactoryLogic;
+using Gameplay.UnitLogic.PlayerLogic;
+using Infrastructure.ApplicationLogic;
 using Infrastructure.PlayerSystemLogic;
 using Infrastructure.SceneManagementLogic;
 using Infrastructure.ServiceLogic;
@@ -31,6 +31,7 @@ namespace Infrastructure.GameStateMachineLogic
 {
     public class Match : GameBaseState<GameState>
     {
+        private IApplicationStateHandler _applicationStateHandler;
         private INetworkManager _networkManager;
         private INetworkMatchHandlerFactory _networkMatchHandlerFactory;
         private INetworkMatchHandler _networkMatchHandler;
@@ -65,6 +66,7 @@ namespace Infrastructure.GameStateMachineLogic
 
         public Match(IStateMachine<GameState> stateMachine) : base(stateMachine)
         {
+            _applicationStateHandler = ServiceLocator.Get<IApplicationStateHandler>();
             _networkManager = ServiceLocator.Get<INetworkManager>();
             _networkMatchHandlerFactory = ServiceLocator.Get<INetworkMatchHandlerFactory>();
             _networkFactoriesSystem = ServiceLocator.Get<INetworkFactoriesSystem>();
@@ -96,6 +98,8 @@ namespace Infrastructure.GameStateMachineLogic
 
         public override async UniTask Enter()
         {
+            //_applicationStateHandler.OnApplicationClosed += CleanupLocalPlayerNetworkObjects;//sdfdsf
+            
             await _networkManager.ConnectToGameRoom();
             await _networkMatchHandlerFactory.Register();
             _networkMatchHandler = ServiceLocator.Get<INetworkMatchHandler>();
@@ -105,12 +109,13 @@ namespace Infrastructure.GameStateMachineLogic
             _playerMatchInfo.Setup(_networkMatchHandler.NetworkTeamsData.GetPlayerTeam(_networkManager.NetworkRunner.LocalPlayer),_profileSettingsConfig.GetNickname());
             _currentOperation = await _operationSystem.GetOperation();
             _matchSystem.Prepare();
-            await _matchSystem.WaitingPlayers(); 
+            //await _matchSystem.WaitingPlayers(); 
             
             await _sceneSystem.LoadScene(_currentOperation.Scene);
             _networkFactoriesSystem.Prepare();
-            await _equipmentSystem.Prepare();
-            await _playerFactory.Create();
+            await _equipmentSystem.Prepare(_networkMatchHandler);
+            await _playerFactory.Create(_networkMatchHandler);
+            
             _pointsSystem.Prepare(_currentOperation.Type);
             _matchTaskSystem.Prepare();
             await _spawnSystem.WaitSpawnPoints();
@@ -127,14 +132,17 @@ namespace Infrastructure.GameStateMachineLogic
             
             _loadingCanvas.Hide();
         }
-        
+
         public override async UniTask Exit()
         {
+            //_applicationStateHandler.OnApplicationClosed -= CleanupLocalPlayerNetworkObjects;//sdfdsf
+            
             await _loadingCanvas.Show();
+            await _networkManager.DisconnectFromRoom();
             await _sceneSystem.UnloadScene();
             _equipmentSystem.ResetEquipment();
             _matchSystem.Cleanup();
-            _pointsSystem.Cleanup();
+            _pointsSystem.Cleanup(); 
             _matchTaskSystem.Cleanup();
             //_teamsSystem.Cleanup();
             _spawnSystem.Cleanup();
@@ -142,10 +150,10 @@ namespace Infrastructure.GameStateMachineLogic
             //_playerSystem.Disable();
             _gameplayCamera.Disable();
             
-            _bulletFactory.ReturnAllObjectToPool();
-            _grenadeFactory.ReturnAllObjectToPool();
-            _sharedGameplayCanvasObjectFactory.ReturnAllObjectToPool();
-            _effectsFactory.ReturnAllObjectToPool();
+            _bulletFactory.ReturnAllObjectToPool(); //с этим разобраться потом 
+            _grenadeFactory.ReturnAllObjectToPool(); //с этим разобраться потом 
+            _sharedGameplayCanvasObjectFactory.ReturnAllObjectToPool(); //с этим разобраться потом 
+            _effectsFactory.ReturnAllObjectToPool(); //с этим разобраться потом 
             
             _sharedGameplayCanvas.StopUpdating(); 
             _sharedGameplayCanvas.Hide();

@@ -3,6 +3,7 @@ using Gameplay.ShootingSystemLogic.EquipmentFactoryLogic;
 using Gameplay.ShootingSystemLogic.GrenadeLogic.GrenadeLauncherLogic;
 using Gameplay.ShootingSystemLogic.WeaponLogic;
 using Infrastructure.ServiceLogic;
+using NetworkLogic.MatchLogic;
 
 namespace Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic
 {
@@ -14,9 +15,6 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic
 
         private IEquipmentFactory _equipmentFactory;
         private IEquipment _equipment;
-        private Weapon _firstWeapon;
-        private Weapon _secondWeapon;
-        private GrenadeLauncher _grenadeLauncher;
         
         public void Initialize()
         {
@@ -24,13 +22,13 @@ namespace Gameplay.ShootingSystemLogic.EquipmentLogic.EquipmentSystemLogic
             _equipment = ServiceLocator.Get<IEquipment>();
         }
         
-        public async UniTask Prepare()
+        public async UniTask Prepare(INetworkMatchHandler networkMatchHandler)
         {
-            _firstWeapon = await _equipmentFactory.GetWeapon(_firstWeaponAddress);
-            _secondWeapon = await _equipmentFactory.GetWeapon(_secondWeaponAddress);
-            _grenadeLauncher = await _equipmentFactory.GetGrenadeLauncher(_grenadeLauncherAddress);
+            Weapon firstWeapon = await _equipmentFactory.GetWeapon(_firstWeaponAddress, networkMatchHandler);
+            Weapon secondWeapon = await _equipmentFactory.GetWeapon(_secondWeaponAddress, networkMatchHandler);
+            GrenadeLauncher grenadeLauncher = await _equipmentFactory.GetGrenadeLauncher(_grenadeLauncherAddress);
             
-            _equipment.Initialize(_firstWeapon, _secondWeapon, _grenadeLauncher);
+            _equipment.Initialize(firstWeapon, secondWeapon, grenadeLauncher);
         }
         
         public void ResetEquipment()
