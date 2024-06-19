@@ -13,18 +13,10 @@ namespace NetworkLogic.PlayerNetworkObjectsDataLogic
 
         public void AddObject(NetworkId objectId)
         {
-            Debug.LogError($"_size {_size} ArrayLenght {ArrayLenght}");
-            
             if (_size >= ArrayLenght) throw new ArgumentOutOfRangeException();
-
-            Debug.LogError($"AddObject NetworkId {objectId}");
-
+            
             _objects.Set(_size, objectId);
             _size++;
-            
-            Debug.LogError($"_objects.Count {_size}");
-            Debug.LogError($"_objects.Count {_size}");
-            Debug.LogError($"_objects.Count {_size}");
         }
 
         public NetworkId GetObjectId(int index)

@@ -82,6 +82,9 @@ namespace NetworkLogic.MatchLogic
 
         public void StartMatch(float duration)
         {
+            Runner.SessionInfo.IsOpen = false; 
+            Runner.SessionInfo.IsVisible = false;
+            
             _timerServiceNew = NetworkTimer.CreateFromSeconds(Runner, duration);
             OnMatchTimeGiven?.Invoke(_timerServiceNew.GetRemainingTimeInFormat(Runner, ResultFormat.MinutesAndSeconds));
             RPC_Started();
@@ -110,6 +113,7 @@ namespace NetworkLogic.MatchLogic
         {
             if (!HasStateAuthority) return;
             
+            NetworkTeamsData.RemoveUnitFromTeam(playerRef);
             DespawnLeftPlayerObjects(playerRef);
         }
         
@@ -122,15 +126,10 @@ namespace NetworkLogic.MatchLogic
 
         private void DespawnLeftPlayerObjects(PlayerRef playerRef)
         {
-            Debug.LogError("DespawnLeftPlayerObjects");
-            
             if (_allPlayersObjects.ContainsKey(playerRef))
             {
-                Debug.LogError($"DespawnLeftPlayerObjects ContainsKey Count {_allPlayersObjects[playerRef].Count()}");
-                
                 for (int i = 0; i < _allPlayersObjects[playerRef].Count(); i++)
                 {
-                    Debug.LogError("for");
                     DespawnNetworkObject(_allPlayersObjects[playerRef].GetObjectId(i));
                 }
 

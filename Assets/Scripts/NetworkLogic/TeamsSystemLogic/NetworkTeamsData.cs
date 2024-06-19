@@ -19,7 +19,13 @@ namespace NetworkLogic.TeamsSystemLogic
                 _firstTeamMembers.Add(player, playerData);
             }
         }
-        
+
+        public void RemoveUnitFromTeam(PlayerRef player)
+        {
+            if (_firstTeamMembers.ContainsKey(player))_firstTeamMembers.Remove(player);
+            else if (_secondTeamMembers.ContainsKey(player))  _secondTeamMembers.Remove(player);
+        }
+
         public bool IsTeamsReady()
         {
             return _firstTeamMembers.Count > 0 && _secondTeamMembers.Count > 0;
